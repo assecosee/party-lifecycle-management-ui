@@ -103,6 +103,40 @@
           }
         }
       }
+    },
+    "party-lifecycle-management": {
+      "projectType": "library",
+      "root": "projects/party-lifecycle-management",
+      "sourceRoot": "projects/party-lifecycle-management/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/party-lifecycle-management/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/party-lifecycle-management/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/party-lifecycle-management/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/party-lifecycle-management/src/test.ts",
+            "tsConfig": "projects/party-lifecycle-management/tsconfig.spec.json",
+            "karmaConfig": "projects/party-lifecycle-management/karma.conf.js"
+          }
+        }
+      }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

@@ -2,6 +2,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
@@ -14,6 +15,12 @@
     "declaration": false,
     "experimentalDecorators": true,
     "moduleResolution": "node",
+    "paths": {
+      "party-lifecycle-management": [
+        "dist/party-lifecycle-management/party-lifecycle-management",
+        "dist/party-lifecycle-management"
+      ]
+    },
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
