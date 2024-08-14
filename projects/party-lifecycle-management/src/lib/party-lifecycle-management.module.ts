@@ -4,15 +4,13 @@ import { CommonUiModule } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
-import { PartyLifecycleManagementComponent } from './party-lifecycle-management.component';
+import { PartyLcmUiModuleLoadService } from './services/party-lcm-ui-module-load.service';
 
 const routes: Routes = [
-  { path: '', component: PartyLifecycleManagementComponent }
 ];
 
 @NgModule({
   declarations: [
-    PartyLifecycleManagementComponent
   ],
   imports: [
     CommonModule,
@@ -23,9 +21,14 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   exports: [
-    PartyLifecycleManagementComponent
   ]
 })
 export class PartyLifecycleManagementModule { 
+
+  constructor(
+    private partyLcmUiModuleLoadService: PartyLcmUiModuleLoadService
+  ) {
+    
+  }
 
 }
