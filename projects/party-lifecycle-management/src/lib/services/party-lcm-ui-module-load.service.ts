@@ -13,9 +13,9 @@ export class PartyLcmUiModuleLoadService {
     children: [
       new MenuItem({
         id: 'party-lcm-list',
-        name: 'Case list',
+        name: 'List cases',
         icon: 'list',
-        route: '/customer-information-file/customer-list'
+        route: '/party-lifecycle-management/cases'
       }),
       new MenuItem({
         id: 'party-lcm-onboarding',

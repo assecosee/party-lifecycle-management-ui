@@ -1,0 +1,24 @@
+.filter-cases-dialog-container {
+    max-width: 650px;
+    width: 60vw;
+    mat-dialog-content {
+      .filter-cases-filter-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-gap: 1rem;
+      }
+    }
+    mat-dialog-actions {
+      justify-content: flex-end;
+      padding-top: 40px;
+  
+      .mat-mdc-button {
+        text-transform: uppercase;
+        font-weight: bold;
+        min-width: 80px;
+      }
+    }
+    .full-width { 
+        grid-column: 1/-1;
+    }
+  }

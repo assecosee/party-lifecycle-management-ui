@@ -1,0 +1,188 @@
+.mat-mdc-cell:last-child,
+.mat-mdc-header-cell:last-child {
+  text-align: center;
+  max-width: 84px;
+}
+
+#casesWrapper {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+  display: block;
+  padding: 0 16px;
+
+  .info-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.case-list-card {
+  max-width: 1300px !important;
+  margin: 0 auto;
+  top: 16px;
+}
+
+.number {
+  max-width: 148px;
+}
+
+.number-wide {
+  max-width: 150px;
+}
+
+.case-list-table{
+  table-layout: fixed !important;
+  width: 100%;
+}
+.status {
+  max-width: 180px;
+}
+.no-data {
+  color: rgba(0, 0, 0, 0.54);
+  font-style: italic;
+}
+.center {
+  text-align: center;
+  justify-content: center;
+}
+
+.right {
+  text-align: right;
+}
+
+.icon-prefix {
+  display: flex;
+  align-items: center;
+  > i {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.36);
+  }
+  > span {
+    display: block;
+    margin-left: 4px;
+  }
+  &.center {
+    justify-content: center;
+  }
+}
+
+.case-list-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sortIcon {
+  width: 24px;
+  height: 24px;
+  color: black;
+}
+
+.sort {
+  margin-left: auto;
+}
+
+@keyframes loader {
+  0% {
+    -webkit-transform: translate(-50%, -50%) rotate(0deg);
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    -webkit-transform: translate(-50%, -50%) rotate(360deg);
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@-webkit-keyframes loader {
+  0% {
+    -webkit-transform: translate(-50%, -50%) rotate(0deg);
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    -webkit-transform: translate(-50%, -50%) rotate(360deg);
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.loader {
+  position: relative;
+}
+
+.loader div,
+.loader div:after {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border: 22px solid #03a9f4;
+  border-top-color: transparent;
+  border-radius: 50%;
+}
+
+.loader div {
+  -webkit-animation: loader 1s linear infinite;
+  animation: loader 1s linear infinite;
+  top: 100px;
+  left: 100px;
+}
+
+.loader div:after {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.loader {
+  width: 24px !important;
+  height: 24px !important;
+  -webkit-transform: translate(-12px, -12px) scale(0.12) translate(12px, 12px);
+  transform: translate(-12px, -12px) scale(0.12) translate(12px, 12px);
+}
+
+.spinner {
+  bottom: 0px;
+  height: 50px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: fixed; // IE fix
+  position: sticky;
+  z-index: 3;
+  transition: all 2s ease-in;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.sortable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button {
+  top: auto;
+  right: 20px;
+  bottom: 20px;
+  left: auto;
+  position: fixed;
+  .add-icon {
+    color: white;
+  }
+}
+
+.customer-name {
+  overflow: hidden !important;
+  > span {
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+}
+
+.party-name {
+  overflow: hidden !important;
+  > span {
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+}

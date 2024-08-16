@@ -132,6 +132,15 @@
             "tsConfig": "projects/party-lifecycle-management/tsconfig.spec.json",
             "karmaConfig": "projects/party-lifecycle-management/karma.conf.js"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/party-lifecycle-management/**/*.ts",
+              "projects/party-lifecycle-management/**/*.html"
+            ]
+          }
         }
       }
     }

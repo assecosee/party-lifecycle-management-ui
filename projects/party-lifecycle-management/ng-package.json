@@ -6,6 +6,7 @@
   },
   "allowedNonPeerDependencies": [
     "@asseco/common-ui",
-    "@asseco/components-ui"
+    "@asseco/components-ui",
+    "ngx-infinite-scroll"
   ]
 }

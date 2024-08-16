@@ -1,0 +1,132 @@
+<div id="casesWrapper">
+    <mat-card appearance="outlined" class="case-list-card mat-elevation-z3">
+      <mat-card-title class="case-list-header">
+        <div>
+          <button mat-icon-button (click)="openFilters()" title="{{'Filter' | translate:locale.language}}">
+            <mat-icon class="filterIcon">filter_list</mat-icon>
+          </button>
+        </div>
+        <div>
+          <button mat-icon-button [matMenuTriggerFor]="appMenu" title="{{'Sort' | translate:locale.language}}">
+            <mat-icon class="sortIcon">sort</mat-icon>
+          </button>
+        </div>
+      </mat-card-title>
+      <mat-menu #appMenu="matMenu">
+        @for (field of sortFields; track field) {
+          <button mat-menu-item (click)="sort(field)" translate> {{field.label}}
+          </button>
+        }
+      </mat-menu>
+      <mat-card-content>
+        <div #tableContainer infinite-scroll [infiniteScrollThrottle]="3"
+          (scrolled)="onScroll()" [fromRoot]="true" [infiniteScrollDistance]="1.1" [infiniteScrollContainer]="'#casesWrapper'">
+          <table mat-table [dataSource]="casesData" class="case-list-table">
+            <ng-container matColumnDef="caseNumber">
+              <mat-header-cell *matHeaderCellDef translate>Case number</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+              {{row.caseNumber}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="partyNumber">
+              <mat-header-cell *matHeaderCellDef translate>Party number</mat-header-cell>
+              <mat-cell *matCellDef="let row" translate> 
+                @if (row?.partyNumber) {
+                  <span class="icon-prefix party-name">
+                    <i class="material-icons secondary-icon">account_box</i>
+                    <span>{{row.partyNumber}}</span>
+                  </span>
+                }
+                @if (!row?.partyNumber) {
+                  <span class="no-data">
+                    {{'no data'}}
+                  </span>
+                }
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="partyName">
+              <mat-header-cell *matHeaderCellDef translate>Party name</mat-header-cell>
+              <mat-cell *matCellDef="let row" translate>
+                @if (row?.partyName) {
+                  {{row.partyName}}
+                }
+                @if (!row?.partyName) {
+                  <span class="no-data">
+                    {{'no data'}}
+                  </span>
+                }
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="partyIdentificationNumber">
+              <mat-header-cell *matHeaderCellDef translate>Identification number</mat-header-cell>
+              <mat-cell *matCellDef="let row" translate>
+                @if (row?.partyIdentificationNumber) {
+                  <span class="icon-prefix customer-name">
+                    <i class="material-icons secondary-icon">account_box</i>
+                    <span>{{row.partyIdentificationNumber}}</span>
+                  </span>
+                }
+                @if (!row?.partyIdentificationNumber) {
+                  <span class="no-data">
+                    {{'no data'}}
+                  </span>
+                }
+            </mat-cell>
+            </ng-container>
+          <ng-container matColumnDef="creationDate">
+            <mat-header-cell *matHeaderCellDef class="requestDate cente sortable">
+              <span translate>Creation date</span>
+              @if (selectedFilters && selectedFilters.sortBy === 'creationDate') {
+                <span>
+                  @if (selectedFilters.sortOrder === 'desc') {
+                    <i class="material-icons">arrow_drop_down</i>
+                  }
+                  @if (selectedFilters.sortOrder === 'asc') {
+                    <i class="material-icons">arrow_drop_up</i>
+                  }
+                </span>
+              }
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="dateColumn center">
+              @if (row?.creationTime) {
+                <span class="icon-prefix center">
+                  <i class="material-icons secondary-icon">today</i>
+                  <span [options]="{ dateStyle: 'medium'}" l10nDate>{{row.creationTime}}</span>
+                </span>
+              }
+              @if (!row?.creationTime) {
+                <span class="no-data">
+                  {{'no data'}}
+                </span>
+              }
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef translate class="center status">Status</mat-header-cell>
+            <mat-cell *matCellDef="let row" class="center status" translate>
+            {{ row.status }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef class="actionColumn" translate>Details</mat-header-cell>
+            <mat-cell *matCellDef="let row" class="actionColumn">
+              <a mat-icon-button class="info-btn" [color]="'primary'" 
+                 (click) = "openCase(row)">
+                <i class="material-icons">info</i>
+              </a>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"
+            color="primary">
+          </mat-row>
+        </table>
+      </div>
+    </mat-card-content>
+    @if (loading) {
+      <div #spinder class="spinner">
+        <div class="loader">
+          <div></div>
+        </div>
+      </div>
+    }
+  </mat-card>
+  </div>
