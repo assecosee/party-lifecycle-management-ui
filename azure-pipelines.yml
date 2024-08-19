@@ -1,0 +1,114 @@
+variables:
+- group: common
+
+- name: imageRepository
+  value: 'registry.see.asseco.com/dbranch/party-lcm-ui'
+
+- name: moduleName
+  value: 'party-lcm-ui'
+
+- name: buildContextFolder
+  value: '.'
+
+- name: dockerfilePath
+  value: 'Dockerfile'
+
+- name: npmFileName
+  value: 'npm-asee-db-robot'
+
+- name: cacheVolumes
+  value: |
+    /opt/cache/.npm:/root/.npm
+
+pool: 'Digital'
+
+resources:
+  repositories:
+    - repository: templates
+      type: githubenterprise
+      name: asseco-see/pipeline-templates
+      ref: refs/heads/main
+      endpoint: github
+
+steps:
+- task: DockerAdvanced@0
+  displayName: 'COMMIT_linter'
+  inputs:
+    image: 'registry.see.asseco.com/tools/angular-module-builder:17'
+    dockerRegistryEndpoint: harbor	 
+    secureFile: $(npmFileName)
+    commands: |
+      ln -s /usr/local/lib/node_modules node_modules
+      npm run lint
+      rm node_modules
+
+- task: DockerAdvanced@0
+  displayName: 'COMMIT_install'
+  inputs:
+    image: 'registry.see.asseco.com/tools/angular-module-builder:17'
+    dockerRegistryEndpoint: harbor
+    secureFile: $(npmFileName)
+    commands: |
+      cp $(npmFileName) /root/.npmrc
+      npm ci
+    volumes: |
+      $(cacheVolumes)
+
+- task: DockerAdvanced@0
+  displayName: 'COMMIT_generate_version'
+  inputs:
+    image: 'registry.see.asseco.com/tools/image-tagger'
+    dockerRegistryEndpoint: harbor
+    envVars: |
+      TAGGER_VERSION=v4
+      GITHUB_TOKEN=$(githubToken)
+      RELEASE_NOTES_MANDATORY=true
+      RELEASE=false			   
+
+- script: |
+    echo -e "\nCOPY --chown=1001:0 .version /" >> $(dockerfilePath)
+  displayName: 'COMMIT_tag_version'
+
+- task: DockerAdvanced@0
+  displayName: 'COMMIT_build'
+  inputs:
+    image: 'registry.see.asseco.com/tools/angular-module-builder:17'
+    dockerRegistryEndpoint: harbor
+    secureFile: $(npmFileName)
+    commands: |
+      cp $(npmFileName) /root/.npmrc								
+      npm run module-prod
+
+- task: DockerAdvanced@0
+  displayName: 'COMMIT_publish'
+  inputs:
+    action: BuildAndPush
+    context: $(buildContextFolder)
+    image: $(imageRepository)
+    dockerfile: $(dockerfilePath)
+    dockerRegistryEndpoint: harbor
+
+- task: DockerAdvanced@0
+  displayName: 'COMMIT_release_version'
+  continueOnError: true
+  inputs:
+    image: 'registry.see.asseco.com/tools/image-tagger'
+    dockerRegistryEndpoint: harbor
+    secureFile: private.key
+    envVars: |
+      TAGGER_VERSION=v4
+      GITHUB_TOKEN=$(githubToken)
+      GITHUB_EMAIL=$(githubRobotEmail)
+      GITHUB_NAME=$(githubRobotName)
+      GITHUB_PASSWORD=$(githubRobotPassword)
+      NOTIFICATIONS_EMAIL_ADDRESS=$(notificationsEmailAddress)
+
+- script: |
+    docker rmi $(imageRepository):$(cat .version)
+  displayName: 'COMMIT_cleanup'
+
+- script: |
+    echo '##vso[task.setvariable variable=serviceName]$(moduleName)'
+  displayName: 'COMMIT_override_serviceName'
+
+- template: v1/continuous-delivery/metadata.yml@templates
