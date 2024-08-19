@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "party-lifecycle-management-ui": {
+    "party-lcm-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -24,7 +24,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/party-lifecycle-management-ui",
+            "outputPath": "dist/party-lcm-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "party-lifecycle-management-ui:build:production"
+              "buildTarget": "party-lcm-app:build:production"
             },
             "development": {
-              "buildTarget": "party-lifecycle-management-ui:build:development"
+              "buildTarget": "party-lcm-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "party-lifecycle-management-ui:build"
+            "buildTarget": "party-lcm-app:build"
           }
         },
         "test": {
@@ -113,7 +113,7 @@
         }
       }
     },
-    "party-lifecycle-management": {
+    "party-lcm-ui": {
       "projectType": "library",
       "root": "projects/party-lifecycle-management",
       "sourceRoot": "projects/party-lifecycle-management/src",
