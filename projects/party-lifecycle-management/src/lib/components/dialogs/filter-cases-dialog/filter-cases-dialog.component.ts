@@ -11,14 +11,14 @@ export class FilterCasesDialogComponent implements OnInit {
 
   public filtersGroup: AseeFormGroup | undefined;
 
- /**
-  *
-  */
- constructor(
-  protected formService: AssecoFormService
- ) {
- 
- }
+  /**
+   *
+   */
+  constructor(
+    protected formService: AssecoFormService
+  ) {
+
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -27,18 +27,18 @@ export class FilterCasesDialogComponent implements OnInit {
   filter() {
     throw new Error('Method not implemented.');
   }
-  
+
   closeDialog() {
     throw new Error('Method not implemented.');
   }
-  
+
   clearFilter() {
     throw new Error('Method not implemented.');
   }
 
   private initForm() {
-    this.filtersGroup = this.formService.getFormGroup('party-lcm/filter-cases-dialog', 
-       {
+    this.filtersGroup = this.formService.getFormGroup('party-lcm/filter-cases-dialog',
+      {
         partyName: new AseeFormControl(null),
         partyNumber: new AseeFormControl(null),
         dateFrom: new AseeFormControl(null),

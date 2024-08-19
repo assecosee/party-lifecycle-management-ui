@@ -36,10 +36,10 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   public displayedColumns = ['caseNumber', 'partyNumber', 'partyName', 'partyIdentificationNumber',
     'creationDate', 'status', 'actions'];
   public selectedFilters: any = {
-      page: 1,
-      pageSize: 30,
-      sortBy: 'creationDate',
-      sortOrder: 'desc',
+    page: 1,
+    pageSize: 30,
+    sortBy: 'creationDate',
+    sortOrder: 'desc',
   };
   public totalPages: number | undefined = 0;
   public casesData: MatTableDataSource<Case> = new MatTableDataSource();
@@ -49,7 +49,7 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   private getCasesSubscription: Subscription = new Subscription();
   private cases: Case[] = [];
   private filterDialog: MatDialogRef<FilterCasesDialogComponent> | undefined;
-  private totalCount: number = 0;
+  private totalCount = 0;
 
   constructor(
     protected uiService: UIService,
@@ -61,8 +61,8 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
     protected dialog: MatDialog,
     protected partyLifecycleManagementService: PartyLifecycleManagementService
   ) {
-      this.uiService.setTitle('List cases');
-      this.locale = this.injector.get(L10N_LOCALE);
+    this.uiService.setTitle('List cases');
+    this.locale = this.injector.get(L10N_LOCALE);
   }
 
   ngOnInit(): void {
@@ -78,13 +78,13 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
         sortOrder: 'desc'
       }
     ];
-    this.init()
+    this.init();
   }
-  
+
   ngAfterViewInit(): void {
     this.adaptToSize();
   }
-  
+
   ngOnDestroy(): void {
     if(this.getCasesSubscription) {
       this.getCasesSubscription.unsubscribe();

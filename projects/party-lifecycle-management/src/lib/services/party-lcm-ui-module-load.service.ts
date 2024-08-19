@@ -28,7 +28,7 @@ export class PartyLcmUiModuleLoadService {
 
   constructor(
     private uiService: UIService
-  ) { 
+  ) {
     this.processMenuItems(this.partyLcmMenuItem);
   }
   processMenuItems(menuItem: MenuItem): void {

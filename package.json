@@ -7,7 +7,9 @@
     "build": "ng build",
     "module-dev": "node build.mjs party-lifecycle-management --port=12000",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "eslint . --ext .ts",
+    "lint-fix": "eslint . --ext .ts --fix"
   },
   "private": true,
   "dependencies": {

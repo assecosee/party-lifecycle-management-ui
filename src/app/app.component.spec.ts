@@ -20,7 +20,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'party-lifecycle-management-ui'`, () => {
+  it('should have as title \'party-lifecycle-management-ui\'', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('party-lifecycle-management-ui');

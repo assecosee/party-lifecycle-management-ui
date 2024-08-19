@@ -8,9 +8,9 @@ import { UIService } from '@asseco/common-ui';
 })
 export class CaseOverviewComponent {
 
-   constructor(
+  constructor(
     private uiService: UIService
-   ) {
+  ) {
     this.uiService.setTitle('Case overview');
-   }
+  }
 }
