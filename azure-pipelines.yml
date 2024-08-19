@@ -14,7 +14,7 @@ variables:
   value: 'Dockerfile'
 
 - name: npmFileName
-  value: 'npm-asee-db-robot'
+  value: 'npm-asee-dcif-robot'
 
 - name: cacheVolumes
   value: |
