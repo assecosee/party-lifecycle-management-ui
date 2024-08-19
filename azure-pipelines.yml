@@ -2,7 +2,7 @@ variables:
 - group: common
 
 - name: imageRepository
-  value: 'registry.see.asseco.com/dbranch/party-lcm-ui'
+  value: 'registry.see.asseco.com/dcif/party-lcm-ui'
 
 - name: moduleName
   value: 'party-lcm-ui'
