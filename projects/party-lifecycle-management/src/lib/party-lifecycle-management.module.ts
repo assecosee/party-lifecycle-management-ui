@@ -36,12 +36,12 @@ import { CaseOverviewComponent } from './components/case/case-overview/case-over
   exports: [
   ]
 })
-export class PartyLifecycleManagementModule { 
+export class PartyLifecycleManagementModule {
 
   constructor(
     private partyLcmUiModuleLoadService: PartyLcmUiModuleLoadService
   ) {
-    
+
   }
 
 }

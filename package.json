@@ -1,13 +1,16 @@
 {
-  "name": "party-lifecycle-management-ui",
+  "name": "party-lcm-app",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "module-dev": "node build.mjs party-lifecycle-management --port=12000",
+    "module-dev": "node build.mjs party-lcm-ui --port=12000",
+    "module-prod": "node build.mjs party-lcm-ui --production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "eslint . --ext .ts",
+    "lint-fix": "eslint . --ext .ts --fix"
   },
   "private": true,
   "dependencies": {
@@ -47,7 +50,7 @@
     "babel-preset-minify": "^0.5.2",
     "eslint": "^8.36.0",
     "eslint-plugin-import": "2.25.4",
-    "eslint-plugin-jsdoc": "^39.0.0",
+    "eslint-plugin-jsdoc": "^39.2.5",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "jasmine-core": "^4.0.0",
     "jasmine-spec-reporter": "^7.0.0",
