@@ -13,6 +13,7 @@
                     [labelProperty]="'literal'" [valueProperty]="'code'" [label]="'Channels'" [control]="filtersGroup.controls['channels']">
                   </asee-tree-select>
               }
+                <asee-text-input [control]="filtersGroup.controls['agent']" [label]="'Agent'" [appearance]="'outline'"></asee-text-input>
                 <asee-datepicker [appearance]="'outline'" [label]="'Date From'" [control]="filtersGroup.controls['dateFrom']" [startView]="'month'"></asee-datepicker>
                 <asee-datepicker [appearance]="'outline'" [label]="'Date To'" [control]="filtersGroup.controls['dateTo']" [startView]="'month'"></asee-datepicker>
             </form>

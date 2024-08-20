@@ -132,6 +132,7 @@ export class FilterCasesDialogComponent implements OnInit {
         partyNumber: new AseeFormControl(null),
         partyIdentificationNumber: new AseeFormControl(null),
         channels: new AseeFormControl(null),
+        agent: new AseeFormControl(null),
         dateFrom: new AseeFormControl(null),
         dateTo: new AseeFormControl(null)
       }
