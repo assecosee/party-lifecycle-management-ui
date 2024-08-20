@@ -5,6 +5,14 @@
             <form [formGroup]="filtersGroup" class="filter-cases-filter-form">
                 <asee-text-input [control]="filtersGroup.controls['partyNumber']" [label]="'Party number'" [appearance]="'outline'"></asee-text-input>
                 <asee-text-input [control]="filtersGroup.controls['partyName']" [label]="'Party name'" [appearance]="'outline'"></asee-text-input>
+                <asee-text-input [control]="filtersGroup.controls['partyIdentificationNumber']" [label]="'Party identification number'" [appearance]="'outline'"></asee-text-input>
+                <asee-select [appearance]="'outline'" [control]="filtersGroup.controls['status']" [multiple]="true" [options]="caseStatuses" [label]="'Status'" [labelProperty]="'name'" [valueProperty]="'literal'"
+              labelProperty="description"></asee-select>
+              @if (channels) {
+                  <asee-tree-select appearance="outline" parentReferenceProperty="parentChannelId" [options]="channels"
+                    [labelProperty]="'literal'" [valueProperty]="'code'" [label]="'Channels'" [control]="filtersGroup.controls['channels']">
+                  </asee-tree-select>
+              }
                 <asee-datepicker [appearance]="'outline'" [label]="'Date From'" [control]="filtersGroup.controls['dateFrom']" [startView]="'month'"></asee-datepicker>
                 <asee-datepicker [appearance]="'outline'" [label]="'Date To'" [control]="filtersGroup.controls['dateTo']" [startView]="'month'"></asee-datepicker>
             </form>
