@@ -45,7 +45,9 @@ export class FilterCasesDialogComponent implements OnInit {
   }
 
   clearFilter() {
-    this.filtersGroup.reset();
+    if(this.filtersGroup) {
+      this.filtersGroup.reset();
+    }
   }
 
   private getCaseStatuses(): Observable<ClassificationSchema> {
