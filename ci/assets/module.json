@@ -1,4 +1,4 @@
 {
     "module-name": "PartyLifecycleManagementModule",
-    "location": "assets/customer360o/asseco-db-customer360o.umd.min.js"
+    "location": "assets/party-lcm-ui/asseco-party-lcm-ui.umd.min.js"
 }
