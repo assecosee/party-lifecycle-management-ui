@@ -1,0 +1,9 @@
+@if (control && control.touched && control.errors) {
+<div>
+    @for (errorMessage of getErrorMessage(); track $index) {
+    <asee-error class="error-style">
+        <span translate>{{ errorMessage | translate:locale.language }}</span>
+    </asee-error>
+    }
+</div>
+}

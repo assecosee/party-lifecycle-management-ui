@@ -1,0 +1,6 @@
+@if (formGroup){
+    <mat-card-actions class="customer-actions" align="end">
+        <button class="as-mat-footer" [disabled]="formGroup?.invalid || submitDisabled" mat-button color="primary"
+            (click)='submit()'>{{submitButtonName | translate: locale.language}}</button>
+    </mat-card-actions>
+}
