@@ -3,22 +3,28 @@ import { RouterModule, Routes } from '@angular/router';
 import { CaseListComponent } from './components/case/case-list/case-list.component';
 import { CaseOverviewComponent } from './components/case/case-overview/case-overview.component';
 import { BasicDataComponent } from './components/basic-data/basic-data.component';
+import { FinancialDataComponent } from './components/financial-data/financial-data.component';
 
 const routes: Routes = [
-  { path: 'party-lifecycle-management',
+  {
+    path: 'party-lifecycle-management',
     children: [
       { path: 'cases', component: CaseListComponent },
-      { path: 'cases/:caseNumber', component: CaseOverviewComponent }
-    ]
+      { path: 'cases/:caseNumber', component: CaseOverviewComponent },
+    ],
   },
   {
     path: 'tasks/basic-data/:taskId',
-    component: BasicDataComponent 
-  }
+    component: BasicDataComponent,
+  },
+  {
+    path: 'tasks/financial-data/:taskId',
+    component: FinancialDataComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class PartyLifecycleManagementRoutingModule { }
+export class PartyLifecycleManagementRoutingModule {}
