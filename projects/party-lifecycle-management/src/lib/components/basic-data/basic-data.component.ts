@@ -41,7 +41,7 @@ export class BasicDataComponent implements OnInit {
     { key: 'typeOfClient', validators: [Validators.required] },
     { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateTaxNumber()] },
     { key: 'organizationalPartOfCustomer', validators: [] },
-    { key: 'shortNameOfClient', validators: [Validators.required] },,
+    { key: 'shortNameOfClient', validators: [Validators.required] }, ,
     { key: 'countryOfHeadquartersOfficialAddress', validators: [Validators.required] },
     { key: 'countryOfOrigin', validators: [Validators.required] },
     { key: 'subjectTypeInAPR', validators: [] },
@@ -71,7 +71,7 @@ export class BasicDataComponent implements OnInit {
         console.log('Type of Client List:', this.typeOfClientList);
       });
 
-      this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2APRTS", "description")
+    this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2APRTS", "description")
       .subscribe(data => {
         this.typeOfAPRList = data;
         console.log('Type of APR List:', this.typeOfAPRList);
@@ -110,43 +110,43 @@ export class BasicDataComponent implements OnInit {
     }
   }
 
-   extractDateFromIDNumber(idNumber: string) {
+  extractDateFromIDNumber(idNumber: string) {
     // Check if the ID number is valid and has at least 7 digits
     if (idNumber.length < 7) {
-        return;
+      return;
     }
 
     // Extract the first 7 digits
     const datePart = idNumber.substring(0, 7);
-    
+
     // Split the date part into day, month, and year
     const day = datePart.substring(0, 2);
     const month = datePart.substring(2, 4);
     const year = datePart.substring(4, 7);
-    
+
     // Convert the extracted parts to numbers
     const dayNum = parseInt(day, 10);
     const monthNum = parseInt(month, 10);
     const yearNum = parseInt(year, 10);
-    
-    
+
+
     // Assume the year is in the format of 3 digits, so we add 1900
     const fullYear = (yearNum < 900 ? 2000 + yearNum : 1000 + yearNum);
 
     // Create a Date object
     const dateObj = new Date(fullYear, monthNum - 1, dayNum);
-    
+
     // Validate the date
     if (dateObj.getDate() !== dayNum || dateObj.getMonth() !== (monthNum - 1) || dateObj.getFullYear() !== fullYear) {
-        return;
+      return;
     }
 
     // Format the date as dd.mm.yyyy
     const formattedDate = `${day.padStart(2, '0')}.${month.padStart(2, '0')}.${fullYear}`;
     this.formGroup.controls['clientDateOfBirth'].setValue(dateObj);
-    
+
     return dateObj;
-}
+  }
 
 
   private initFormGroup() {
@@ -159,24 +159,29 @@ export class BasicDataComponent implements OnInit {
     const formKeys = this.typeOfClient == "legal" ? this.formKeysLegalEntity : this.formKeysNaturalPerson;
 
     formKeys.forEach(formKey => {
-      if(formKey){
+      if (formKey) {
         let controlValue = this.getFormFieldValue(formKey.key);
         const control = new AseeFormControl(controlValue, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
       }
     });
 
-    if(this.formGroup.controls['registrationNumber'].value && this.typeOfClient == "natural" && !notResidentClient){
+    // On prefill mark control as touched
+    if (this.formGroup.controls['registrationNumber'].value && this.formGroup.controls['registrationNumber'].value != null) {
+      this.formGroup.controls['registrationNumber'].markAsTouched();
+    }
+
+    if (this.formGroup.controls['registrationNumber'].value && this.typeOfClient == "natural" && !notResidentClient) {
       this.formGroup.controls['clientDateOfBirth'].setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value))
     }
 
     this.formGroup.controls['registrationNumber'].valueChanges.subscribe(response => {
-      if(!this.formGroup.controls['registrationNumber'].invalid && this.typeOfClient == "natural"){
+      if (!this.formGroup.controls['registrationNumber'].invalid && this.typeOfClient == "natural") {
         this.formGroup.controls['clientDateOfBirth'].setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value))
       }
     })
 
-    if(this.isRegistration){
+    if (this.isRegistration) {
       this.formGroup.controls['clientActivity'].setValue(true);
     }
 
@@ -189,7 +194,7 @@ export class BasicDataComponent implements OnInit {
       return null;
     }
 
-    for(let i = 0; i < this.formFields.length; i++){
+    for (let i = 0; i < this.formFields.length; i++) {
       if (this.formFields[i].id == formField) {
         return this.formFields[i].data?.value;
       }
