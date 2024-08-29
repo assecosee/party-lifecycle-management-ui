@@ -31,20 +31,7 @@
             startView="month"
             [label]="'lblFinancialDataDate' | translate : locale.language"
             [max]="maxDate"
-            (input)="clearDate($event)"
-          >
-        <ng-template>
-            <asee-autocomplete
-            [control]="formGroup.controls['clientCategory']"
-            [autocompleteList]="clientCategoryList"
-            [label]="'lblClientCategory' | translate : locale.language"
-            filterBehaviour="includes"
-            labelProperty="description"
-            valueProperty="name"
-            (click)="markAsTouched('clientCategory')"
-          ></asee-autocomplete>
-        </ng-template>
-        </asee-datepicker>
+          ></asee-datepicker>
           <error-handling
             [control]="formGroup.controls['financialDataDate']"
           ></error-handling>

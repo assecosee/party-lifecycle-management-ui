@@ -111,10 +111,6 @@ export class FinancialDataComponent implements OnInit {
       }
     });
 
-    this.formGroup.controls['financialDataDate'].valueChanges.subscribe(newValue => {
-      console.log(newValue);
-    });
-
     this.formGroup.controls['grossIncome'].valueChanges.subscribe(newValue => {
       this.setValidatorsConditionally(newValue);
     });
