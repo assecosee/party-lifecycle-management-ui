@@ -25,7 +25,8 @@ export class ErrorHandlingComponent {
     invalidRegistrationNumber: 'Invalid registration number',
     error: 'An error occurred',
     noSlashesAllowed: 'Slash is not allowed',
-    invalidTaxNumber: 'Invalid tax number'
+    invalidTaxNumber: 'Invalid tax number',
+    matDatepickerParse: 'Invalid date format'
   };
 
   constructor(protected injector: Injector){
