@@ -132,7 +132,7 @@
                 <div class="flex-item">
                     <asee-datepicker [control]="formGroup.controls['clientDateOfBirth']"
                         (click)="markAsTouched('clientDateOfBirth')" startView="month"
-                        [label]="'lblClientDateOfBirth' | translate:locale.language"></asee-datepicker>
+                        [label]="'lblClientDateOfBirth' | translate:locale.language" [max]="maxDate"></asee-datepicker>
                     <error-handling [control]="formGroup.controls['clientDateOfBirth']"></error-handling>
                 </div>
             </div>

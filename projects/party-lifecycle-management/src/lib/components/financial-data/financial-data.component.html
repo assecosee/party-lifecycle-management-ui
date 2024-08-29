@@ -44,7 +44,7 @@
             [autocompleteList]="currencyList"
             [label]="'lblCurrency' | translate : locale.language"
             filterBehaviour="includes"
-            labelProperty="name"
+            labelProperty="formatted-name"
             valueProperty="currency-code"
             (click)="markAsTouched('currency')"
           ></asee-autocomplete>
@@ -77,7 +77,9 @@
         <div class="flex-item">
           <asee-text-input
             [control]="formGroup.controls['financialDataChangeOperator']"
-            [label]="'lblFinancialDataChangeOperator' | translate : locale.language"
+            [label]="
+              'lblFinancialDataChangeOperator' | translate : locale.language
+            "
           >
           </asee-text-input>
           <error-handling
@@ -87,7 +89,9 @@
         <div class="flex-item">
           <asee-text-input
             [control]="formGroup.controls['financialDataModificationTime']"
-            [label]="'lblFinancialDataModificationTime' | translate : locale.language"
+            [label]="
+              'lblFinancialDataModificationTime' | translate : locale.language
+            "
           >
           </asee-text-input>
           <error-handling
@@ -95,13 +99,14 @@
           ></error-handling>
         </div>
       </div>
-
+    </mat-card-content>
+    <div class="bottom-end-alignment">
       <customer-actions
         [currentTask]="task"
         submitButtonName="Complete"
         [formGroup]="formGroup"
       >
       </customer-actions>
-    </mat-card-content>
+    </div>
   </mat-card>
 </div>

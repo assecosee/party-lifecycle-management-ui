@@ -55,7 +55,7 @@ export class BasicDataComponent implements OnInit {
   public typeOfAPRList: any = [];
   public isRegistration = false;
   public typeOfClient = "";
-
+  public maxDate = new Date();
 
   constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);

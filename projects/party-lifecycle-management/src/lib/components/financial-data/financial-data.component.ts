@@ -60,6 +60,9 @@ export class FinancialDataComponent implements OnInit {
     this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/reference/currencies", "name")
       .subscribe(data => {
         this.currencyList = data;
+        this.currencyList.map((element : any) => {
+          return element['formatted-name'] = element['name'] + " - " + element['currency-code'] + " (" + element['currency-symbol'] + ")";
+        })
         console.log('Currency List:', this.currencyList);
       });
 
@@ -102,13 +105,10 @@ export class FinancialDataComponent implements OnInit {
     });
 
     this.formGroup.controls['grossIncome'].valueChanges.subscribe(newValue => {
-      console.log('Mijenja se bruto', newValue, this.formGroup.controls['grossIncome'].value, this.formGroup.controls['netIncome'].value);
       this.setValidatorsConditionally(newValue);
     });
 
     this.formGroup.controls['netIncome'].valueChanges.subscribe(newValue => {
-      console.log('Mijenja se neto', newValue, this.formGroup.controls['grossIncome'].value, this.formGroup.controls['netIncome'].value);
-
       this.setValidatorsConditionally(newValue);
     });
 
@@ -117,7 +117,7 @@ export class FinancialDataComponent implements OnInit {
   }
 
   private setValidatorsConditionally(newValue: any) {
-    if (this.formGroup.controls['grossIncome'].value == 0 && this.formGroup.controls['netIncome'].value == 0) {
+    if ((this.formGroup.controls['grossIncome'].value == 0 || this.formGroup.controls['grossIncome'].value == null) && (this.formGroup.controls['netIncome'].value == 0 || this.formGroup.controls['grossIncome'].value == null)) {
       this.formGroup.controls['financialDataDate'].clearValidators();
       this.formGroup.controls['currency'].clearValidators();
     }
