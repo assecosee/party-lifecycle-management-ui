@@ -31,7 +31,20 @@
             startView="month"
             [label]="'lblFinancialDataDate' | translate : locale.language"
             [max]="maxDate"
-          ></asee-datepicker>
+            (input)="clearDate($event)"
+          >
+        <ng-template>
+            <asee-autocomplete
+            [control]="formGroup.controls['clientCategory']"
+            [autocompleteList]="clientCategoryList"
+            [label]="'lblClientCategory' | translate : locale.language"
+            filterBehaviour="includes"
+            labelProperty="description"
+            valueProperty="name"
+            (click)="markAsTouched('clientCategory')"
+          ></asee-autocomplete>
+        </ng-template>
+        </asee-datepicker>
           <error-handling
             [control]="formGroup.controls['financialDataDate']"
           ></error-handling>
@@ -56,6 +69,7 @@
           <asee-decimal-input
             [control]="formGroup.controls['grossIncome']"
             [label]="'lblGrossIncome' | translate : locale.language"
+            [suffix]="chosenCurrency"
           >
           </asee-decimal-input>
           <error-handling
@@ -64,16 +78,6 @@
         </div>
       </div>
       <div class="flex-container pt">
-        <div class="flex-item">
-          <asee-decimal-input
-            [control]="formGroup.controls['netIncome']"
-            [label]="'lblNetIncome' | translate : locale.language"
-          >
-          </asee-decimal-input>
-          <error-handling
-            [control]="formGroup.controls['netIncome']"
-          ></error-handling>
-        </div>
         <div class="flex-item">
           <asee-text-input
             [control]="formGroup.controls['financialDataChangeOperator']"
@@ -86,6 +90,17 @@
             [control]="formGroup.controls['financialDataChangeOperator']"
           ></error-handling>
         </div>
+        <div class="flex-item">
+            <asee-decimal-input
+              [control]="formGroup.controls['netIncome']"
+              [label]="'lblNetIncome' | translate : locale.language"
+              [suffix]="chosenCurrency"
+            >
+            </asee-decimal-input>
+            <error-handling
+              [control]="formGroup.controls['netIncome']"
+            ></error-handling>
+          </div>
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
@@ -100,6 +115,7 @@
             [control]="formGroup.controls['financialDataModificationTime']"
           ></error-handling>
         </div>
+        <div class="flex-item"></div>
       </div>
     </mat-card-content>
     <div class="bottom-end-alignment">

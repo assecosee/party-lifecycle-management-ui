@@ -40,6 +40,7 @@ export class FinancialDataComponent implements OnInit {
   public currencyList: any = [];
   public isRegistration = false;
   public typeOfClient = "";
+  public chosenCurrency = "";
   public maxDate = new Date();
 
 
@@ -60,7 +61,7 @@ export class FinancialDataComponent implements OnInit {
     this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/reference/currencies", "name")
       .subscribe(data => {
         this.currencyList = data;
-        this.currencyList.map((element : any) => {
+        this.currencyList.map((element: any) => {
           return element['formatted-name'] = element['name'] + " - " + element['currency-code'] + " (" + element['currency-symbol'] + ")";
         })
         console.log('Currency List:', this.currencyList);
@@ -104,6 +105,16 @@ export class FinancialDataComponent implements OnInit {
       }
     });
 
+    this.formGroup.controls['currency'].valueChanges.subscribe(newValue => {
+      if (newValue && newValue != null && newValue['currency-symbol']) {
+        this.chosenCurrency = newValue['currency-symbol'];
+      }
+    });
+
+    this.formGroup.controls['financialDataDate'].valueChanges.subscribe(newValue => {
+      console.log(newValue);
+    });
+
     this.formGroup.controls['grossIncome'].valueChanges.subscribe(newValue => {
       this.setValidatorsConditionally(newValue);
     });
@@ -114,6 +125,9 @@ export class FinancialDataComponent implements OnInit {
 
     this.formGroupInitialized = true;
     console.log("Form group: ", this.formGroup);
+  }
+  public clearDate(event: any) {
+    console.log(event);
   }
 
   private setValidatorsConditionally(newValue: any) {
