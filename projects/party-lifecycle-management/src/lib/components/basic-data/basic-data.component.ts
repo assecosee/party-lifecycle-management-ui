@@ -13,6 +13,7 @@ import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/c
 @Component({
   selector: 'lib-basic-data',
   standalone: true,
+  // eslint-disable-next-line max-len
   imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent],
   templateUrl: './basic-data.component.html',
   styleUrl: './basic-data.component.scss'
@@ -20,11 +21,11 @@ import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/c
 export class BasicDataComponent implements OnInit {
 
   public locale: L10nLocale;
-  public taskId: string = "";
+  public taskId = '';
   public task: any;
   public formGroup: FormGroup = new FormGroup({});
   public formFields: FormField[] = [];
-  public formGroupInitialized: boolean = false;
+  public formGroupInitialized = false;
   public formKeysNaturalPerson = [
     { key: 'typeOfClient', validators: [Validators.required] },
     { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateRegNumNaturalPerson()] },
@@ -54,7 +55,7 @@ export class BasicDataComponent implements OnInit {
   public countriesList: any = [];
   public typeOfAPRList: any = [];
   public isRegistration = false;
-  public typeOfClient = "";
+  public typeOfClient = '';
   public maxDate = new Date();
 
   constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService) {
@@ -65,19 +66,19 @@ export class BasicDataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2TIPKM", "description")
+    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2TIPKM', 'description')
       .subscribe(data => {
         this.typeOfClientList = data;
         console.log('Type of Client List:', this.typeOfClientList);
       });
 
-    this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2APRTS", "description")
+    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2APRTS', 'description')
       .subscribe(data => {
         this.typeOfAPRList = data;
         console.log('Type of APR List:', this.typeOfAPRList);
       });
 
-    this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/reference/countries", "name")
+    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/reference/countries', 'name')
       .subscribe(data => {
         this.countriesList = data;
         console.log('Countries List:', this.countriesList);
@@ -93,10 +94,10 @@ export class BasicDataComponent implements OnInit {
   public getTask() {
     this.bpmTaskService.getTask(this.taskId).build().subscribe((task) => {
       this.task = task;
-      console.log("Task data: ", this.task)
+      console.log('Task data: ', this.task);
       this.bpmTaskService.getFormData(this.taskId).build().subscribe((result) => {
         this.formFields = result;
-        console.log("Form data: ", this.formFields);
+        console.log('Form data: ', this.formFields);
         this.initFormGroup();
       });
     });
@@ -151,16 +152,16 @@ export class BasicDataComponent implements OnInit {
 
   private initFormGroup() {
     this.formGroup = new FormGroup({});
-    const registration = this.getFormFieldValue("isRegistrationProcess");
-    const clientType = this.getFormFieldValue("clientType");
-    const notResidentClient = this.getFormFieldValue("notResident");
+    const registration = this.getFormFieldValue('isRegistrationProcess');
+    const clientType = this.getFormFieldValue('clientType');
+    const notResidentClient = this.getFormFieldValue('notResident');
     this.isRegistration = registration == null ? false : registration;
-    this.typeOfClient = clientType == null ? "natural" : clientType;
-    const formKeys = this.typeOfClient == "legal" ? this.formKeysLegalEntity : this.formKeysNaturalPerson;
+    this.typeOfClient = clientType == null ? 'natural' : clientType;
+    const formKeys = this.typeOfClient === 'legal' ? this.formKeysLegalEntity : this.formKeysNaturalPerson;
 
     formKeys.forEach(formKey => {
       if (formKey) {
-        let controlValue = this.getFormFieldValue(formKey.key);
+        const controlValue = this.getFormFieldValue(formKey.key);
         const control = new AseeFormControl(controlValue, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
       }
@@ -171,22 +172,24 @@ export class BasicDataComponent implements OnInit {
       this.formGroup.controls['registrationNumber'].markAsTouched();
     }
 
-    if (this.formGroup.controls['registrationNumber'].value && this.typeOfClient == "natural" && !notResidentClient) {
-      this.formGroup.controls['clientDateOfBirth'].setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value))
+    if (this.formGroup.controls['registrationNumber'].value && this.typeOfClient === 'natural' && !notResidentClient) {
+      this.formGroup.controls['clientDateOfBirth']
+        .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
     }
 
     this.formGroup.controls['registrationNumber'].valueChanges.subscribe(response => {
-      if (!this.formGroup.controls['registrationNumber'].invalid && this.typeOfClient == "natural") {
-        this.formGroup.controls['clientDateOfBirth'].setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value))
+      if (!this.formGroup.controls['registrationNumber'].invalid && this.typeOfClient === 'natural') {
+        this.formGroup.controls['clientDateOfBirth']
+          .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
       }
-    })
+    });
 
     if (this.isRegistration) {
       this.formGroup.controls['clientActivity'].setValue(true);
     }
 
     this.formGroupInitialized = true;
-    console.log("Form group: ", this.formGroup);
+    console.log('Form group: ', this.formGroup);
   }
 
   private getFormFieldValue(formField: string) {
@@ -194,8 +197,9 @@ export class BasicDataComponent implements OnInit {
       return null;
     }
 
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < this.formFields.length; i++) {
-      if (this.formFields[i].id == formField) {
+      if (this.formFields[i].id === formField) {
         return this.formFields[i].data?.value;
       }
     }
@@ -206,11 +210,11 @@ export class BasicDataComponent implements OnInit {
   private getAutocompleteData(url: string, propertyToCheck: string): Observable<any[]> {
     const headers = this.attachHeaders();
     return this.http.get<{ items: any[] }>(url, { headers }).pipe(
-      map((res: { items: any[] }) => {
+      map((res: { items: any[] }) =>
         // Filter out objects where the specified property is null
         // This is must because core autocomplete component breaks if the found property is null
-        return res.items.filter(item => item[propertyToCheck] !== null);
-      })
+         res.items.filter(item => item[propertyToCheck] !== null)
+      )
     );
   }
 
@@ -225,7 +229,7 @@ export class BasicDataComponent implements OnInit {
     this.loaderService.showLoader();
     this.bpmTaskService.complete(this.taskId, this.formGroup).build().subscribe((res) => {
       this.loaderService.stopLoader();
-      console.log("Result after submit: ", res)
+      console.log('Result after submit: ', res);
     });
   }
 

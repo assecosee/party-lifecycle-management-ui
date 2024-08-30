@@ -12,18 +12,19 @@ import { ErrorHandlingComponent } from '../../utils/error-handling/error-handlin
 @Component({
   selector: 'financial-data',
   standalone: true,
-  imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent],
+  imports: [AssecoMaterialModule,
+    L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent],
   templateUrl: './financial-data.component.html',
   styleUrl: './financial-data.component.scss'
 })
 export class FinancialDataComponent implements OnInit {
 
   public locale: L10nLocale;
-  public taskId: string = "";
+  public taskId = '';
   public task: any;
   public formGroup: FormGroup = new FormGroup({});
   public formFields: FormField[] = [];
-  public formGroupInitialized: boolean = false;
+  public formGroupInitialized = false;
   public formKeys = [
     { key: 'clientCategory', validators: [] },
     { key: 'financialDataDate', validators: [] },
@@ -39,8 +40,8 @@ export class FinancialDataComponent implements OnInit {
   public clientCategoryList: any = [];
   public currencyList: any = [];
   public isRegistration = false;
-  public typeOfClient = "";
-  public chosenCurrency = "";
+  public typeOfClient = '';
+  public chosenCurrency = '';
   public maxDate = new Date();
 
 
@@ -52,18 +53,18 @@ export class FinancialDataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2BNKRL", "description")
+    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2BNKRL', 'description')
       .subscribe(data => {
         this.clientCategoryList = data;
         console.log('Client category List:', this.clientCategoryList);
       });
 
-    this.getAutocompleteData("https://apis-dev-aikbg.do.asee.dev/v1/reference/currencies", "name")
+    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/reference/currencies', 'name')
       .subscribe(data => {
         this.currencyList = data;
-        this.currencyList.map((element: any) => {
-          return element['formatted-name'] = element['name'] + " - " + element['currency-code'] + " (" + element['currency-symbol'] + ")";
-        })
+        this.currencyList
+          .map((element: any) =>
+             element['formatted-name'] = element.name + ' - ' + element['currency-code'] + ' (' + element['currency-symbol'] + ')');
         console.log('Currency List:', this.currencyList);
       });
 
@@ -77,10 +78,10 @@ export class FinancialDataComponent implements OnInit {
   public getTask() {
     this.bpmTaskService.getTask(this.taskId).build().subscribe((task) => {
       this.task = task;
-      console.log("Task data: ", this.task)
+      console.log('Task data: ', this.task);
       this.bpmTaskService.getFormData(this.taskId).build().subscribe((result) => {
         this.formFields = result;
-        console.log("Form data: ", this.formFields);
+        console.log('Form data: ', this.formFields);
         this.initFormGroup();
       });
     });
@@ -99,7 +100,7 @@ export class FinancialDataComponent implements OnInit {
 
     this.formKeys.forEach(formKey => {
       if (formKey) {
-        let controlValue = this.getFormFieldValue(formKey.key);
+        const controlValue = this.getFormFieldValue(formKey.key);
         const control = new AseeFormControl(controlValue, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
       }
@@ -120,14 +121,16 @@ export class FinancialDataComponent implements OnInit {
     });
 
     this.formGroupInitialized = true;
-    console.log("Form group: ", this.formGroup);
+    console.log('Form group: ', this.formGroup);
   }
   public clearDate(event: any) {
     console.log(event);
   }
 
   private setValidatorsConditionally(newValue: any) {
-    if ((this.formGroup.controls['grossIncome'].value == 0 || this.formGroup.controls['grossIncome'].value == null) && (this.formGroup.controls['netIncome'].value == 0 || this.formGroup.controls['grossIncome'].value == null)) {
+    if ((this.formGroup.controls['grossIncome'].value === 0 ||
+      this.formGroup.controls['grossIncome'].value == null) &&
+      (this.formGroup.controls['netIncome'].value === 0 || this.formGroup.controls['grossIncome'].value == null)) {
       this.formGroup.controls['financialDataDate'].clearValidators();
       this.formGroup.controls['currency'].clearValidators();
     }
@@ -150,8 +153,9 @@ export class FinancialDataComponent implements OnInit {
       return null;
     }
 
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < this.formFields.length; i++) {
-      if (this.formFields[i].id == formField) {
+      if (this.formFields[i].id === formField) {
         return this.formFields[i].data?.value;
       }
     }
@@ -162,11 +166,11 @@ export class FinancialDataComponent implements OnInit {
   private getAutocompleteData(url: string, propertyToCheck: string): Observable<any[]> {
     const headers = this.attachHeaders();
     return this.http.get<{ items: any[] }>(url, { headers }).pipe(
-      map((res: { items: any[] }) => {
+      map((res: { items: any[] }) =>
         // Filter out objects where the specified property is null
         // This is must because core autocomplete component breaks if the found property is null
-        return res.items.filter(item => item[propertyToCheck] !== null);
-      })
+         res.items.filter(item => item[propertyToCheck] !== null)
+      )
     );
   }
 
@@ -181,7 +185,7 @@ export class FinancialDataComponent implements OnInit {
     this.loaderService.showLoader();
     this.bpmTaskService.complete(this.taskId, this.formGroup).build().subscribe((res) => {
       this.loaderService.stopLoader();
-      console.log("Result after submit: ", res)
+      console.log('Result after submit: ', res);
     });
   }
 

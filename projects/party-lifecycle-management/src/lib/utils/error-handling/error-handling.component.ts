@@ -31,7 +31,6 @@ export class ErrorHandlingComponent {
 
   constructor(protected injector: Injector){
     this.locale = injector.get(L10N_LOCALE);
-    
   }
 
   getErrorMessage(): string[] {

@@ -14,8 +14,8 @@ import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from '
 export class MaterialCustomerActionsComponent implements OnInit {
   @Input() public currentTask: any;
   @Input() public formGroup: any;
-  @Input() public submitDisabled: boolean = false;
-  @Input() public submitButtonName: string = "Continue";
+  @Input() public submitDisabled = false;
+  @Input() public submitButtonName = 'Continue';
   @Output() public onSubmit = new EventEmitter<any>();
   public locale: L10nLocale;
   protected bpmTasksHttpClient: BpmTasksHttpClient;
