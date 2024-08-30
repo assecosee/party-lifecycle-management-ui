@@ -16,36 +16,37 @@ export class ErrorHandlingComponent {
 
   // Error message dictionary
   errorMessages: { [key: string]: string } = {
-    required: 'Field is required',
-    pattern: 'Invalid format',
-    minlength: 'Minimum length for field is',
-    maxlength: 'Maximum length for field is',
-    email: 'You must provide a valid email address',
-    invalid_code: 'Code is invalid',
-    invalidRegistrationNumber: 'Invalid registration number',
-    error: 'An error occurred',
-    noSlashesAllowed: 'Slash is not allowed',
-    invalidTaxNumber: 'Invalid tax number',
-    matDatepickerParse: 'Invalid date format'
+    required: 'errorLblFieldIsRequired',
+    pattern: 'errorLblInvalidFormat',
+    minlength: 'errorLblMinimumLengthForFieldIs',
+    maxlength: 'errorLblMaximumLengthForFieldIs',
+    email: 'errorLblInvalidEmailAddress',
+    invalid_code: 'errorLblCodeIsInvalid',
+    invalidRegistrationNumber: 'errorLblInvalidRegistrationNumber',
+    error: 'errorLblAnErrorOccurred',
+    noSlashesAllowed: 'errorLblSlashNotAllowed',
+    invalidTaxNumber: 'errorLblInvalidTaxNumber',
+    matDatepickerParse: 'errorLblInvalidDateFormat'
   };
 
   constructor(protected injector: Injector){
     this.locale = injector.get(L10N_LOCALE);
   }
 
-  getErrorMessage(): string[] {
+  getErrorMessage(): { key: string, value?: number }[] {
     const errors = this.control?.errors;
     if (!errors) {
       return [];
     }
-
+  
     return Object.keys(errors).map(key => {
       if (key === 'minlength' || key === 'maxlength') {
-        const length = errors[key].requiredLength;
-        return `${this.errorMessages[key]}: ${length}`;
+        const requiredLength = errors[key].requiredLength;
+        return { key: this.errorMessages[key], value: requiredLength };
       }
-
-      return this.errorMessages[key] || 'Invalid field';
+  
+      return { key: this.errorMessages[key] || 'Invalid field', value: null };
     });
   }
+  
 }

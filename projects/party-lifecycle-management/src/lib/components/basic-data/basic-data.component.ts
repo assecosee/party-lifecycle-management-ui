@@ -2,13 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AseeFormControl, AuthService, BpmTasksHttpClient, FormField, LoaderService } from '@asseco/common-ui';
+import { AseeFormControl, AuthService, BpmTasksHttpClient, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { Observable, combineLatest, map } from 'rxjs';
+import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
 import { CustomValidatorsService } from '../../services/custom-validators.service';
-import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
+import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 
 @Component({
   selector: 'lib-basic-data',
@@ -58,7 +58,7 @@ export class BasicDataComponent implements OnInit {
   public typeOfClient = '';
   public maxDate = new Date();
 
-  constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService) {
+  constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService, private envService: EnvironmentService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -66,29 +66,28 @@ export class BasicDataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2TIPKM', 'description')
-      .subscribe(data => {
-        this.typeOfClientList = data;
-        console.log('Type of Client List:', this.typeOfClientList);
-      });
+    const apiVersion = this.bpmTaskService.getApiVersion();
+    const baseUrl = this.envService.baseUrl;
+    // Combine multiple HTTP requests using forkJoin
+    forkJoin({
+      typeOfClientList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2TIPKM`, 'description'),
+      typeOfAPRList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2APRTS`, 'description'),
+      countriesList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/reference/countries`, 'name')
+    }).pipe(
+      tap(response => {
+        // Assign the received data to your component properties
+        this.typeOfClientList = response.typeOfClientList;
+        this.typeOfAPRList = response.typeOfAPRList;
+        this.countriesList = response.countriesList;
+      })
+    ).subscribe();
 
-    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2APRTS', 'description')
-      .subscribe(data => {
-        this.typeOfAPRList = data;
-        console.log('Type of APR List:', this.typeOfAPRList);
+    // Handle ActivatedRoute data as before
+    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
+      .subscribe((params) => {
+        this.taskId = params[0]['taskId'];
+        this.getTask();
       });
-
-    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/reference/countries', 'name')
-      .subscribe(data => {
-        this.countriesList = data;
-        console.log('Countries List:', this.countriesList);
-      });
-
-    const activatedRoute = combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]);
-    activatedRoute.subscribe((params) => {
-      this.taskId = params[0]['taskId'];
-      this.getTask();
-    });
   }
 
   public getTask() {
@@ -213,7 +212,7 @@ export class BasicDataComponent implements OnInit {
       map((res: { items: any[] }) =>
         // Filter out objects where the specified property is null
         // This is must because core autocomplete component breaks if the found property is null
-         res.items.filter(item => item[propertyToCheck] !== null)
+        res.items.filter(item => item[propertyToCheck] !== null)
       )
     );
   }

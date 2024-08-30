@@ -2,10 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AseeFormControl, AuthService, BpmTasksHttpClient, FormField, LoaderService } from '@asseco/common-ui';
+import { AseeFormControl, AuthService, BpmTasksHttpClient, EnvironmentConfig, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { Observable, combineLatest, map } from 'rxjs';
+import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 
@@ -37,6 +37,7 @@ export class FinancialDataComponent implements OnInit {
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
   protected loaderService: LoaderService;
+  protected environmentConfig: EnvironmentConfig;
   public clientCategoryList: any = [];
   public currencyList: any = [];
   public isRegistration = false;
@@ -45,34 +46,39 @@ export class FinancialDataComponent implements OnInit {
   public maxDate = new Date();
 
 
-  constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService) {
+  constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService, private envService: EnvironmentService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
+    this.environmentConfig = injector.get(EnvironmentConfig);
     this.locale = injector.get(L10N_LOCALE);
   }
 
   ngOnInit(): void {
-    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/custom/classification/JK2BNKRL', 'description')
-      .subscribe(data => {
-        this.clientCategoryList = data;
-        console.log('Client category List:', this.clientCategoryList);
-      });
+    const apiVersion = this.bpmTaskService.getApiVersion();
+    const baseUrl = this.envService.baseUrl;
+    // Combine multiple HTTP requests using forkJoin
+    forkJoin({
+      clientCategories: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2BNKRL`, 'description'),
+      currencies: this.getAutocompleteData(`${baseUrl}/${apiVersion}/reference/currencies`, 'name')
+    }).pipe(
+      tap(({ clientCategories, currencies }) => {
+        // Assign the received data to your component properties
+        this.clientCategoryList = clientCategories;
 
-    this.getAutocompleteData('https://apis-dev-aikbg.do.asee.dev/v1/reference/currencies', 'name')
-      .subscribe(data => {
-        this.currencyList = data;
-        this.currencyList
-          .map((element: any) =>
-             element['formatted-name'] = element.name + ' - ' + element['currency-code'] + ' (' + element['currency-symbol'] + ')');
-        console.log('Currency List:', this.currencyList);
-      });
+        this.currencyList = currencies;
+        this.currencyList.map((element: any) =>
+          element['formatted-name'] = `${element.name} - ${element['currency-code']} (${element['currency-symbol']})`
+        );
+      })
+    ).subscribe();
 
-    const activatedRoute = combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]);
-    activatedRoute.subscribe((params) => {
-      this.taskId = params[0]['taskId'];
-      this.getTask();
-    });
+    // Handle ActivatedRoute data as before
+    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
+      .subscribe((params) => {
+        this.taskId = params[0]['taskId'];
+        this.getTask();
+      });
   }
 
   public getTask() {
@@ -169,7 +175,7 @@ export class FinancialDataComponent implements OnInit {
       map((res: { items: any[] }) =>
         // Filter out objects where the specified property is null
         // This is must because core autocomplete component breaks if the found property is null
-         res.items.filter(item => item[propertyToCheck] !== null)
+        res.items.filter(item => item[propertyToCheck] !== null)
       )
     );
   }

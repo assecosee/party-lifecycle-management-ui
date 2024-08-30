@@ -18,6 +18,7 @@
             filterBehaviour="includes"
             labelProperty="description"
             valueProperty="name"
+            appearance="outline"
             (click)="markAsTouched('clientCategory')"
           ></asee-autocomplete>
           <error-handling
@@ -30,6 +31,7 @@
             (click)="markAsTouched('financialDataDate')"
             startView="month"
             [label]="'lblFinancialDataDate' | translate : locale.language"
+            appearance="outline"
             [max]="maxDate"
           ></asee-datepicker>
           <error-handling
@@ -46,6 +48,7 @@
             filterBehaviour="includes"
             labelProperty="formatted-name"
             valueProperty="currency-code"
+            appearance="outline"
             (click)="markAsTouched('currency')"
           ></asee-autocomplete>
           <error-handling
@@ -57,6 +60,7 @@
             [control]="formGroup.controls['grossIncome']"
             [label]="'lblGrossIncome' | translate : locale.language"
             [suffix]="chosenCurrency"
+            appearance="outline"
           >
           </asee-decimal-input>
           <error-handling
@@ -68,6 +72,7 @@
         <div class="flex-item">
           <asee-text-input
             [control]="formGroup.controls['financialDataChangeOperator']"
+            appearance="outline"
             [label]="
               'lblFinancialDataChangeOperator' | translate : locale.language
             "
@@ -79,6 +84,7 @@
         </div>
         <div class="flex-item">
             <asee-decimal-input
+              appearance="outline"
               [control]="formGroup.controls['netIncome']"
               [label]="'lblNetIncome' | translate : locale.language"
               [suffix]="chosenCurrency"
@@ -92,6 +98,7 @@
       <div class="flex-container pt">
         <div class="flex-item">
           <asee-text-input
+            appearance="outline"
             [control]="formGroup.controls['financialDataModificationTime']"
             [label]="
               'lblFinancialDataModificationTime' | translate : locale.language

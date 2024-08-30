@@ -2,7 +2,7 @@
 <div>
     @for (errorMessage of getErrorMessage(); track $index) {
     <asee-error class="error-style">
-        <span translate>{{ errorMessage | translate:locale.language }}</span>
+        <span translate>{{ errorMessage.key | translate:locale.language }}</span> {{errorMessage.value}}
     </asee-error>
     }
 </div>
