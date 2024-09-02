@@ -58,7 +58,12 @@ export class BasicDataComponent implements OnInit {
   public typeOfClient = '';
   public maxDate = new Date();
 
-  constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService, private envService: EnvironmentService) {
+  constructor(
+    protected injector: Injector,
+    protected http: HttpClient,
+    protected authConfig: AuthService,
+    private envService: EnvironmentService)
+  {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);

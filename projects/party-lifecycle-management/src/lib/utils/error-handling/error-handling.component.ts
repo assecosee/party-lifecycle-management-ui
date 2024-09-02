@@ -33,20 +33,20 @@ export class ErrorHandlingComponent {
     this.locale = injector.get(L10N_LOCALE);
   }
 
-  getErrorMessage(): { key: string, value?: number }[] {
+  getErrorMessage(): { key: string; value?: number }[] {
     const errors = this.control?.errors;
     if (!errors) {
       return [];
     }
-  
+
     return Object.keys(errors).map(key => {
       if (key === 'minlength' || key === 'maxlength') {
         const requiredLength = errors[key].requiredLength;
         return { key: this.errorMessages[key], value: requiredLength };
       }
-  
+
       return { key: this.errorMessages[key] || 'Invalid field', value: null };
     });
   }
-  
+
 }
