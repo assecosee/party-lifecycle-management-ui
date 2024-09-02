@@ -12,8 +12,11 @@
       <div class="flex-container">
         <div class="flex-item">
           <asee-autocomplete
+            #clientCategoryAutocomplete
             [control]="formGroup.controls['clientCategory']"
-            [autocompleteList]="clientCategoryList"
+            [autocompleteList]="
+              getFormKeyObjByKeyName('clientCategory').autocomplete
+            "
             [label]="'lblClientCategory' | translate : locale.language"
             filterBehaviour="includes"
             labelProperty="description"
@@ -26,24 +29,29 @@
           ></error-handling>
         </div>
         <div class="flex-item">
+          @if(showDatePicker) {
           <asee-datepicker
-            [control]="formGroup.controls['financialDataDate']"
+            #dateInput
             (click)="markAsTouched('financialDataDate')"
+            [control]="formGroup.controls['financialDataDate']"
             startView="month"
             [label]="'lblFinancialDataDate' | translate : locale.language"
             appearance="outline"
             [max]="maxDate"
+            (input)="clearDateOnEmptyInput()"
           ></asee-datepicker>
           <error-handling
             [control]="formGroup.controls['financialDataDate']"
           ></error-handling>
+          }
         </div>
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
           <asee-autocomplete
+            #currencyAutocomplete
             [control]="formGroup.controls['currency']"
-            [autocompleteList]="currencyList"
+            [autocompleteList]="getFormKeyObjByKeyName('currency').autocomplete"
             [label]="'lblCurrency' | translate : locale.language"
             filterBehaviour="includes"
             labelProperty="formatted-name"
@@ -83,17 +91,17 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-            <asee-decimal-input
-              appearance="outline"
-              [control]="formGroup.controls['netIncome']"
-              [label]="'lblNetIncome' | translate : locale.language"
-              [suffix]="chosenCurrency"
-            >
-            </asee-decimal-input>
-            <error-handling
-              [control]="formGroup.controls['netIncome']"
-            ></error-handling>
-          </div>
+          <asee-decimal-input
+            appearance="outline"
+            [control]="formGroup.controls['netIncome']"
+            [label]="'lblNetIncome' | translate : locale.language"
+            [suffix]="chosenCurrency"
+          >
+          </asee-decimal-input>
+          <error-handling
+            [control]="formGroup.controls['netIncome']"
+          ></error-handling>
+        </div>
       </div>
       <div class="flex-container pt">
         <div class="flex-item">

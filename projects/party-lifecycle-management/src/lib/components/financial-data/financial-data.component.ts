@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AseeFormControl, AuthService, BpmTasksHttpClient, EnvironmentConfig, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
@@ -26,9 +26,9 @@ export class FinancialDataComponent implements OnInit {
   public formFields: FormField[] = [];
   public formGroupInitialized = false;
   public formKeys = [
-    { key: 'clientCategory', validators: [] },
+    { key: 'clientCategory', validators: [], autocomplete: [] },
     { key: 'financialDataDate', validators: [] },
-    { key: 'currency', validators: [] },
+    { key: 'currency', validators: [], autocomplete: [] },
     { key: 'grossIncome', validators: [] },
     { key: 'netIncome', validators: [] },
     { key: 'financialDataChangeOperator', validators: [] },
@@ -43,8 +43,11 @@ export class FinancialDataComponent implements OnInit {
   public isRegistration = false;
   public typeOfClient = '';
   public chosenCurrency = '';
+  public showDatePicker = true;
   public maxDate = new Date();
-
+  @ViewChild('dateInput', { static: false }) dateInput!: any;
+  @ViewChild('clientCategoryAutocomplete', { static: false }) clientCategoryAutocomplete!: any;
+  @ViewChild('currencyAutocomplete', { static: false }) currencyAutocomplete!: any;
 
   constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService, private envService: EnvironmentService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
@@ -63,13 +66,17 @@ export class FinancialDataComponent implements OnInit {
       currencies: this.getAutocompleteData(`${baseUrl}/${apiVersion}/reference/currencies`, 'name')
     }).pipe(
       tap(({ clientCategories, currencies }) => {
-        // Assign the received data to your component properties
-        this.clientCategoryList = clientCategories;
 
-        this.currencyList = currencies;
-        this.currencyList.map((element: any) =>
+        clientCategories.map((element: any) =>
+          element['formatted-name'] = `${element.name})`
+        );
+
+        currencies.map((element: any) =>
           element['formatted-name'] = `${element.name} - ${element['currency-code']} (${element['currency-symbol']})`
         );
+
+        this.setAutocompleteList('clientCategory', clientCategories);
+        this.setAutocompleteList('currency', currencies);
       })
     ).subscribe();
 
@@ -101,12 +108,29 @@ export class FinancialDataComponent implements OnInit {
     }
   }
 
+  public clearDateOnEmptyInput() {
+    let hasErrors = this.formGroup.controls['financialDataDate'].errors != null;
+    let hasParseErrors = this.formGroup.controls['financialDataDate'].errors!['matDatepickerParse'];
+    let isEmptyText = this.formGroup.controls['financialDataDate'].errors!['matDatepickerParse'].text == "";
+
+    // Clear control only when:
+    if (hasErrors && hasParseErrors && isEmptyText) {
+      this.showDatePicker = false;
+      this.formGroup.controls['financialDataDate'].setValue(null);
+      this.formGroup.controls['financialDataDate'].updateValueAndValidity();
+
+      setTimeout(() => {
+        this.showDatePicker = true;
+      }, 0);
+    }
+  }
+
   private initFormGroup() {
     this.formGroup = new FormGroup({});
 
     this.formKeys.forEach(formKey => {
       if (formKey) {
-        const controlValue = this.getFormFieldValue(formKey.key);
+        let controlValue = this.getFormFieldValue(formKey);
         const control = new AseeFormControl(controlValue, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
       }
@@ -126,17 +150,16 @@ export class FinancialDataComponent implements OnInit {
       this.setValidatorsConditionally(newValue);
     });
 
+    this.prefillAutocompleteField(this.clientCategoryAutocomplete, 'clientCategory', this.formGroup.controls['clientCategory'].value)
+    this.prefillAutocompleteField(this.currencyAutocomplete, 'currency', this.formGroup.controls['currency'].value)
+    this.prefillDateField(this.dateInput, this.formGroup.controls['financialDataDate'].value)
+
     this.formGroupInitialized = true;
-    console.log('Form group: ', this.formGroup);
-  }
-  public clearDate(event: any) {
-    console.log(event);
   }
 
   private setValidatorsConditionally(newValue: any) {
-    if ((this.formGroup.controls['grossIncome'].value === 0 ||
-      this.formGroup.controls['grossIncome'].value == null) &&
-      (this.formGroup.controls['netIncome'].value === 0 || this.formGroup.controls['grossIncome'].value == null)) {
+    if (this.formGroup.controls['grossIncome'].value == null || (parseFloat(this.formGroup.controls['grossIncome'].value) === 0) &&
+      (this.formGroup.controls['netIncome'].value == null || (parseFloat(this.formGroup.controls['netIncome'].value) === 0))) {
       this.formGroup.controls['financialDataDate'].clearValidators();
       this.formGroup.controls['currency'].clearValidators();
     }
@@ -154,19 +177,97 @@ export class FinancialDataComponent implements OnInit {
     this.formGroup.controls['currency'].markAsTouched();
   }
 
-  private getFormFieldValue(formField: string) {
+  public getFormKeyObjByKeyName(keyName: string) {
+    for (let i = 0; i < this.formKeys.length; i++) {
+      if (this.formKeys[i].key == keyName) {
+        return this.formKeys[i];
+      }
+    }
+    return null;
+  }
+
+  private prefillDateField(viewChild: any, controlValue: any) {
+    viewChild['controlDate'].setValue(controlValue);
+  }
+
+  private prefillAutocompleteField(viewChild: any, controlName: any, controlValue: any) {
+    const selMatOption = viewChild.autocomplete.options.toArray()
+      .find((o: any) => {
+        return JSON.stringify(o.value) === controlValue
+      });
+
+    // If option found
+    if (selMatOption) {
+      // Select autocomplete option
+      selMatOption?.select();
+
+      // Set view child internal control
+      viewChild.controlInternal.setValue(JSON.parse(controlValue))
+      viewChild.controlInternal.updateValueAndValidity({ emitEvent: true })
+      viewChild.optionSelected.emit(JSON.parse(controlValue))
+
+      // Set form control
+      this.formGroup.controls[controlName].setValue(JSON.parse(controlValue));
+      this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true })
+    }
+
+  }
+
+  private isAutocompleteField(keyName: string) {
+    let keyObj = this.getFormKeyObjByKeyName(keyName);
+
+    if (keyObj == null) {
+      return false;
+    }
+
+    if (keyObj['autocomplete']) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private setAutocompleteList(key: string, autocompleteList: any) {
+    let keyObj = this.getFormKeyObjByKeyName(key);
+
+    if (keyObj == null) {
+      return;
+    }
+
+    keyObj.autocomplete = autocompleteList;
+  }
+
+  private getFormFieldValue(formField: any) {
     if (!formField) {
       return null;
     }
 
     // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < this.formFields.length; i++) {
-      if (this.formFields[i].id === formField) {
+      if (this.formFields[i].id === formField.key) {
         return this.formFields[i].data?.value;
       }
     }
 
     return null;
+  }
+
+  private isJsonStringObject(str: any) {
+    if (typeof str !== "string") {
+      return false;
+    }
+
+    try {
+      const parsed = JSON.parse(str);
+      // Check if parsed value is an object and not null (typeof null is "object")
+      if (typeof parsed === "object" && parsed !== null) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+
+    return false;
   }
 
   private getAutocompleteData(url: string, propertyToCheck: string): Observable<any[]> {
@@ -185,14 +286,6 @@ export class FinancialDataComponent implements OnInit {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Authorization', 'Bearer ' + token);
     return headers;
-  }
-
-  public submit() {
-    this.loaderService.showLoader();
-    this.bpmTaskService.complete(this.taskId, this.formGroup).build().subscribe((res) => {
-      this.loaderService.stopLoader();
-      console.log('Result after submit: ', res);
-    });
   }
 
 }
