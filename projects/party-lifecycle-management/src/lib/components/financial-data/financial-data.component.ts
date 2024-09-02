@@ -1,9 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AseeFormControl, AuthService, BpmTasksHttpClient,
-  EnvironmentConfig, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
+import {
+  AseeFormControl, AuthService, BpmTasksHttpClient,
+  EnvironmentConfig, EnvironmentService, FormField, LoaderService
+} from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
@@ -18,18 +20,17 @@ import { ErrorHandlingComponent } from '../../utils/error-handling/error-handlin
   templateUrl: './financial-data.component.html',
   styleUrl: './financial-data.component.scss'
 })
-export class FinancialDataComponent implements OnInit {
+export class FinancialDataComponent implements OnInit, DoCheck {
 
   public locale: L10nLocale;
   public taskId = '';
   public task: any;
   public formGroup: FormGroup = new FormGroup({});
   public formFields: FormField[] = [];
-  public formGroupInitialized = false;
   public formKeys = [
-    { key: 'clientCategory', validators: [], autocomplete: [] },
+    { key: 'clientCategory', validators: [] },
     { key: 'financialDataDate', validators: [] },
-    { key: 'currency', validators: [], autocomplete: [] },
+    { key: 'currency', validators: [] },
     { key: 'grossIncome', validators: [] },
     { key: 'netIncome', validators: [] },
     { key: 'financialDataChangeOperator', validators: [] },
@@ -46,16 +47,35 @@ export class FinancialDataComponent implements OnInit {
   public chosenCurrency = '';
   public showDatePicker = true;
   public maxDate = new Date();
-  @ViewChild('dateInput', { static: false }) dateInput!: any;
-  @ViewChild('clientCategoryAutocomplete', { static: false }) clientCategoryAutocomplete!: any;
-  @ViewChild('currencyAutocomplete', { static: false }) currencyAutocomplete!: any;
+  // Store references and prefilled flags
+  private controlReferences: { [key: string]: any } = {};
+  private controlPrefilledFlags: { [key: string]: boolean } = {};
+
+  // Generic ViewChild setter method
+  private setControlReference(controlName: string, content: any) {
+    if (content) { // initially setter gets called with undefined
+      this.controlReferences[controlName] = content;
+      this.controlPrefilledFlags[controlName] = false; // Initialize prefilled flag as false
+    }
+  }
+
+  // ViewChild setters
+  @ViewChild('financialDataDatePicker', { static: false }) set financialDataDatePickerSetter(content: any) {
+    this.setControlReference('financialDataDatePicker', content);
+  }
+  @ViewChild('clientCategoryAutocomplete', { static: false }) set clientCategoryAutocompleteSetter(content: any) {
+    this.setControlReference('clientCategoryAutocomplete', content);
+  }
+  @ViewChild('currencyAutocomplete', { static: false }) set currencyAutocompleteSetter(content: any) {
+    this.setControlReference('currencyAutocomplete', content);
+  }
 
   constructor(
     protected injector: Injector,
     protected http: HttpClient,
     protected authConfig: AuthService,
-    private envService: EnvironmentService)
-  {
+    private cdr: ChangeDetectorRef,
+    private envService: EnvironmentService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -81,8 +101,9 @@ export class FinancialDataComponent implements OnInit {
           element['formatted-name'] = `${element.name} - ${element['currency-code']} (${element['currency-symbol']})`
         );
 
-        this.setAutocompleteList('clientCategory', clientCategories);
-        this.setAutocompleteList('currency', currencies);
+        this.currencyList = currencies;
+        this.clientCategoryList = clientCategories;
+
       })
     ).subscribe();
 
@@ -134,14 +155,15 @@ export class FinancialDataComponent implements OnInit {
   private initFormGroup() {
     this.formGroup = new FormGroup({});
 
+    // Create controls
     this.formKeys.forEach(formKey => {
       if (formKey) {
-        let controlValue = this.getFormFieldValue(formKey);
-        const control = new AseeFormControl(controlValue, formKey.validators);
+        const control = new AseeFormControl(null, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
       }
     });
 
+    // Add value change listeners
     this.formGroup.controls['currency'].valueChanges.subscribe(newValue => {
       if (newValue && newValue != null && newValue['currency-symbol']) {
         this.chosenCurrency = newValue['currency-symbol'];
@@ -156,11 +178,14 @@ export class FinancialDataComponent implements OnInit {
       this.setValidatorsConditionally(newValue);
     });
 
-    this.prefillAutocompleteField(this.clientCategoryAutocomplete, 'clientCategory', this.formGroup.controls['clientCategory'].value)
-    this.prefillAutocompleteField(this.currencyAutocomplete, 'currency', this.formGroup.controls['currency'].value)
-    this.prefillDateField(this.dateInput, this.formGroup.controls['financialDataDate'].value)
-
-    this.formGroupInitialized = true;
+    // Initialize controls with values (this is because some logic in control listeners must be triggered)
+    // So this is the reason why creation and initialization are separated
+    this.formKeys.forEach(formKey => {
+      if (formKey) {
+        let controlValue = this.getFormFieldValue(formKey.key);
+        this.formGroup.controls[formKey.key].setValue(controlValue);
+      }
+    });
   }
 
   private setValidatorsConditionally(newValue: any) {
@@ -183,16 +208,67 @@ export class FinancialDataComponent implements OnInit {
     this.formGroup.controls['currency'].markAsTouched();
   }
 
-  public getFormKeyObjByKeyName(keyName: string) {
-    for (let i = 0; i < this.formKeys.length; i++) {
-      if (this.formKeys[i].key == keyName) {
-        return this.formKeys[i];
+  private getFormFieldValue(formField: any) {
+    if (!formField) {
+      return null;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < this.formFields.length; i++) {
+      if (this.formFields[i].id === formField) {
+        return this.formFields[i].data?.value;
       }
     }
+
     return null;
   }
+  private getAutocompleteData(url: string, propertyToCheck: string): Observable<any[]> {
+    const headers = this.attachHeaders();
+    return this.http.get<{ items: any[] }>(url, { headers }).pipe(
+      map((res: { items: any[] }) =>
+        // Filter out objects where the specified property is null
+        // This is must because core autocomplete component breaks if the found property is null
+        res.items.filter(item => item[propertyToCheck] !== null)
+      )
+    );
+  }
 
-  private prefillDateField(viewChild: any, controlValue: any) {
+  private attachHeaders(): HttpHeaders {
+    const token = this.authConfig.getAccessToken();
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Authorization', 'Bearer ' + token);
+    return headers;
+  }
+
+  ngDoCheck() {
+    this.prefillFields([
+      { control: 'financialDataDatePicker', isDate: true, field: 'financialDataDate' },
+      { control: 'currencyAutocomplete', list: 'currencyList', field: 'currency' },
+      { control: 'clientCategoryAutocomplete', list: 'clientCategoryList', field: 'clientCategory' },
+    ]);
+  }
+  private prefillFields(configs: Array<{ control: string, list?: string, field?: string, isDate?: boolean }>) {
+    configs.forEach(config => {
+      const { control, list, field, isDate } = config;
+
+      // Skip if already prefilled
+      if (this.controlPrefilledFlags[control]) return;
+
+      // Check if control exists and list (if applicable) has items
+      if ((this.controlReferences as any)[control] && (!list || ((this as any)[list] as any[]).length > 0) && this.formFields.length > 0) {
+        if (isDate) {
+          // Set value for date picker
+          this.prefillDatePickerField((this.controlReferences as any)[control], this.getFormFieldValue(field!))
+        } else {
+          // Set value for autocomplete field
+          this.prefillAutocompleteField((this.controlReferences as any)[control], field!, this.getFormFieldValue(field!));
+        }
+        this.controlPrefilledFlags[control] = true;  // Mark as prefilled
+      }
+    });
+  }
+
+  private prefillDatePickerField(viewChild: any, controlValue: any) {
     viewChild['controlDate'].setValue(controlValue);
   }
 
@@ -217,81 +293,6 @@ export class FinancialDataComponent implements OnInit {
       this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true })
     }
 
-  }
-
-  private isAutocompleteField(keyName: string) {
-    let keyObj = this.getFormKeyObjByKeyName(keyName);
-
-    if (keyObj == null) {
-      return false;
-    }
-
-    if (keyObj['autocomplete']) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private setAutocompleteList(key: string, autocompleteList: any) {
-    let keyObj = this.getFormKeyObjByKeyName(key);
-
-    if (keyObj == null) {
-      return;
-    }
-
-    keyObj.autocomplete = autocompleteList;
-  }
-
-  private getFormFieldValue(formField: any) {
-    if (!formField) {
-      return null;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    for (let i = 0; i < this.formFields.length; i++) {
-      if (this.formFields[i].id === formField.key) {
-        return this.formFields[i].data?.value;
-      }
-    }
-
-    return null;
-  }
-
-  private isJsonStringObject(str: any) {
-    if (typeof str !== "string") {
-      return false;
-    }
-
-    try {
-      const parsed = JSON.parse(str);
-      // Check if parsed value is an object and not null (typeof null is "object")
-      if (typeof parsed === "object" && parsed !== null) {
-        return true;
-      }
-    } catch (e) {
-      return false;
-    }
-
-    return false;
-  }
-
-  private getAutocompleteData(url: string, propertyToCheck: string): Observable<any[]> {
-    const headers = this.attachHeaders();
-    return this.http.get<{ items: any[] }>(url, { headers }).pipe(
-      map((res: { items: any[] }) =>
-        // Filter out objects where the specified property is null
-        // This is must because core autocomplete component breaks if the found property is null
-        res.items.filter(item => item[propertyToCheck] !== null)
-      )
-    );
-  }
-
-  private attachHeaders(): HttpHeaders {
-    const token = this.authConfig.getAccessToken();
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Authorization', 'Bearer ' + token);
-    return headers;
   }
 
 }

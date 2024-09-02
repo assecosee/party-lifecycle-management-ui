@@ -14,9 +14,7 @@
           <asee-autocomplete
             #clientCategoryAutocomplete
             [control]="formGroup.controls['clientCategory']"
-            [autocompleteList]="
-              getFormKeyObjByKeyName('clientCategory').autocomplete
-            "
+            [autocompleteList]="clientCategoryList"
             [label]="'lblClientCategory' | translate : locale.language"
             filterBehaviour="includes"
             labelProperty="description"
@@ -31,7 +29,7 @@
         <div class="flex-item">
           @if(showDatePicker) {
           <asee-datepicker
-            #dateInput
+            #financialDataDatePicker
             (click)="markAsTouched('financialDataDate')"
             [control]="formGroup.controls['financialDataDate']"
             startView="month"
@@ -51,7 +49,7 @@
           <asee-autocomplete
             #currencyAutocomplete
             [control]="formGroup.controls['currency']"
-            [autocompleteList]="getFormKeyObjByKeyName('currency').autocomplete"
+            [autocompleteList]="currencyList"
             [label]="'lblCurrency' | translate : locale.language"
             filterBehaviour="includes"
             labelProperty="formatted-name"
