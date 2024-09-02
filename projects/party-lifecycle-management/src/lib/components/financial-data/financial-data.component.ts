@@ -2,7 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AseeFormControl, AuthService, BpmTasksHttpClient, EnvironmentConfig, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
+import { AseeFormControl, AuthService, BpmTasksHttpClient,
+  EnvironmentConfig, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
@@ -46,7 +47,12 @@ export class FinancialDataComponent implements OnInit {
   public maxDate = new Date();
 
 
-  constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService, private envService: EnvironmentService) {
+  constructor(
+    protected injector: Injector,
+    protected http: HttpClient,
+    protected authConfig: AuthService,
+    private envService: EnvironmentService)
+  {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);

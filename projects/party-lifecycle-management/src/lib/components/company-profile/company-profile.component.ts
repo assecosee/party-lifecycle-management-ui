@@ -12,7 +12,12 @@ import { ErrorHandlingComponent } from '../../utils/error-handling/error-handlin
 @Component({
   selector: 'lib-company-profile',
   standalone: true,
-  imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent],
+  imports: [
+    AssecoMaterialModule,
+    L10nTranslationModule,
+    L10nIntlModule, MaterialModule,
+    ErrorHandlingComponent,
+    MaterialCustomerActionsComponent],
   templateUrl: './company-profile.component.html',
   styleUrl: './company-profile.component.scss'
 })
@@ -52,7 +57,12 @@ export class CompanyProfileComponent implements OnInit {
   protected bpmTaskService: BpmTasksHttpClient;
   protected loaderService: LoaderService;
 
-  constructor(protected injector: Injector, protected http: HttpClient, protected authConfig: AuthService, private envService: EnvironmentService) {
+  constructor(
+    protected injector: Injector,
+    protected http: HttpClient,
+    protected authConfig: AuthService,
+    private envService: EnvironmentService)
+  {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -63,7 +73,7 @@ export class CompanyProfileComponent implements OnInit {
     // Combine multiple HTTP requests using forkJoin
     const apiVersion = this.bpmTaskService.getApiVersion();
     const baseUrl = this.envService.baseUrl;
-    console.log('base', baseUrl)
+    console.log('base', baseUrl);
 
     forkJoin({
       activityCodeList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/DELATNOS`, 'name'),
