@@ -74,7 +74,7 @@ export class FinancialDataComponent implements OnInit {
       tap(({ clientCategories, currencies }) => {
 
         clientCategories.map((element: any) =>
-          element['formatted-name'] = `${element.name})`
+          element['formatted-name'] = `${element.name}`
         );
 
         currencies.map((element: any) =>
