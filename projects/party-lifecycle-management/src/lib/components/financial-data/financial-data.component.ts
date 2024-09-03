@@ -136,9 +136,9 @@ export class FinancialDataComponent implements OnInit, DoCheck {
   }
 
   public clearDateOnEmptyInput() {
-    let hasErrors = this.formGroup.controls['financialDataDate'].errors != null;
-    let hasParseErrors = this.formGroup.controls['financialDataDate'].errors!['matDatepickerParse'];
-    let isEmptyText = this.formGroup.controls['financialDataDate'].errors!['matDatepickerParse'].text == "";
+    const hasErrors = this.formGroup.controls['financialDataDate'].errors != null;
+    const hasParseErrors = this.formGroup.controls['financialDataDate'].hasError('matDatepickerParse');
+    const isEmptyText = this.formGroup.controls['financialDataDate'].errors?.['matDatepickerParse'].text === '';
 
     // Clear control only when:
     if (hasErrors && hasParseErrors && isEmptyText) {
@@ -182,7 +182,7 @@ export class FinancialDataComponent implements OnInit, DoCheck {
     // So this is the reason why creation and initialization are separated
     this.formKeys.forEach(formKey => {
       if (formKey) {
-        let controlValue = this.getFormFieldValue(formKey.key);
+        const controlValue = this.getFormFieldValue(formKey.key);
         this.formGroup.controls[formKey.key].setValue(controlValue);
       }
     });
@@ -247,21 +247,21 @@ export class FinancialDataComponent implements OnInit, DoCheck {
       { control: 'clientCategoryAutocomplete', list: 'clientCategoryList', field: 'clientCategory' },
     ]);
   }
-  private prefillFields(configs: Array<{ control: string, list?: string, field?: string, isDate?: boolean }>) {
+  private prefillFields(configs: Array<{ control: string; list?: string; field?: string; isDate?: boolean }>) {
     configs.forEach(config => {
       const { control, list, field, isDate } = config;
 
       // Skip if already prefilled
-      if (this.controlPrefilledFlags[control]) return;
+      if (this.controlPrefilledFlags[control]) {return;}
 
       // Check if control exists and list (if applicable) has items
       if ((this.controlReferences as any)[control] && (!list || ((this as any)[list] as any[]).length > 0) && this.formFields.length > 0) {
         if (isDate) {
           // Set value for date picker
-          this.prefillDatePickerField((this.controlReferences as any)[control], this.getFormFieldValue(field!))
+          this.prefillDatePickerField((this.controlReferences as any)[control], this.getFormFieldValue(field));
         } else {
           // Set value for autocomplete field
-          this.prefillAutocompleteField((this.controlReferences as any)[control], field!, this.getFormFieldValue(field!));
+          this.prefillAutocompleteField((this.controlReferences as any)[control], field, this.getFormFieldValue(field));
         }
         this.controlPrefilledFlags[control] = true;  // Mark as prefilled
       }
@@ -269,14 +269,12 @@ export class FinancialDataComponent implements OnInit, DoCheck {
   }
 
   private prefillDatePickerField(viewChild: any, controlValue: any) {
-    viewChild['controlDate'].setValue(controlValue);
+    viewChild.controlDate.setValue(controlValue);
   }
 
   private prefillAutocompleteField(viewChild: any, controlName: any, controlValue: any) {
     const selMatOption = viewChild.autocomplete.options.toArray()
-      .find((o: any) => {
-        return JSON.stringify(o.value) === controlValue
-      });
+      .find((o: any) => JSON.stringify(o.value) === controlValue);
 
     // If option found
     if (selMatOption) {
@@ -284,13 +282,13 @@ export class FinancialDataComponent implements OnInit, DoCheck {
       selMatOption?.select();
 
       // Set view child internal control
-      viewChild.controlInternal.setValue(JSON.parse(controlValue))
-      viewChild.controlInternal.updateValueAndValidity({ emitEvent: true })
-      viewChild.optionSelected.emit(JSON.parse(controlValue))
+      viewChild.controlInternal.setValue(JSON.parse(controlValue));
+      viewChild.controlInternal.updateValueAndValidity({ emitEvent: true });
+      viewChild.optionSelected.emit(JSON.parse(controlValue));
 
       // Set form control
       this.formGroup.controls[controlName].setValue(JSON.parse(controlValue));
-      this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true })
+      this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true });
     }
 
   }
