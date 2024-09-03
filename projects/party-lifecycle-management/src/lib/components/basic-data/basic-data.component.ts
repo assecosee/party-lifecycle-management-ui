@@ -1,11 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AseeFormControl, AuthService, BpmTasksHttpClient, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { Observable, combineLatest, distinctUntilChanged, forkJoin, map, tap } from 'rxjs';
+import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
 import { CustomValidatorsService } from '../../services/custom-validators.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
@@ -195,15 +195,16 @@ export class BasicDataComponent implements OnInit, DoCheck {
 
   private initFormGroup() {
     this.formGroupInitialized = false;
+
     this.formGroup = new FormGroup({});
-    console.log(JSON.parse(JSON.stringify(this.formGroup)))
+    // this.typeOfClientControl.setValue(JSON.parse(this.getFormFieldValue('typeOfClient')))
     this.formGroup.addControl("typeOfClient", this.typeOfClientControl);
+
     const registration = this.getFormFieldValue('isRegistrationProcess');
     const notResidentClient = this.getFormFieldValue('notResident');
     this.isRegistration = registration == null ? false : registration;
     const formKeys = this.typeOfClientControl.value && this.typeOfClientControl.value['value'] == 1 ? this.formKeysLegalEntity : this.formKeysNaturalPerson;
 
-    console.log()
     // Create controls
     formKeys.forEach(formKey => {
       if (formKey) {
@@ -222,12 +223,12 @@ export class BasicDataComponent implements OnInit, DoCheck {
         .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
     }
 
-    // this.formGroup.controls['registrationNumber'].valueChanges.subscribe(response => {
-    //   if (!this.formGroup.controls['registrationNumber'].invalid && this.isIndividualPerson == 0) {
-    //     this.formGroup.controls['clientDateOfBirth']
-    //       .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
-    //   }
-    // });
+    this.formGroup.controls['registrationNumber'].valueChanges.subscribe(response => {
+      if (!this.formGroup.controls['registrationNumber'].invalid && this.isIndividualPerson == 0) {
+        this.formGroup.controls['clientDateOfBirth']
+          .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
+      }
+    });
 
     if (this.isRegistration) {
       this.formGroup.controls['clientActivity'].setValue(true);
@@ -248,24 +249,19 @@ export class BasicDataComponent implements OnInit, DoCheck {
     // So this is the reason why creation and initialization are separated
     formKeys.forEach(formKey => {
       if (formKey) {
-        let controlValue = this.getFormFieldValue(formKey.key);
+        let controlValue = null;
+        try {
+          controlValue = JSON.parse(this.getFormFieldValue(formKey.key));
+        } catch (e) {
+          controlValue = this.getFormFieldValue(formKey.key);
+        }
         this.formGroup.controls[formKey.key].setValue(controlValue);
+        this.formGroup.controls[formKey.key].updateValueAndValidity();
       }
     });
 
     this.formGroupInitialized = true;
     console.log('Form group: ', this.formGroup);
-  }
-
-  test(event: any) {
-    if(event){
-      // Object.keys(this.formGroup.controls).forEach(control => {
-      //   this.formGroup.removeControl(control);
-      // })
-      // console.log('reset groupe',this.formGroup)
-      // this.initFormGroup()
-    }
-
   }
 
   private getFormFieldValue(formField: string) {
@@ -316,17 +312,9 @@ export class BasicDataComponent implements OnInit, DoCheck {
   }
 
   ngDoCheck() {
-    this.prefillFields([
-      { control: 'clientDateOfBirthPicker', isDate: true, field: 'clientDateOfBirth' },
-      { control: 'subjectTypeInAPRAutocomplete', list: 'typeOfAPRList', field: 'subjectTypeInAPR' },
-      { control: 'countryOfOriginAutocomplete', list: 'countriesList', field: 'countryOfOrigin' },
-      { control: 'countryOfficialAddressAutocomplete', list: 'countriesList', field: 'countryOfficialAddress' },
-      { control: 'clientCitizenshipAutocomplete', list: 'countriesList', field: 'clientCitizenship' },
-      { control: 'clientCountryOfBirthAutocomplete', list: 'countriesList', field: 'clientCountryOfBirth' },
-      { control: 'countryOfHqOfficialAddressAutocomplete', list: 'countriesList', field: 'countryOfHeadquartersOfficialAddress' },
-      { control: 'typeOfClientAutocomplete', list: 'typeOfClientList', field: 'typeOfClient' },
-    ]);
-    if(this.typeOfClientControl && this.typeOfClientControl.value && this.previousValue != this.typeOfClientControl.value['value']){
+    this.prefillFields([{ control: 'typeOfClientAutocomplete', list: 'typeOfClientList', field: 'typeOfClient' },]);
+
+    if (this.typeOfClientControl && this.typeOfClientControl.value && this.previousValue != this.typeOfClientControl.value['value']) {
       this.previousValue = this.typeOfClientControl.value['value'];
       this.initFormGroup();
     }
@@ -362,7 +350,6 @@ export class BasicDataComponent implements OnInit, DoCheck {
   }
 
   private prefillAutocompleteField(viewChild: any, controlName: any, controlValue: any, autocompleteName: any) {
-    console.log(this.controlPrefilledFlags)
     const selMatOption = viewChild.autocomplete.options.toArray()
       .find((o: any) => {
         return JSON.stringify(o.value) === controlValue
