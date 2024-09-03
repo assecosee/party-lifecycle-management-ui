@@ -56,7 +56,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public typeOfAPRList: any = [];
   public isRegistration = false;
   public maxDate = new Date();
-  public showClientDateOfBirthPicker: boolean = true;
+  public showClientDateOfBirthPicker = true;
   // Store references and prefilled flags
   constructor(
     protected injector: Injector,
@@ -164,7 +164,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
     const notResidentClient = this.getFormFieldValue('notResident');
     const registration = this.getFormFieldValue('isRegistrationProcess');
     this.isRegistration = registration == null ? false : registration;
-    const formKeys = this.formGroup.controls['typeOfClient'].value && this.formGroup.controls['typeOfClient'].value['value'] == 1 ? this.formKeysLegalEntity : this.formKeysNaturalPerson;
+    const formKeys = this.formGroup.controls['typeOfClient'].value &&
+    this.formGroup.controls['typeOfClient'].value.value === 1
+      ? this.formKeysLegalEntity
+      : this.formKeysNaturalPerson;
 
     // Create controls
     formKeys.forEach(formKey => {
@@ -179,13 +182,13 @@ export class BasicDataComponent implements OnInit, DoCheck {
       this.formGroup.controls['registrationNumber'].markAsTouched();
     }
 
-    if (this.formGroup.controls['registrationNumber'].value && this.isIndividualPerson == 0 && !notResidentClient) {
+    if (this.formGroup.controls['registrationNumber'].value && this.isIndividualPerson === 0 && !notResidentClient) {
       this.formGroup.controls['clientDateOfBirth']
         .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
     }
 
     this.formGroup.controls['registrationNumber'].valueChanges.subscribe(response => {
-      if (!this.formGroup.controls['registrationNumber'].invalid && this.isIndividualPerson == 0) {
+      if (!this.formGroup.controls['registrationNumber'].invalid && this.isIndividualPerson === 0) {
         this.formGroup.controls['clientDateOfBirth']
           .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
       }
@@ -259,8 +262,12 @@ export class BasicDataComponent implements OnInit, DoCheck {
   }
 
   ngDoCheck() {
-    if (this.formGroup.controls['typeOfClient'] && this.formGroup.controls['typeOfClient'].value && this.previousValue != this.formGroup.controls['typeOfClient'].value['value']) {
-      this.previousValue = this.formGroup.controls['typeOfClient'].value['value'];
+    if (
+      this.formGroup.controls['typeOfClient'] &&
+      this.formGroup.controls['typeOfClient'].value &&
+      this.previousValue !== this.formGroup.controls['typeOfClient'].value.value
+    ) {
+      this.previousValue = this.formGroup.controls['typeOfClient'].value.value;
       this.initFormGroup();
     }
   }
