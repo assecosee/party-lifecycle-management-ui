@@ -53,6 +53,56 @@ export class CustomValidatorsService {
     };
   }
 
+  // Validator to allow only characters (letters) in any text input
+  static onlyCharactersAllowed(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      // If the value is empty, return null (no error)
+      if (!value) {
+        return null;
+      }
+
+      // Ensure the value is a string before checking the format
+      const stringValue = String(value);
+
+      // Regex pattern to match only letters (both uppercase and lowercase)
+      const onlyCharactersPattern = /^[A-Za-z\s]+$/;
+
+      // If the string does not match the pattern, return an error
+      if (!onlyCharactersPattern.test(stringValue)) {
+        return { onlyCharactersAllowed: true };
+      }
+
+      return null; // No error
+    };
+  }
+
+  // Validator to allow only letters, spaces, and hyphens in any text input
+  static onlyCharactersSpacesAndHyphensAllowed(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      // If the value is empty, return null (no error)
+      if (!value) {
+        return null;
+      }
+
+      // Ensure the value is a string before checking the format
+      const stringValue = String(value);
+
+      // Regex pattern to match only letters (both uppercase and lowercase), spaces, and hyphens
+      const onlyCharactersPattern = /^[A-Za-z\s-]+$/;
+
+      // If the string does not match the pattern, return an error
+      if (!onlyCharactersPattern.test(stringValue)) {
+        return { onlyCharactersSpacesAndHyphensAllowed: true };
+      }
+
+      return null; // No error
+    };
+  }
+
   // Validator to disallow slashes in any text input
   static validateRegNumIndividualPerson(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {

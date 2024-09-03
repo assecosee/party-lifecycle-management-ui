@@ -26,7 +26,9 @@ export class ErrorHandlingComponent {
     error: 'errorLblAnErrorOccurred',
     noSlashesAllowed: 'errorLblSlashNotAllowed',
     invalidTaxNumber: 'errorLblInvalidTaxNumber',
-    matDatepickerParse: 'errorLblInvalidDateFormat'
+    matDatepickerParse: 'errorLblInvalidDateFormat',
+    onlyCharactersAllowed: 'errorLblOnlyCharactersAllowed',
+    onlyCharactersSpacesAndHyphensAllowed: 'errorLblOnlyCharactersSpacesAndHyphensAllowed'
   };
 
   constructor(protected injector: Injector){

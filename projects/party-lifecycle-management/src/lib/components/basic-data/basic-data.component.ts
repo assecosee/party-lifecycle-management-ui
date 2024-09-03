@@ -30,24 +30,85 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public previousValue = null;
   public isIndividualPerson = -1;
   public formKeysIndividualPerson = [
-    { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateRegNumIndividualPerson()] },
-    { key: 'clientName', validators: [Validators.required] },
-    { key: 'parentName', validators: [Validators.required, CustomValidatorsService.noSlashesAllowed()] },
-    { key: 'clientLastName', validators: [Validators.required] },
-    { key: 'countryOfficialAddress', validators: [Validators.required] },
-    { key: 'clientCitizenship', validators: [Validators.required] },
-    { key: 'clientDateOfBirth', validators: [Validators.required] },
-    { key: 'clientCountryOfBirth', validators: [Validators.required] },
-    { key: 'clientActivity', validators: [] },
+    {
+      key: 'registrationNumber',
+      validators: [
+        Validators.required,
+        CustomValidatorsService.validateRegNumIndividualPerson()]
+    },
+    {
+      key: 'clientName',
+      validators: [
+        Validators.required,
+        CustomValidatorsService.onlyCharactersSpacesAndHyphensAllowed()]
+    },
+    {
+      key: 'parentName',
+      validators: [
+        Validators.required,
+        CustomValidatorsService.noSlashesAllowed(),
+        CustomValidatorsService.onlyCharactersAllowed()]
+    },
+    {
+      key: 'clientLastName',
+      validators: [
+        Validators.required,
+        CustomValidatorsService.onlyCharactersSpacesAndHyphensAllowed()
+      ]
+    },
+    {
+      key: 'countryOfficialAddress',
+      validators: [Validators.required]
+    },
+    {
+      key: 'clientCitizenship',
+      validators: [Validators.required]
+    },
+    {
+      key: 'clientDateOfBirth',
+      validators: [Validators.required]
+    },
+    {
+      key: 'clientCountryOfBirth',
+      validators: [Validators.required]
+    },
+    {
+      key: 'clientActivity',
+      validators: []
+    },
   ];
   public formKeysLegalEntity = [
-    { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateRegNumLegalEntity()] },
-    { key: 'organizationalPartOfCustomer', validators: [] },
-    { key: 'shortNameOfClient', validators: [Validators.required] }, ,
-    { key: 'countryOfHeadquartersOfficialAddress', validators: [Validators.required] },
-    { key: 'countryOfOrigin', validators: [Validators.required] },
-    { key: 'subjectTypeInAPR', validators: [] },
-    { key: 'clientActivity', validators: [] },
+    {
+      key: 'registrationNumber',
+      validators:
+        [
+          Validators.required,
+          CustomValidatorsService.validateRegNumLegalEntity()]
+    },
+    {
+      key: 'organizationalPartOfCustomer',
+      validators: []
+    },
+    {
+      key: 'shortNameOfClient',
+      validators: [Validators.required]
+    }, ,
+    {
+      key: 'countryOfHeadquartersOfficialAddress',
+      validators: [Validators.required]
+    },
+    {
+      key: 'countryOfOrigin',
+      validators: [Validators.required]
+    },
+    {
+      key: 'subjectTypeInAPR',
+      validators: []
+    },
+    {
+      key: 'clientActivity',
+      validators: []
+    },
   ];
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
@@ -57,7 +118,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public typeOfAPRList: any = [];
   public isRegistration = false;
   public maxDate = new Date();
-  public showClientDateOfBirthPicker: boolean = true;
+  public showClientDateOfBirthPicker = true;
   // Store references and prefilled flags
   constructor(
     protected injector: Injector,
@@ -170,7 +231,8 @@ export class BasicDataComponent implements OnInit, DoCheck {
     const notResidentClient = this.getFormFieldValue('notResident');
     const registration = this.getFormFieldValue('isRegistrationProcess');
     this.isRegistration = registration == null ? false : registration;
-    const formKeys = this.formGroup.controls['typeOfClient'].value && this.formGroup.controls['typeOfClient'].value['value'] == 1 ? this.formKeysLegalEntity : this.formKeysIndividualPerson;
+    const formKeys = this.formGroup.controls['typeOfClient'].value
+      && this.formGroup.controls['typeOfClient'].value.value === '1' ? this.formKeysLegalEntity : this.formKeysIndividualPerson;
 
     // Create controls
     formKeys.forEach(formKey => {
@@ -186,15 +248,21 @@ export class BasicDataComponent implements OnInit, DoCheck {
       this.formGroup.controls['registrationNumber'].markAsTouched();
     }
 
-    if (this.formGroup.controls['registrationNumber'].value && this.isIndividualPerson == 0 && !notResidentClient) {
+    if (this.formGroup.controls['registrationNumber'].value
+      && this.formGroup.controls['typeOfClient'].value
+      && this.formGroup.controls['typeOfClient'].value.value === '0'
+      && !notResidentClient) {
       this.formGroup.controls['clientDateOfBirth']
-        .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
+        .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value.toString()));
     }
 
     this.formGroup.controls['registrationNumber'].valueChanges.subscribe(response => {
-      if (!this.formGroup.controls['registrationNumber'].invalid && this.isIndividualPerson == 0) {
+      if (this.formGroup.controls['registrationNumber'].value
+      && this.formGroup.controls['registrationNumber'].valid
+      && this.formGroup.controls['typeOfClient'].value
+      && this.formGroup.controls['typeOfClient'].value.value === '0') {
         this.formGroup.controls['clientDateOfBirth']
-          .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
+          .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value.toString()));
       }
     });
 
@@ -209,17 +277,6 @@ export class BasicDataComponent implements OnInit, DoCheck {
 
     if (this.isRegistration) {
       this.formGroup.controls['clientActivity'].setValue(true);
-    }
-
-    if (notResidentClient) {
-      // const country = this.findItemByProperty(this.countriesList, "name", "REPUBLIKA SRBIJA");
-      // console.log("nasao", country)
-      // this.formGroup.controls['countryOfficialAddress'].setValue(country);
-      // this.formGroup.controls['clientCitizenship'].setValue(country);
-      // this.formGroup.controls['countryOfficialAddress'].updateValueAndValidity();
-      // console.log("ref", this.controlReferences['clientCitizenshipAutocomplete'])
-      // console.log("conuty",this.formGroup.controls['countryOfficialAddress'])
-      // console.log("conuty",this.formGroup.controls['clientCitizenship'])
     }
 
     // Initialize controls with values (this is because some logic in control listeners must be triggered)
@@ -276,8 +333,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
   }
 
   ngDoCheck() {
-    if (this.formGroup.controls['typeOfClient'] && this.formGroup.controls['typeOfClient'].value && this.previousValue != this.formGroup.controls['typeOfClient'].value['value']) {
-      this.previousValue = this.formGroup.controls['typeOfClient'].value['value'];
+    if (this.formGroup.controls['typeOfClient']
+      && this.formGroup.controls['typeOfClient'].value
+      && this.previousValue !== this.formGroup.controls['typeOfClient'].value.value) {
+      this.previousValue = this.formGroup.controls['typeOfClient'].value.value;
       this.initFormGroup(false);
     }
   }

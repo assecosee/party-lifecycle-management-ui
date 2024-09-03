@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -11,16 +11,17 @@ import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from '
 import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 
 @Component({
   selector: 'financial-data',
   standalone: true,
   imports: [AssecoMaterialModule,
-    L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent],
+    L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent, UppercaseDirective],
   templateUrl: './financial-data.component.html',
   styleUrl: './financial-data.component.scss'
 })
-export class FinancialDataComponent implements OnInit, DoCheck {
+export class FinancialDataComponent implements OnInit {
 
   public locale: L10nLocale;
   public taskId = '';
@@ -47,9 +48,11 @@ export class FinancialDataComponent implements OnInit, DoCheck {
   public chosenCurrency = '';
   public showDatePicker = true;
   public maxDate = new Date();
+  public formGroupInitialized = false;
   // Store references and prefilled flags
   private controlReferences: { [key: string]: any } = {};
   private controlPrefilledFlags: { [key: string]: boolean } = {};
+
 
   // Generic ViewChild setter method
   private setControlReference(controlName: string, content: any) {
@@ -136,9 +139,14 @@ export class FinancialDataComponent implements OnInit, DoCheck {
   }
 
   public clearDateOnEmptyInput() {
-    let hasErrors = this.formGroup.controls['financialDataDate'].errors != null;
-    let hasParseErrors = this.formGroup.controls['financialDataDate'].errors!['matDatepickerParse'];
-    let isEmptyText = this.formGroup.controls['financialDataDate'].errors!['matDatepickerParse'].text == "";
+    const hasErrors = this.formGroup.controls['financialDataDate'].errors !== null;
+    let hasParseErrors = false;
+    let isEmptyText = false;
+
+    if(this.formGroup.controls['financialDataDate'].errors && this.formGroup.controls['financialDataDate'].errors['matDatepickerParse']){
+      hasParseErrors = this.formGroup.controls['financialDataDate'].errors['matDatepickerParse'];
+      isEmptyText = this.formGroup.controls['financialDataDate'].errors['matDatepickerParse'].text === '';
+    }
 
     // Clear control only when:
     if (hasErrors && hasParseErrors && isEmptyText) {
@@ -153,6 +161,7 @@ export class FinancialDataComponent implements OnInit, DoCheck {
   }
 
   private initFormGroup() {
+    this.formGroupInitialized = false;
     this.formGroup = new FormGroup({});
 
     // Create controls
@@ -182,10 +191,19 @@ export class FinancialDataComponent implements OnInit, DoCheck {
     // So this is the reason why creation and initialization are separated
     this.formKeys.forEach(formKey => {
       if (formKey) {
-        let controlValue = this.getFormFieldValue(formKey.key);
+        let controlValue = null;
+        try {
+          controlValue = JSON.parse(this.getFormFieldValue(formKey.key));
+        } catch (e) {
+          controlValue = this.getFormFieldValue(formKey.key);
+        }
         this.formGroup.controls[formKey.key].setValue(controlValue);
+        this.formGroup.controls[formKey.key].updateValueAndValidity();
       }
     });
+
+    this.formGroup.markAllAsTouched();
+    this.formGroupInitialized = true;
   }
 
   private setValidatorsConditionally(newValue: any) {
@@ -238,61 +256,6 @@ export class FinancialDataComponent implements OnInit, DoCheck {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Authorization', 'Bearer ' + token);
     return headers;
-  }
-
-  ngDoCheck() {
-    this.prefillFields([
-      { control: 'financialDataDatePicker', isDate: true, field: 'financialDataDate' },
-      { control: 'currencyAutocomplete', list: 'currencyList', field: 'currency' },
-      { control: 'clientCategoryAutocomplete', list: 'clientCategoryList', field: 'clientCategory' },
-    ]);
-  }
-  private prefillFields(configs: Array<{ control: string, list?: string, field?: string, isDate?: boolean }>) {
-    configs.forEach(config => {
-      const { control, list, field, isDate } = config;
-
-      // Skip if already prefilled
-      if (this.controlPrefilledFlags[control]) return;
-
-      // Check if control exists and list (if applicable) has items
-      if ((this.controlReferences as any)[control] && (!list || ((this as any)[list] as any[]).length > 0) && this.formFields.length > 0) {
-        if (isDate) {
-          // Set value for date picker
-          this.prefillDatePickerField((this.controlReferences as any)[control], this.getFormFieldValue(field!))
-        } else {
-          // Set value for autocomplete field
-          this.prefillAutocompleteField((this.controlReferences as any)[control], field!, this.getFormFieldValue(field!));
-        }
-        this.controlPrefilledFlags[control] = true;  // Mark as prefilled
-      }
-    });
-  }
-
-  private prefillDatePickerField(viewChild: any, controlValue: any) {
-    viewChild['controlDate'].setValue(controlValue);
-  }
-
-  private prefillAutocompleteField(viewChild: any, controlName: any, controlValue: any) {
-    const selMatOption = viewChild.autocomplete.options.toArray()
-      .find((o: any) => {
-        return JSON.stringify(o.value) === controlValue
-      });
-
-    // If option found
-    if (selMatOption) {
-      // Select autocomplete option
-      selMatOption?.select();
-
-      // Set view child internal control
-      viewChild.controlInternal.setValue(JSON.parse(controlValue))
-      viewChild.controlInternal.updateValueAndValidity({ emitEvent: true })
-      viewChild.optionSelected.emit(JSON.parse(controlValue))
-
-      // Set form control
-      this.formGroup.controls[controlName].setValue(JSON.parse(controlValue));
-      this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true })
-    }
-
   }
 
 }
