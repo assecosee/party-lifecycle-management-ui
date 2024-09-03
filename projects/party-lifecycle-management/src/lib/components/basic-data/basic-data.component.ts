@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AseeFormControl, AuthService, BpmTasksHttpClient, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
@@ -27,10 +27,8 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public formFields: FormField[] = [];
   public formGroupInitialized = false;
   public previousValue = null;
-  public typeOfClientControl = new AseeFormControl(null, Validators.required);
   public isIndividualPerson = -1;
   public formKeysNaturalPerson = [
-
     { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateRegNumNaturalPerson()] },
     { key: 'clientName', validators: [Validators.required] },
     { key: 'parentName', validators: [Validators.required, CustomValidatorsService.noSlashesAllowed()] },
@@ -60,45 +58,6 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public maxDate = new Date();
   public showClientDateOfBirthPicker: boolean = true;
   // Store references and prefilled flags
-  private controlReferences: { [key: string]: any } = {};
-  private controlPrefilledFlags: { [key: string]: boolean } = {};
-
-  // Generic ViewChild setter method
-  private setControlReference(controlName: string, content: any) {
-    if (content) { // initially setter gets called with undefined
-      this.controlReferences[controlName] = content;
-      this.controlPrefilledFlags[controlName] = false; // Initialize prefilled flag as false
-    }
-  }
-
-  // ViewChild setters
-  @ViewChild('typeOfClientAutocomplete', { static: false }) set typeOfClientAutocompleteSetter(content: any) {
-    if (!this.controlPrefilledFlags['typeOfClientAutocomplete']) {
-      this.setControlReference('typeOfClientAutocomplete', content);
-    }
-  }
-  @ViewChild('countryOfficialAddressAutocomplete', { static: false }) set countryOfficialAddressAutocompleteSetter(content: any) {
-    this.setControlReference('countryOfficialAddressAutocomplete', content);
-  }
-  @ViewChild('clientCitizenshipAutocomplete', { static: false }) set clientCitizenshipAutocompleteSetter(content: any) {
-    this.setControlReference('clientCitizenshipAutocomplete', content);
-  }
-  @ViewChild('clientCountryOfBirthAutocomplete', { static: false }) set clientCountryOfBirthAutocompleteSetter(content: any) {
-    this.setControlReference('clientCountryOfBirthAutocomplete', content);
-  }
-  @ViewChild('countryOfHqOfficialAddressAutocomplete', { static: false }) set countryOfHqOfficialAddressAutocompleteSetter(content: any) {
-    this.setControlReference('countryOfHqOfficialAddressAutocomplete', content);
-  }
-  @ViewChild('clientDateOfBirthPicker', { static: false }) set clientDateOfBirthPickerSetter(content: any) {
-    this.setControlReference('clientDateOfBirthPicker', content);
-  }
-  @ViewChild('countryOfOriginAutocomplete', { static: false }) set countryOfOriginAutocompleteSetter(content: any) {
-    this.setControlReference('countryOfOriginAutocomplete', content);
-  }
-  @ViewChild('subjectTypeInAPRAutocomplete', { static: false }) set subjectTypeInAPRAutocompleteSetter(content: any) {
-    this.setControlReference('subjectTypeInAPRAutocomplete', content);
-  }
-
   constructor(
     protected injector: Injector,
     protected http: HttpClient,
@@ -142,6 +101,12 @@ export class BasicDataComponent implements OnInit, DoCheck {
       this.bpmTaskService.getFormData(this.taskId).build().subscribe((result) => {
         this.formFields = result;
         console.log('Form data: ', this.formFields);
+        // Initialize empty form
+        this.formGroup = new FormGroup({});
+        // Create and add new form control
+        const control = new AseeFormControl(JSON.parse(this.getFormFieldValue('typeOfClient')), Validators.required);
+        this.formGroup.addControl('typeOfClient', control);
+        // Populate form group with controls received from task
         this.initFormGroup();
       });
     });
@@ -196,14 +161,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
   private initFormGroup() {
     this.formGroupInitialized = false;
 
-    this.formGroup = new FormGroup({});
-    // this.typeOfClientControl.setValue(JSON.parse(this.getFormFieldValue('typeOfClient')))
-    this.formGroup.addControl("typeOfClient", this.typeOfClientControl);
-
-    const registration = this.getFormFieldValue('isRegistrationProcess');
     const notResidentClient = this.getFormFieldValue('notResident');
+    const registration = this.getFormFieldValue('isRegistrationProcess');
     this.isRegistration = registration == null ? false : registration;
-    const formKeys = this.typeOfClientControl.value && this.typeOfClientControl.value['value'] == 1 ? this.formKeysLegalEntity : this.formKeysNaturalPerson;
+    const formKeys = this.formGroup.controls['typeOfClient'].value && this.formGroup.controls['typeOfClient'].value['value'] == 1 ? this.formKeysLegalEntity : this.formKeysNaturalPerson;
 
     // Create controls
     formKeys.forEach(formKey => {
@@ -297,80 +258,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
     return headers;
   }
 
-  private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {
-    if (!arrayToSearch) {
-      return null;
-    }
-
-    for (let i = 0; i < arrayToSearch.length; i++) {
-      if (arrayToSearch[i][propertyName] && arrayToSearch[i][propertyName] == propertyValue) {
-        return arrayToSearch[i]
-      }
-    }
-
-    return null;
-  }
-
   ngDoCheck() {
-    this.prefillFields([{ control: 'typeOfClientAutocomplete', list: 'typeOfClientList', field: 'typeOfClient' },]);
-
-    if (this.typeOfClientControl && this.typeOfClientControl.value && this.previousValue != this.typeOfClientControl.value['value']) {
-      this.previousValue = this.typeOfClientControl.value['value'];
+    if (this.formGroup.controls['typeOfClient'] && this.formGroup.controls['typeOfClient'].value && this.previousValue != this.formGroup.controls['typeOfClient'].value['value']) {
+      this.previousValue = this.formGroup.controls['typeOfClient'].value['value'];
       this.initFormGroup();
     }
   }
-
-
-
-  private prefillFields(configs: Array<{ control: string, list?: string, field?: string, isDate?: boolean }>) {
-    for (let i = 0; i < configs.length; i++) {
-      let config = configs[i];
-      const { control, list, field, isDate } = config;
-
-      // Skip if already prefilled
-      if (this.controlPrefilledFlags[control]) return;
-
-
-      // Check if control exists and list (if applicable) has items
-      if ((this.controlReferences as any)[control] && (!list || ((this as any)[list] as any[]).length > 0) && this.formFields.length > 0) {
-        if (isDate) {
-          // Set value for date picker
-          this.prefillDatePickerField((this.controlReferences as any)[control], this.getFormFieldValue(field!), control)
-        } else {
-          // Set value for autocomplete field
-          this.prefillAutocompleteField((this.controlReferences as any)[control], field!, this.getFormFieldValue(field!), control);
-        }
-      }
-    }
-  }
-
-  private prefillDatePickerField(viewChild: any, controlValue: any, autocompleteName: any) {
-    viewChild['controlDate'].setValue(controlValue);
-    this.controlPrefilledFlags[autocompleteName] = true;
-  }
-
-  private prefillAutocompleteField(viewChild: any, controlName: any, controlValue: any, autocompleteName: any) {
-    const selMatOption = viewChild.autocomplete.options.toArray()
-      .find((o: any) => {
-        return JSON.stringify(o.value) === controlValue
-      });
-
-    // If option found
-    if (selMatOption) {
-      // Select autocomplete option
-      selMatOption?.select();
-
-      // Set view child internal control
-      viewChild.controlInternal.setValue(JSON.parse(controlValue))
-      viewChild.controlInternal.updateValueAndValidity({ emitEvent: true })
-      viewChild.optionSelected.emit(JSON.parse(controlValue))
-
-      // Set form control
-      this.formGroup.controls[controlName].setValue(JSON.parse(controlValue));
-      this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true })
-      this.controlPrefilledFlags[autocompleteName] = true;  // Mark as prefilled
-    }
-
-  }
-
 }
