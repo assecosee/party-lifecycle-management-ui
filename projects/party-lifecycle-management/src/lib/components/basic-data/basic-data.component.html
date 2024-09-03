@@ -18,13 +18,18 @@
             (click)="markAsTouched('typeOfClient')"></asee-autocomplete>
           <error-handling [control]="formGroup.controls['typeOfClient']"></error-handling>
         </div>
-        <div class="flex-item">
-          <asee-text-input appUppercase appearance="outline" [readonly]="!isRegistration"
-            [control]="formGroup.controls['registrationNumber']"
-            [label]="'lblRegistrationNumber' | translate : locale.language">
-          </asee-text-input>
-          <error-handling [control]="formGroup.controls['registrationNumber']"></error-handling>
-        </div>
+        @if(formGroup.controls['typeOfClient'] && formGroup.controls['typeOfClient'].value && formGroup.controls['typeOfClient'].value['value']){
+          <div class="flex-item">
+            <asee-text-input appUppercase appearance="outline" [readonly]="!isRegistration"
+              [control]="formGroup.controls['registrationNumber']"
+              [label]="'lblRegistrationNumber' | translate : locale.language">
+            </asee-text-input>
+            <error-handling [control]="formGroup.controls['registrationNumber']"></error-handling>
+          </div>
+        } @else {
+          <div class="flex-item"></div>
+        }
+
       </div>
       @if(formGroup.controls['typeOfClient'] &&
       formGroup.controls['typeOfClient'].value &&

@@ -258,9 +258,9 @@ export class BasicDataComponent implements OnInit, DoCheck {
 
     this.formGroup.controls['registrationNumber'].valueChanges.subscribe(response => {
       if (this.formGroup.controls['registrationNumber'].value
-      && this.formGroup.controls['registrationNumber'].valid
-      && this.formGroup.controls['typeOfClient'].value
-      && this.formGroup.controls['typeOfClient'].value.value === '0') {
+        && this.formGroup.controls['registrationNumber'].valid
+        && this.formGroup.controls['typeOfClient'].value
+        && this.formGroup.controls['typeOfClient'].value.value === '0') {
         this.formGroup.controls['clientDateOfBirth']
           .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value.toString()));
       }
@@ -294,7 +294,9 @@ export class BasicDataComponent implements OnInit, DoCheck {
       }
     });
 
-    this.formGroup.markAllAsTouched();
+    if (!isInitial) {
+      this.formGroup.markAllAsTouched();
+    }
     this.formGroupInitialized = true;
     console.log('Form group: ', this.formGroup);
   }
