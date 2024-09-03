@@ -46,6 +46,33 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
+          <asee-decimal-input
+            [control]="formGroup.controls['grossIncome']"
+            [label]="'lblGrossIncome' | translate : locale.language"
+            [suffix]="chosenCurrency"
+            appearance="outline"
+          >
+          </asee-decimal-input>
+          <error-handling
+            [control]="formGroup.controls['grossIncome']"
+          ></error-handling>
+        </div>
+        <div class="flex-item"></div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-decimal-input
+            appearance="outline"
+            [control]="formGroup.controls['netIncome']"
+            [label]="'lblNetIncome' | translate : locale.language"
+            [suffix]="chosenCurrency"
+          >
+          </asee-decimal-input>
+          <error-handling
+            [control]="formGroup.controls['netIncome']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
           <asee-autocomplete
             #currencyAutocomplete
             [control]="formGroup.controls['currency']"
@@ -59,45 +86,6 @@
           ></asee-autocomplete>
           <error-handling
             [control]="formGroup.controls['currency']"
-          ></error-handling>
-        </div>
-        <div class="flex-item">
-          <asee-decimal-input
-            [control]="formGroup.controls['grossIncome']"
-            [label]="'lblGrossIncome' | translate : locale.language"
-            [suffix]="chosenCurrency"
-            appearance="outline"
-          >
-          </asee-decimal-input>
-          <error-handling
-            [control]="formGroup.controls['grossIncome']"
-          ></error-handling>
-        </div>
-      </div>
-      <div class="flex-container pt">
-        <div class="flex-item">
-          <asee-text-input
-            [control]="formGroup.controls['financialDataChangeOperator']"
-            appearance="outline"
-            [label]="
-              'lblFinancialDataChangeOperator' | translate : locale.language
-            "
-          >
-          </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['financialDataChangeOperator']"
-          ></error-handling>
-        </div>
-        <div class="flex-item">
-          <asee-decimal-input
-            appearance="outline"
-            [control]="formGroup.controls['netIncome']"
-            [label]="'lblNetIncome' | translate : locale.language"
-            [suffix]="chosenCurrency"
-          >
-          </asee-decimal-input>
-          <error-handling
-            [control]="formGroup.controls['netIncome']"
           ></error-handling>
         </div>
       </div>
@@ -115,7 +103,19 @@
             [control]="formGroup.controls['financialDataModificationTime']"
           ></error-handling>
         </div>
-        <div class="flex-item"></div>
+        <div class="flex-item">
+          <asee-text-input
+            [control]="formGroup.controls['financialDataChangeOperator']"
+            appearance="outline"
+            [label]="
+              'lblFinancialDataChangeOperator' | translate : locale.language
+            "
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['financialDataChangeOperator']"
+          ></error-handling>
+        </div>
       </div>
     </mat-card-content>
     <div class="bottom-end-alignment">

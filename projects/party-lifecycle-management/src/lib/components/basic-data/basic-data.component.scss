@@ -57,6 +57,13 @@
 	padding-top: 20px;
 }
 
+.bottom-end-alignment {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
 @media (max-width: 768px) {
     .flex-item {
         flex: 100%; /* Stack items on smaller screens */
