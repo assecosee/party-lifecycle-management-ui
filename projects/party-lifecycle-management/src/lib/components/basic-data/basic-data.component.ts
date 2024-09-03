@@ -173,7 +173,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
     const formKeys = this.formGroup.controls['typeOfClient'].value &&
     this.formGroup.controls['typeOfClient'].value.value === 1
       ? this.formKeysLegalEntity
-      : this.formKeysNaturalPerson;
+      : this.formKeysIndividualPerson;
 
     // Create controls
     formKeys.forEach(formKey => {
