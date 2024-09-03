@@ -5,6 +5,7 @@ import { CaseOverviewComponent } from './components/case/case-overview/case-over
 import { BasicDataComponent } from './components/basic-data/basic-data.component';
 import { FinancialDataComponent } from './components/financial-data/financial-data.component';
 import { CompanyProfileComponent } from './components/company-profile/company-profile.component';
+import { AdditionalDataComponent } from './components/additional-data/additional-data.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'tasks/company-profile/:taskId',
     component: CompanyProfileComponent,
+  },
+  {
+    path: 'tasks/additional-data/:taskId',
+    component: AdditionalDataComponent,
   },
 ];
 

@@ -1,12 +1,13 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit } from '@angular/core';
+import { Component, DoCheck, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AseeFormControl, AuthService, BpmTasksHttpClient, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
+import { AseeFormControl, BpmTasksHttpClient, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
+import { catchError, combineLatest, forkJoin, of, tap } from 'rxjs';
 import { CustomValidatorsService } from '../../services/custom-validators.service';
+import { CustomService } from '../../services/custom.service';
+import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
@@ -122,10 +123,8 @@ export class BasicDataComponent implements OnInit, DoCheck {
   // Store references and prefilled flags
   constructor(
     protected injector: Injector,
-    protected http: HttpClient,
-    protected authConfig: AuthService,
-    private cdr: ChangeDetectorRef,
-    private envService: EnvironmentService) {
+    private referenceService: ReferenceService,
+    private customService: CustomService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -133,18 +132,20 @@ export class BasicDataComponent implements OnInit, DoCheck {
   }
 
   ngOnInit(): void {
-    const apiVersion = this.bpmTaskService.getApiVersion();
-    const baseUrl = this.envService.baseUrl;
     // Combine multiple HTTP requests using forkJoin
     forkJoin({
-      typeOfClientList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2TIPKM`, 'description'),
-      typeOfAPRList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2APRTS`, 'description'),
-      countriesList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/reference/countries`, 'name')
+      typeOfClientList: this.customService.getClassification('JK2TIPKM'),
+      typeOfAPRList: this.customService.getClassification('JK2APRTS'),
+      countriesList: this.referenceService.getCountries()
     }).pipe(
-      tap(response => {
-        this.typeOfClientList = response.typeOfClientList;
-        this.countriesList = response.countriesList;
-        this.typeOfAPRList = response.typeOfAPRList;
+      tap(({ typeOfClientList, typeOfAPRList, countriesList }) => {
+        this.typeOfClientList = typeOfClientList.items.filter((item: any) => item.description);
+        this.typeOfAPRList = typeOfAPRList.items.filter((item: any) => item.description);
+        this.countriesList = countriesList.items.filter((item: any) => item.name);
+      }),
+      catchError(error => {
+        console.error('Error fetching data:', error);
+        return of(null); // Handle the error and return a fallback value if needed
       })
     ).subscribe();
 
@@ -314,24 +315,6 @@ export class BasicDataComponent implements OnInit, DoCheck {
     }
 
     return null;
-  }
-
-  private getAutocompleteData(url: string, propertyToCheck: string): Observable<any[]> {
-    const headers = this.attachHeaders();
-    return this.http.get<{ items: any[] }>(url, { headers }).pipe(
-      map((res: { items: any[] }) =>
-        // Filter out objects where the specified property is null
-        // This is must because core autocomplete component breaks if the found property is null
-        res.items.filter(item => item[propertyToCheck] !== null)
-      )
-    );
-  }
-
-  private attachHeaders(): HttpHeaders {
-    const token = this.authConfig.getAccessToken();
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Authorization', 'Bearer ' + token);
-    return headers;
   }
 
   ngDoCheck() {

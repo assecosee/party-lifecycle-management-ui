@@ -43,6 +43,7 @@ export class ErrorHandlingComponent {
 
     return Object.keys(errors).map(key => {
       if (key === 'minlength' || key === 'maxlength') {
+        console.log('desi se');
         const requiredLength = errors[key].requiredLength;
         return { key: this.errorMessages[key], value: requiredLength };
       }

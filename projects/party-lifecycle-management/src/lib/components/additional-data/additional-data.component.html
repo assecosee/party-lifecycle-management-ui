@@ -1,0 +1,153 @@
+<div class="card-wrapper">
+    <mat-card appearance="outlined" class="task-card">
+        <mat-card-header class="task-header">
+            <mat-card-title class="task-title flex-row-wrap">
+                <span class="title-text">
+                    {{ task?.name | translate : locale.language }}
+                </span>
+            </mat-card-title>
+        </mat-card-header>
+
+        @if(formGroupInitialized){
+        <mat-card-content class="pt">
+            <div class="flex-container">
+                <div class="flex-item">
+                    <asee-autocomplete [readonly]="isRegistrationProcess && !isTest" #treatmentOfClientInterestAutocomplete
+                        [control]="formGroup.controls['treatmentOfClientInterest']"
+                        [autocompleteList]="treatmentOfClientInterestList"
+                        [label]="'lblTreatmentOfClientInterest' | translate : locale.language"
+                        filterBehaviour="includes" labelProperty="formattedName" valueProperty="name"
+                        appearance="outline" (click)="markAsTouched('treatmentOfClientInterest')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['treatmentOfClientInterest']"></error-handling>
+                </div>
+                <div class="flex-item">
+                    @if(datePickerFlags['treatmentDateValidFrom']) {
+                    <asee-datepicker readonly="true" #treatmentDateValidFromPicker (click)="markAsTouched('treatmentDateValidFrom')"
+                        [control]="formGroup.controls['treatmentDateValidFrom']" startView="month"
+                        [label]="'lblTreatmentDateValidFrom' | translate : locale.language" appearance="outline"
+                        [max]="maxDate" (input)="clearDateOnEmptyInput('treatmentDateValidFrom')"></asee-datepicker>
+                    <error-handling [control]="formGroup.controls['treatmentDateValidFrom']"></error-handling>
+                    }
+                </div>
+            </div>
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-autocomplete [readonly]="isRegistrationProcess && !isTest" #tariffGroupOfClientCommissionsAutocomplete
+                        [control]="formGroup.controls['tariffGroupOfClientCommissions']"
+                        [autocompleteList]="treatmentOfClientInterestList"
+                        [label]="'lblTariffGroupOfClientCommissions' | translate : locale.language"
+                        filterBehaviour="includes" labelProperty="formattedName" valueProperty="name"
+                        appearance="outline"
+                        (click)="markAsTouched('tariffGroupOfClientCommissions')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['tariffGroupOfClientCommissions']"></error-handling>
+                </div>
+                <div class="flex-item">
+                    @if(datePickerFlags['tarrifDateValidFrom']) {
+                    <asee-datepicker readonly="true" #treatmentDateValidFromPicker (click)="markAsTouched('tarrifDateValidFrom')"
+                        [control]="formGroup.controls['tarrifDateValidFrom']" startView="month"
+                        [label]="'lblTarrifDateValidFrom' | translate : locale.language" appearance="outline"
+                        [max]="maxDate" (input)="clearDateOnEmptyInput('tarrifDateValidFrom')"></asee-datepicker>
+                    <error-handling [control]="formGroup.controls['tarrifDateValidFrom']"></error-handling>
+                    }
+                </div>
+            </div>
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-autocomplete #accountManagerAutocomplete
+                        [control]="formGroup.controls['accountManager']"
+                        [autocompleteList]="accountManagerList"
+                        [label]="'lblAccountManager' | translate : locale.language"
+                        filterBehaviour="includes" labelProperty="formattedName" valueProperty="name"
+                        appearance="outline" (click)="markAsTouched('accountManager')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['accountManager']"></error-handling>
+                </div>
+                <div class="flex-item">
+                    <asee-autocomplete #backupAccountManagerAutocomplete
+                        [control]="formGroup.controls['backupAccountManager']" [autocompleteList]="accountManagerList"
+                        [label]="'lblBackupAccountManager' | translate : locale.language" filterBehaviour="includes"
+                        labelProperty="formattedName" valueProperty="name" appearance="outline"
+                        (click)="markAsTouched('backupAccountManager')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['backupAccountManager']"></error-handling>
+                </div>
+            </div>
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-autocomplete #classificationAccordingToNBSAutocomplete
+                        [control]="formGroup.controls['classificationAccordingToNBS']"
+                        [autocompleteList]="accountManagerList"
+                        [label]="'lblClassificationAccordingToNBS' | translate : locale.language"
+                        filterBehaviour="includes" labelProperty="formattedName" valueProperty="name"
+                        appearance="outline"
+                        (click)="markAsTouched('classificationAccordingToNBS')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['classificationAccordingToNBS']"></error-handling>
+                </div>
+                <div class="flex-item">
+                    <asee-autocomplete [readonly]="isRegistrationProcess && !isTest" #sectoralDivisionUSSPOAutocomplete
+                        [control]="formGroup.controls['sectoralDivisionUSSPO']"
+                        [autocompleteList]="sectoralDivisionUSSPOList"
+                        [label]="'lblSectoralDivisionUSSPO' | translate : locale.language" filterBehaviour="includes"
+                        labelProperty="formattedName" valueProperty="name" appearance="outline"
+                        (click)="markAsTouched('sectoralDivisionUSSPO')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['sectoralDivisionUSSPO']"></error-handling>
+                </div>
+            </div>
+            @if(isIndividualEntity){
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-autocomplete #marketingConsentAutocomplete [control]="formGroup.controls['marketingConsent']"
+                        [autocompleteList]="marketingConsentList"
+                        [label]="'lblMarketingConsent' | translate : locale.language" filterBehaviour="includes"
+                        labelProperty="formattedName" valueProperty="name" appearance="outline"
+                        (click)="markAsTouched('marketingConsent')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['marketingConsent']"></error-handling>
+                </div>
+                <div class="flex-item"></div>
+            </div>
+            }
+            @if(!isRegistrationProcess){
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-text-input readonly="true" appUppercase appearance="outline" [control]="formGroup.controls['riskLevel']"
+                        [label]="
+                          'lblRiskLevel' | translate : locale.language
+                        ">
+                    </asee-text-input>
+                    <error-handling [control]="formGroup.controls['riskLevel']"></error-handling>
+                </div>
+                <div class="flex-item">
+                    <asee-datepicker readonly="true" #dateOfRiskLevelPicker (click)="markAsTouched('dateOfRiskLevel')"
+                        [control]="formGroup.controls['dateOfRiskLevel']" startView="month"
+                        [label]="'lbldateOfRiskLevel' | translate : locale.language" appearance="outline"
+                        [max]="maxDate" (input)="clearDateOnEmptyInput('dateOfRiskLevel')"></asee-datepicker>
+                    <error-handling [control]="formGroup.controls['dateOfRiskLevel']"></error-handling>
+                </div>
+            </div>
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-datepicker readonly="true" #dateOfNextRiskLevelPicker (click)="markAsTouched('dateOfNextRiskLevel')"
+                        [control]="formGroup.controls['dateOfNextRiskLevel']" startView="month"
+                        [label]="'lblDateOfNextRiskLevel' | translate : locale.language" appearance="outline"
+                        [max]="maxDate" (input)="clearDateOnEmptyInput('dateOfNextRiskLevel')"></asee-datepicker>
+                    <error-handling [control]="formGroup.controls['dateOfNextRiskLevel']"></error-handling>
+                </div>
+                <div class="flex-item"></div>
+            </div>
+            }
+
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-textarea appUppercase appearance="outline" maxLength="240" [label]="'lblNote' | translate : locale.language"
+                        [control]="formGroup.controls['note']">
+                    </asee-textarea>
+                </div>
+            </div>
+        </mat-card-content>
+        <div class="bottom-end-alignment">
+            <customer-actions [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
+            </customer-actions>
+        </div>
+        }
+
+
+    </mat-card>
+</div>

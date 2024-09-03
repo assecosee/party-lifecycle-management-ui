@@ -1,13 +1,15 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AseeFormControl, AuthService, BpmTasksHttpClient, EnvironmentService, FormField, LoaderService } from '@asseco/common-ui';
+import { AseeFormControl, AuthService, BpmTasksHttpClient, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
+import { combineLatest, forkJoin, tap } from 'rxjs';
+import { CustomService } from '../../services/custom.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 
 @Component({
   selector: 'lib-company-profile',
@@ -17,7 +19,8 @@ import { ErrorHandlingComponent } from '../../utils/error-handling/error-handlin
     L10nTranslationModule,
     L10nIntlModule, MaterialModule,
     ErrorHandlingComponent,
-    MaterialCustomerActionsComponent],
+    MaterialCustomerActionsComponent,
+    UppercaseDirective],
   templateUrl: './company-profile.component.html',
   styleUrl: './company-profile.component.scss'
 })
@@ -37,7 +40,7 @@ export class CompanyProfileComponent implements OnInit {
   public typeOfPropertyList: any = [];
   public naceCodeList: any = [];
   public crmIndCodeList: any = [];
-  public registrationProcess = false;
+  public isRegistrationProcess = false;
   public formKeysLegalEntity = [
     { key: 'dateOfRegistration', validators: [Validators.required] },
     { key: 'activityCode', validators: [] },
@@ -61,8 +64,7 @@ export class CompanyProfileComponent implements OnInit {
     protected injector: Injector,
     protected http: HttpClient,
     protected authConfig: AuthService,
-    private envService: EnvironmentService)
-  {
+    private customService: CustomService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -70,29 +72,26 @@ export class CompanyProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Combine multiple HTTP requests using forkJoin
-    const apiVersion = this.bpmTaskService.getApiVersion();
-    const baseUrl = this.envService.baseUrl;
-    console.log('base', baseUrl);
 
     forkJoin({
-      activityCodeList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/DELATNOS`, 'name'),
-      codeOfBranchPredominantActivityList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/GRANA`, 'description'),
-      statusOfLegalEntityList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2PRSTS`, 'description'),
-      sizeOfLegalEntityList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2VMS`, 'description'),
-      typeOfPropertyList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/SVOJINA`, 'description'),
-      naceCodeList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2NACE`, 'description'),
-      crmIndCodeList: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2CRMIC`, 'description')
+      activityCodeList: this.customService.getClassification('DELATNOS'),
+      codeOfBranchPredominantActivityList: this.customService.getClassification('DELATNOS'),
+      statusOfLegalEntityList: this.customService.getClassification('JK2PRSTS'),
+      sizeOfLegalEntityList: this.customService.getClassification('JK2VMS'),
+      typeOfPropertyList: this.customService.getClassification('SVOJINA'),
+      naceCodeList: this.customService.getClassification('JK2NACE'),
+      crmIndCodeList: this.customService.getClassification('JK2CRMIC')
     }).pipe(
       tap(response => {
         // Assign the received data to your component properties
-        this.activityCodeList = response.activityCodeList;
-        this.codeOfBranchPredominantActivityList = response.codeOfBranchPredominantActivityList;
-        this.statusOfLegalEntityList = response.statusOfLegalEntityList;
-        this.sizeOfLegalEntityList = response.sizeOfLegalEntityList;
-        this.typeOfPropertyList = response.typeOfPropertyList;
-        this.naceCodeList = response.naceCodeList;
-        this.crmIndCodeList = response.crmIndCodeList;
+        this.activityCodeList = response.activityCodeList.items.filter((item: any) => item.name);
+        this.codeOfBranchPredominantActivityList = response.codeOfBranchPredominantActivityList
+          .items.filter((item: any) => item.description);
+        this.statusOfLegalEntityList = response.statusOfLegalEntityList.items.filter((item: any) => item.description);
+        this.sizeOfLegalEntityList = response.sizeOfLegalEntityList.items.filter((item: any) => item.description);
+        this.typeOfPropertyList = response.typeOfPropertyList.items.filter((item: any) => item.description);
+        this.naceCodeList = response.naceCodeList.items.filter((item: any) => item.description);
+        this.crmIndCodeList = response.crmIndCodeList.items.filter((item: any) => item.description);
       })
     ).subscribe();
 
@@ -116,15 +115,31 @@ export class CompanyProfileComponent implements OnInit {
   }
 
   private initFormGroup() {
+    this.formGroupInitialized = false;
     this.formGroup = new FormGroup({});
-    this.registrationProcess = this.getFormFieldValue('isRegistrationProcess');
+    this.isRegistrationProcess = this.getFormFieldValue('isRegistrationProcess');
     const residentClientLegalEntity = this.getFormFieldValue('resident');
 
+    // Create controls
     this.formKeysLegalEntity.forEach(formKey => {
       if (formKey) {
-        const controlValue = this.getFormFieldValue(formKey.key);
-        const control = new AseeFormControl(controlValue, formKey.validators);
+        const control = new AseeFormControl(null, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
+      }
+    });
+
+    // Initialize controls with values (this is because some logic in control listeners must be triggered)
+    // So this is the reason why creation and initialization are separated
+    this.formKeysLegalEntity.forEach(formKey => {
+      if (formKey) {
+        let controlValue = null;
+        try {
+          controlValue = JSON.parse(this.getFormFieldValue(formKey.key));
+        } catch (e) {
+          controlValue = this.getFormFieldValue(formKey.key);
+        }
+        this.formGroup.controls[formKey.key].setValue(controlValue);
+        this.formGroup.controls[formKey.key].updateValueAndValidity();
       }
     });
 
@@ -132,13 +147,29 @@ export class CompanyProfileComponent implements OnInit {
       this.formGroup.controls['activityCode'].addValidators(Validators.required);
     }
 
-    if (this.registrationProcess) {
+    if (this.isRegistrationProcess) {
       this.formGroup.controls['alignmentWithApr'].setValue(true);
       this.formGroup.controls['codeOfBranchPredominantActivity'].disable();
+      this.formGroup.controls['statusOfLegalEntity']
+        .setValue(this.findItemByProperty(this.statusOfLegalEntityList, 'description','Redovan/aktivan'));
     }
 
     this.formGroupInitialized = true;
     console.log('Form group: ', this.formGroup);
+  }
+
+  private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {
+    if (!arrayToSearch) {
+      return null;
+    }
+
+    for (const item of arrayToSearch) {
+      if (item[propertyName] && item[propertyName].toLowerCase() === propertyValue.toLowerCase()) {
+        return item;
+      }
+    }
+
+    return null;
   }
 
   private getFormFieldValue(formField: string) {
@@ -164,22 +195,6 @@ export class CompanyProfileComponent implements OnInit {
     }
   }
 
-  private getAutocompleteData(url: string, propertyToCheck: string): Observable<any[]> {
-    const headers = this.attachHeaders();
-    return this.http.get<{ items: any[] }>(url, { headers }).pipe(
-      map((res: { items: any[] }) =>
-        // Filter out objects where the specified property is null
-        // This is must because core autocomplete component breaks if the found property is null
-        res.items.filter(item => item[propertyToCheck] !== null)
-      )
-    );
-  }
 
-  private attachHeaders(): HttpHeaders {
-    const token = this.authConfig.getAccessToken();
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Authorization', 'Bearer ' + token);
-    return headers;
-  }
 
 }

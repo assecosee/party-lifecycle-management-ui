@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectorRef, Component, Injector, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -9,9 +9,11 @@ import {
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
+import { CustomService } from '../../services/custom.service';
+import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
-import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
+import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 
 @Component({
   selector: 'financial-data',
@@ -40,7 +42,6 @@ export class FinancialDataComponent implements OnInit {
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
   protected loaderService: LoaderService;
-  protected environmentConfig: EnvironmentConfig;
   public clientCategoryList: any = [];
   public currencyList: any = [];
   public isRegistration = false;
@@ -49,63 +50,36 @@ export class FinancialDataComponent implements OnInit {
   public showDatePicker = true;
   public maxDate = new Date();
   public formGroupInitialized = false;
-  // Store references and prefilled flags
-  private controlReferences: { [key: string]: any } = {};
-  private controlPrefilledFlags: { [key: string]: boolean } = {};
-
-
-  // Generic ViewChild setter method
-  private setControlReference(controlName: string, content: any) {
-    if (content) { // initially setter gets called with undefined
-      this.controlReferences[controlName] = content;
-      this.controlPrefilledFlags[controlName] = false; // Initialize prefilled flag as false
-    }
-  }
-
-  // ViewChild setters
-  @ViewChild('financialDataDatePicker', { static: false }) set financialDataDatePickerSetter(content: any) {
-    this.setControlReference('financialDataDatePicker', content);
-  }
-  @ViewChild('clientCategoryAutocomplete', { static: false }) set clientCategoryAutocompleteSetter(content: any) {
-    this.setControlReference('clientCategoryAutocomplete', content);
-  }
-  @ViewChild('currencyAutocomplete', { static: false }) set currencyAutocompleteSetter(content: any) {
-    this.setControlReference('currencyAutocomplete', content);
-  }
 
   constructor(
+    private referenceService: ReferenceService,
+    private customService: CustomService,
     protected injector: Injector,
-    protected http: HttpClient,
-    protected authConfig: AuthService,
-    private cdr: ChangeDetectorRef,
-    private envService: EnvironmentService) {
+  ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
-    this.environmentConfig = injector.get(EnvironmentConfig);
     this.locale = injector.get(L10N_LOCALE);
   }
 
   ngOnInit(): void {
-    const apiVersion = this.bpmTaskService.getApiVersion();
-    const baseUrl = this.envService.baseUrl;
     // Combine multiple HTTP requests using forkJoin
     forkJoin({
-      clientCategories: this.getAutocompleteData(`${baseUrl}/${apiVersion}/custom/classification/JK2BNKRL`, 'description'),
-      currencies: this.getAutocompleteData(`${baseUrl}/${apiVersion}/reference/currencies`, 'name')
+      clientCategories: this.customService.getClassification('JK2BNKRL'),
+      currencies: this.referenceService.getCurrencies()
     }).pipe(
       tap(({ clientCategories, currencies }) => {
 
-        clientCategories.map((element: any) =>
-          element['formatted-name'] = `${element.name}`
+        clientCategories.items.map((element: any) =>
+          element.formattedName = `${element.name}`
         );
 
-        currencies.map((element: any) =>
-          element['formatted-name'] = `${element.name} - ${element['currency-code']} (${element['currency-symbol']})`
+        currencies.items.map((element: any) =>
+          element.formattedName = `${element.name} - ${element.currencyCode} (${element.currencySymbol})`
         );
 
-        this.currencyList = currencies;
-        this.clientCategoryList = clientCategories;
+        this.currencyList = currencies.items;
+        this.clientCategoryList = clientCategories.items;
 
       })
     ).subscribe();
@@ -143,7 +117,7 @@ export class FinancialDataComponent implements OnInit {
     let hasParseErrors = false;
     let isEmptyText = false;
 
-    if(this.formGroup.controls['financialDataDate'].errors && this.formGroup.controls['financialDataDate'].errors['matDatepickerParse']){
+    if (this.formGroup.controls['financialDataDate'].errors && this.formGroup.controls['financialDataDate'].errors['matDatepickerParse']) {
       hasParseErrors = this.formGroup.controls['financialDataDate'].errors['matDatepickerParse'];
       isEmptyText = this.formGroup.controls['financialDataDate'].errors['matDatepickerParse'].text === '';
     }
@@ -239,23 +213,6 @@ export class FinancialDataComponent implements OnInit {
     }
 
     return null;
-  }
-  private getAutocompleteData(url: string, propertyToCheck: string): Observable<any[]> {
-    const headers = this.attachHeaders();
-    return this.http.get<{ items: any[] }>(url, { headers }).pipe(
-      map((res: { items: any[] }) =>
-        // Filter out objects where the specified property is null
-        // This is must because core autocomplete component breaks if the found property is null
-        res.items.filter(item => item[propertyToCheck] !== null)
-      )
-    );
-  }
-
-  private attachHeaders(): HttpHeaders {
-    const token = this.authConfig.getAccessToken();
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Authorization', 'Bearer ' + token);
-    return headers;
   }
 
 }

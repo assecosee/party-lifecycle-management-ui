@@ -46,7 +46,7 @@
         <div class="flex-item">
           <asee-autocomplete #currencyAutocomplete [control]="formGroup.controls['currency']"
             [autocompleteList]="currencyList" [label]="'lblCurrency' | translate : locale.language"
-            filterBehaviour="includes" labelProperty="formatted-name" valueProperty="currency-code" appearance="outline"
+            filterBehaviour="includes" labelProperty="formattedName" valueProperty="currencyCode" appearance="outline"
             (click)="markAsTouched('currency')"></asee-autocomplete>
           <error-handling [control]="formGroup.controls['currency']"></error-handling>
         </div>
