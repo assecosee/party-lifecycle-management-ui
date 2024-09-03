@@ -54,7 +54,7 @@ export class CustomValidatorsService {
   }
 
   // Validator to disallow slashes in any text input
-  static validateRegNumNaturalPerson(): ValidatorFn {
+  static validateRegNumIndividualPerson(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
 
@@ -66,7 +66,7 @@ export class CustomValidatorsService {
       // Ensure value is a string before checking the format
       const stringValue = String(value);
 
-      if (!this.validRegNumNaturalPerson(stringValue)) {
+      if (!this.validRegNumIndividualPerson(stringValue)) {
         return { invalidRegistrationNumber: true };
       }
 
@@ -138,7 +138,7 @@ export class CustomValidatorsService {
   };
 
 
-  private static validRegNumNaturalPerson(jmbg: any) {
+  private static validRegNumIndividualPerson(jmbg: any) {
     if (typeof jmbg !== 'undefined' && jmbg !== null &&
       jmbg.length === 13 && this.validNumber(jmbg)) {
       const day = parseInt(jmbg.substring(0, 2), 10);

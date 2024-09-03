@@ -8,13 +8,14 @@ import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from '
 import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
 import { CustomValidatorsService } from '../../services/custom-validators.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
+import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 
 @Component({
   selector: 'lib-basic-data',
   standalone: true,
   // eslint-disable-next-line max-len
-  imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent],
+  imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent, UppercaseDirective],
   templateUrl: './basic-data.component.html',
   styleUrl: './basic-data.component.scss'
 })
@@ -28,8 +29,8 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public formGroupInitialized = false;
   public previousValue = null;
   public isIndividualPerson = -1;
-  public formKeysNaturalPerson = [
-    { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateRegNumNaturalPerson()] },
+  public formKeysIndividualPerson = [
+    { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateRegNumIndividualPerson()] },
     { key: 'clientName', validators: [Validators.required] },
     { key: 'parentName', validators: [Validators.required, CustomValidatorsService.noSlashesAllowed()] },
     { key: 'clientLastName', validators: [Validators.required] },
@@ -40,7 +41,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
     { key: 'clientActivity', validators: [] },
   ];
   public formKeysLegalEntity = [
-    { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateTaxNumber()] },
+    { key: 'registrationNumber', validators: [Validators.required, CustomValidatorsService.validateRegNumLegalEntity()] },
     { key: 'organizationalPartOfCustomer', validators: [] },
     { key: 'shortNameOfClient', validators: [Validators.required] }, ,
     { key: 'countryOfHeadquartersOfficialAddress', validators: [Validators.required] },
@@ -101,13 +102,8 @@ export class BasicDataComponent implements OnInit, DoCheck {
       this.bpmTaskService.getFormData(this.taskId).build().subscribe((result) => {
         this.formFields = result;
         console.log('Form data: ', this.formFields);
-        // Initialize empty form
-        this.formGroup = new FormGroup({});
-        // Create and add new form control
-        const control = new AseeFormControl(JSON.parse(this.getFormFieldValue('typeOfClient')), Validators.required);
-        this.formGroup.addControl('typeOfClient', control);
         // Populate form group with controls received from task
-        this.initFormGroup();
+        this.initFormGroup(true);
       });
     });
   }
@@ -158,8 +154,18 @@ export class BasicDataComponent implements OnInit, DoCheck {
   }
 
 
-  private initFormGroup() {
+  private initFormGroup(isInitial: boolean = false) {
     this.formGroupInitialized = false;
+    let typeOfClientControl = new AseeFormControl(JSON.parse(this.getFormFieldValue('typeOfClient')), Validators.required) as any;
+
+    // If init form group is not initial call then restore previous type of client
+    if (!isInitial) {
+      typeOfClientControl = this.formGroup.controls['typeOfClient'];
+    }
+
+    // Initialize empty form
+    this.formGroup = new FormGroup({});
+    this.formGroup.addControl('typeOfClient', typeOfClientControl);
 
     const notResidentClient = this.getFormFieldValue('notResident');
     const registration = this.getFormFieldValue('isRegistrationProcess');
@@ -174,6 +180,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
       if (formKey) {
         const control = new AseeFormControl(null, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
+        this.formGroup.controls[formKey.key].updateValueAndValidity();
       }
     });
 
@@ -191,6 +198,15 @@ export class BasicDataComponent implements OnInit, DoCheck {
       if (!this.formGroup.controls['registrationNumber'].invalid && this.isIndividualPerson === 0) {
         this.formGroup.controls['clientDateOfBirth']
           .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value));
+      }
+    });
+
+    // Add new control based on clientActivity
+    this.formGroup.controls['clientActivity'].valueChanges.subscribe(clientActivity => {
+      this.formGroup.removeControl('dateOfDeactivation');
+
+      if (!clientActivity) {
+        this.formGroup.addControl('dateOfDeactivation', new AseeFormControl(new Date()));
       }
     });
 
@@ -224,6 +240,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
       }
     });
 
+    this.formGroup.markAllAsTouched();
     this.formGroupInitialized = true;
     console.log('Form group: ', this.formGroup);
   }
@@ -268,7 +285,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
       this.previousValue !== this.formGroup.controls['typeOfClient'].value.value
     ) {
       this.previousValue = this.formGroup.controls['typeOfClient'].value.value;
-      this.initFormGroup();
+      this.initFormGroup(false);
     }
   }
 }
