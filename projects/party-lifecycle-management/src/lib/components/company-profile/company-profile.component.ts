@@ -45,7 +45,7 @@ export class CompanyProfileComponent implements OnInit {
     { key: 'dateOfRegistration', validators: [Validators.required] },
     { key: 'activityCode', validators: [] },
     { key: 'alignmentWithApr', validators: [] },
-    { key: 'registrationNumber', validators: [Validators.maxLength(1)] },
+    { key: 'registrationNumber', validators: [] },
     { key: 'codeOfBranchPredominantActivity', validators: [] },
     { key: 'statusOfLegalEntity', validators: [Validators.required] },
     { key: 'sizeOfLegalEntity', validators: [] },
@@ -84,14 +84,50 @@ export class CompanyProfileComponent implements OnInit {
     }).pipe(
       tap(response => {
         // Assign the received data to your component properties
-        this.activityCodeList = response.activityCodeList.items.filter((item: any) => item.name);
-        this.codeOfBranchPredominantActivityList = response.codeOfBranchPredominantActivityList
-          .items.filter((item: any) => item.description);
-        this.statusOfLegalEntityList = response.statusOfLegalEntityList.items.filter((item: any) => item.description);
-        this.sizeOfLegalEntityList = response.sizeOfLegalEntityList.items.filter((item: any) => item.description);
-        this.typeOfPropertyList = response.typeOfPropertyList.items.filter((item: any) => item.description);
-        this.naceCodeList = response.naceCodeList.items.filter((item: any) => item.description);
-        this.crmIndCodeList = response.crmIndCodeList.items.filter((item: any) => item.description);
+
+        this.activityCodeList = response.activityCodeList.items
+          .filter((item: any) => item.name)
+          .map((element: any) => ({
+            ...element,
+            formattedName: element.description ? `${element.name} - ${element.description}` : element.name
+          }));
+
+        this.codeOfBranchPredominantActivityList = response.codeOfBranchPredominantActivityList.items
+          .filter((item: any) => item.description)
+          .map((element: any) => ({
+            ...element,
+            formattedName: element.name ? `${element.name} - ${element.description}` : element.description
+          }));
+        this.statusOfLegalEntityList = response.statusOfLegalEntityList.items
+          .filter((item: any) => item.description)
+          .map((element: any) => ({
+            ...element,
+            formattedName: element.name ? `${element.name} - ${element.description}` : element.description
+          }));
+        this.sizeOfLegalEntityList = response.sizeOfLegalEntityList.items
+          .filter((item: any) => item.description)
+          .map((element: any) => ({
+            ...element,
+            formattedName: element.name ? `${element.name} - ${element.description}` : element.description
+          }));
+        this.typeOfPropertyList = response.typeOfPropertyList.items
+          .filter((item: any) => item.description)
+          .map((element: any) => ({
+            ...element,
+            formattedName: element.name ? `${element.name} - ${element.description}` : element.description
+          }));
+        this.naceCodeList = response.naceCodeList.items
+          .filter((item: any) => item.description)
+          .map((element: any) => ({
+            ...element,
+            formattedName: element.name ? `${element.name} - ${element.description}` : element.description
+          }));
+        this.crmIndCodeList = response.crmIndCodeList.items
+          .filter((item: any) => item.description)
+          .map((element: any) => ({
+            ...element,
+            formattedName: element.name ? `${element.name} - ${element.description}` : element.description
+          }));
       })
     ).subscribe();
 
@@ -151,7 +187,7 @@ export class CompanyProfileComponent implements OnInit {
       this.formGroup.controls['alignmentWithApr'].setValue(true);
       this.formGroup.controls['codeOfBranchPredominantActivity'].disable();
       this.formGroup.controls['statusOfLegalEntity']
-        .setValue(this.findItemByProperty(this.statusOfLegalEntityList, 'description','Redovan/aktivan'));
+        .setValue(this.findItemByProperty(this.statusOfLegalEntityList, 'description', 'Redovan/aktivan'));
     }
 
     this.formGroupInitialized = true;
