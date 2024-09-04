@@ -53,7 +53,7 @@ export class CustomValidatorsService {
     };
   }
 
-  // Validator to allow only characters (letters) in any text input
+  // Validator to allow only alphabetic characters (letters) without spaces in any text input
   static onlyCharactersAllowed(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
@@ -66,8 +66,8 @@ export class CustomValidatorsService {
       // Ensure the value is a string before checking the format
       const stringValue = String(value);
 
-      // Regex pattern to match only letters (both uppercase and lowercase)
-      const onlyCharactersPattern = /^[A-Za-z\s]+$/;
+      // Regex pattern to match only letters (both uppercase and lowercase), no spaces allowed
+      const onlyCharactersPattern = /^[A-Za-z]+$/;
 
       // If the string does not match the pattern, return an error
       if (!onlyCharactersPattern.test(stringValue)) {
@@ -78,8 +78,9 @@ export class CustomValidatorsService {
     };
   }
 
-  // Validator to allow only letters, spaces, and hyphens in any text input
-  static onlyCharactersSpacesAndHyphensAllowed(): ValidatorFn {
+
+  // Validator to allow only letters and hyphens in any text input (no spaces allowed)
+  static onlyCharactersAndHyphensAllowed(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
 
@@ -91,12 +92,12 @@ export class CustomValidatorsService {
       // Ensure the value is a string before checking the format
       const stringValue = String(value);
 
-      // Regex pattern to match only letters (both uppercase and lowercase), spaces, and hyphens
-      const onlyCharactersPattern = /^[A-Za-z\s-]+$/;
+      // Regex pattern to match only letters (both uppercase and lowercase) and hyphens, no spaces allowed
+      const onlyCharactersPattern = /^[A-Za-z-]+$/;
 
       // If the string does not match the pattern, return an error
       if (!onlyCharactersPattern.test(stringValue)) {
-        return { onlyCharactersSpacesAndHyphensAllowed: true };
+        return { onlyCharactersAndHyphensAllowed: true };
       }
 
       return null; // No error
@@ -205,8 +206,7 @@ export class CustomValidatorsService {
   };
 
   private static validDate(value: any) {
-    if (Object.prototype.toString.call(value) === '[object Date]')
-    {return !isNaN(value.getTime());}
+    if (Object.prototype.toString.call(value) === '[object Date]') { return !isNaN(value.getTime()); }
     return false;
   };
 
