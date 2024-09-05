@@ -49,6 +49,7 @@ export class AdditionalDataComponent implements OnInit {
     { key: 'riskLevel', validators: [] },
     { key: 'dateOfRiskLevel', validators: [] },
     { key: 'dateOfNextRiskLevel', validators: [] },
+    { key: 'basisForClientRegistration', validators: [] },
   ];
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
@@ -56,8 +57,8 @@ export class AdditionalDataComponent implements OnInit {
 
 
   constructor(protected injector: Injector,
-              private referenceService: ReferenceService,
-              private customService: CustomService) {
+    private referenceService: ReferenceService,
+    private customService: CustomService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -99,11 +100,6 @@ export class AdditionalDataComponent implements OnInit {
         this.accountManagerList = accountManagerCategories.items;
         this.sectoralDivisionUSSPOList = sectoralDivisionUSSPOCategories.items;
         this.marketingConsentList = marketingConsentListCategories.items;
-
-        console.log(this.treatmentOfClientInterestList);
-        console.log(this.accountManagerList);
-        console.log(this.sectoralDivisionUSSPOList);
-        console.log(this.marketingConsentList);
 
       })
     ).subscribe();
@@ -151,6 +147,12 @@ export class AdditionalDataComponent implements OnInit {
       this.formGroup.controls['tarrifDateValidFrom'].setValue(new Date());
     });
 
+    this.formGroup.controls['basisForClientRegistration'].valueChanges.subscribe(basis => {
+      if (basis == "klijent") {
+        this.formGroup.controls['accountManager'].addValidators(Validators.required)
+      }
+    });
+
     // Initialize controls with values (this is because some logic in control listeners must be triggered)
     // So this is the reason why creation and initialization are separated
     this.formKeys.forEach(formKey => {
@@ -167,16 +169,16 @@ export class AdditionalDataComponent implements OnInit {
     });
 
 
-    if(this.isIndividualEntity){
+    if (this.isIndividualEntity) {
       const control = new AseeFormControl(this.getFormFieldValue('marketingConsent'), []);
-      this.formGroup.addControl('marketingConsent',control);
+      this.formGroup.addControl('marketingConsent', control);
     }
 
-    if(this.isRegistrationProcess){
+    if (this.isRegistrationProcess) {
       this.formGroup.controls['treatmentDateValidFrom'].setValue(new Date());
       this.formGroup.controls['tarrifDateValidFrom'].setValue(new Date());
     }
-
+    console.log(this.formGroup)
     // this.formGroup.markAllAsTouched();
     this.formGroupInitialized = true;
   }

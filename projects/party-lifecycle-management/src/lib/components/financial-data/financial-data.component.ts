@@ -1,14 +1,14 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
-  AseeFormControl, AuthService, BpmTasksHttpClient,
-  EnvironmentConfig, EnvironmentService, FormField, LoaderService
+  AseeFormControl,
+  BpmTasksHttpClient,
+  FormField, LoaderService
 } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { Observable, combineLatest, forkJoin, map, tap } from 'rxjs';
+import { combineLatest, forkJoin, tap } from 'rxjs';
 import { CustomService } from '../../services/custom.service';
 import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
@@ -154,11 +154,11 @@ export class FinancialDataComponent implements OnInit {
     });
 
     this.formGroup.controls['grossIncome'].valueChanges.subscribe(newValue => {
-      this.setValidatorsConditionally(newValue);
+      this.setValidatorsConditionally('grossIncome', newValue);
     });
 
     this.formGroup.controls['netIncome'].valueChanges.subscribe(newValue => {
-      this.setValidatorsConditionally(newValue);
+      this.setValidatorsConditionally('netIncome', newValue);
     });
 
     // Initialize controls with values (this is because some logic in control listeners must be triggered)
@@ -180,7 +180,11 @@ export class FinancialDataComponent implements OnInit {
     this.formGroupInitialized = true;
   }
 
-  private setValidatorsConditionally(newValue: any) {
+  private setValidatorsConditionally(controlName: string, newValue: any) {
+    if (newValue < 0) {
+      this.formGroup.controls[controlName].setValue(newValue * -1);
+    }
+
     if (this.formGroup.controls['grossIncome'].value == null || (parseFloat(this.formGroup.controls['grossIncome'].value) === 0) &&
       (this.formGroup.controls['netIncome'].value == null || (parseFloat(this.formGroup.controls['netIncome'].value) === 0))) {
       this.formGroup.controls['financialDataDate'].clearValidators();

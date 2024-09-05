@@ -29,7 +29,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-decimal-input [control]="formGroup.controls['grossIncome']"
+          <asee-decimal-input direction="ltr" precision="2" [control]="formGroup.controls['grossIncome']"
             [label]="'lblGrossIncome' | translate : locale.language" [suffix]="chosenCurrency" appearance="outline">
           </asee-decimal-input>
           <error-handling [control]="formGroup.controls['grossIncome']"></error-handling>
@@ -38,7 +38,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-decimal-input appearance="outline" [control]="formGroup.controls['netIncome']"
+          <asee-decimal-input direction="ltr" precision="2" appearance="outline" [control]="formGroup.controls['netIncome']"
             [label]="'lblNetIncome' | translate : locale.language" [suffix]="chosenCurrency">
           </asee-decimal-input>
           <error-handling [control]="formGroup.controls['netIncome']"></error-handling>
@@ -53,14 +53,14 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-text-input appUppercase appearance="outline" [control]="formGroup.controls['financialDataModificationTime']" [label]="
+          <asee-text-input readonly="true" appUppercase appearance="outline" [control]="formGroup.controls['financialDataModificationTime']" [label]="
                 'lblFinancialDataModificationTime' | translate : locale.language
               ">
           </asee-text-input>
           <error-handling [control]="formGroup.controls['financialDataModificationTime']"></error-handling>
         </div>
         <div class="flex-item">
-          <asee-text-input appUppercase [control]="formGroup.controls['financialDataChangeOperator']" appearance="outline" [label]="
+          <asee-text-input readonly="true" appUppercase [control]="formGroup.controls['financialDataChangeOperator']" appearance="outline" [label]="
                 'lblFinancialDataChangeOperator' | translate : locale.language
               ">
           </asee-text-input>
