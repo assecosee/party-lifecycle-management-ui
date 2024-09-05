@@ -41,7 +41,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
       key: 'clientName',
       validators: [
         Validators.required,
-        CustomValidatorsService.onlyCharactersSpacesAndHyphensAllowed()]
+        CustomValidatorsService.onlyCharactersAndHyphensAllowed()]
     },
     {
       key: 'parentName',
@@ -54,7 +54,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
       key: 'clientLastName',
       validators: [
         Validators.required,
-        CustomValidatorsService.onlyCharactersSpacesAndHyphensAllowed()
+        CustomValidatorsService.onlyCharactersAndHyphensAllowed()
       ]
     },
     {

@@ -28,7 +28,7 @@ export class ErrorHandlingComponent {
     invalidTaxNumber: 'errorLblInvalidTaxNumber',
     matDatepickerParse: 'errorLblInvalidDateFormat',
     onlyCharactersAllowed: 'errorLblOnlyCharactersAllowed',
-    onlyCharactersSpacesAndHyphensAllowed: 'errorLblOnlyCharactersSpacesAndHyphensAllowed',
+    onlyCharactersAndHyphensAllowed: 'errorLblOnlyCharactersAndHyphensAllowed',
     max: 'errorLblMaxNumber',
     min: 'errorLblMinNumber',
     dateInPast: 'errorLblDateInPast',
