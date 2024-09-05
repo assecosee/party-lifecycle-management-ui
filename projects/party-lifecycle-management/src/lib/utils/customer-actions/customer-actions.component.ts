@@ -57,12 +57,11 @@ export class MaterialCustomerActionsComponent implements OnInit {
     if (this.submitDisabled) {
       return;
     }
+
     if (this.onSubmit.observers.length > 0) {
       this.onSubmit.emit();
       return;
     }
-    console.log(this.formGroup);
-    return;
 
     this.modifyControlsBeforeSubmit();
 
