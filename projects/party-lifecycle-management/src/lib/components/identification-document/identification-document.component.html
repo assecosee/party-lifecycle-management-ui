@@ -1,0 +1,81 @@
+<div class="card-wrapper">
+    <mat-card appearance="outlined" class="task-card">
+        <mat-card-header class="task-header">
+            <mat-card-title class="task-title flex-row-wrap">
+                <span class="title-text">
+                    {{ task?.name | translate : locale.language }}
+                </span>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt">
+
+            <div class="flex-container">
+                <div class="flex-item">
+                    <asee-autocomplete #typeOfClientAutocomplete appearance="outline"
+                        [control]="formGroup.controls['typeOfID']" [autocompleteList]="idDocumentTypes"
+                        [label]="'lblTypeOfID' | translate : locale.language" filterBehaviour="includes"
+                        labelProperty="description" valueProperty="name"
+                        (click)="markAsTouched('typeOfID')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['typeOfID']"></error-handling>
+                </div>
+
+                <div class="flex-item">
+                    <asee-integer-input appearance="outline" [control]="formGroup.controls['numberOfID']"
+                        [label]="'lblNumberOfID' | translate : locale.language">
+                    </asee-integer-input>
+                    <error-handling [control]="formGroup.controls['numberOfID']"></error-handling>
+                </div>
+
+            </div>
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-autocomplete appearance="outline" [control]="formGroup.controls['countryOfIssuing']"
+                        [autocompleteList]="countriesList" [label]="'lblCountryOfIssuing' | translate : locale.language"
+                        filterBehaviour="includes" labelProperty="name" valueProperty="code"
+                        (click)="markAsTouched('countryOfIssuing')"></asee-autocomplete>
+                    <error-handling [control]="formGroup.controls['countryOfIssuing']"></error-handling>
+                </div>
+                <div class="flex-item">
+                    <asee-text-input appearance="outline" [control]="formGroup.controls['placeOfIssuing']"
+                        [label]="'lblPlaceOfIssuing' | translate : locale.language">
+                    </asee-text-input>
+                    <error-handling [control]="formGroup.controls['placeOfIssuing']"></error-handling>
+                </div>
+            </div>
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-text-input appearance="outline" [control]="formGroup.controls['nameOfIdIssuer']"
+                        [label]="'lblNameOfIdIssuer' | translate : locale.language">
+                    </asee-text-input>
+                    <error-handling [control]="formGroup.controls['nameOfIdIssuer']"></error-handling>
+                </div>
+                <div class="flex-item">
+                    <asee-datepicker #clientDateOfBirthPicker appearance="outline"
+                        [control]="formGroup.controls['dateOfIssue']" (click)="markAsTouched('dateOfIssue')"
+                        startView="month" [label]="'lblDateOfIssue' | translate : locale.language"
+                        [max]=""></asee-datepicker>
+                    <error-handling [control]="formGroup.controls['dateOfIssue']"></error-handling>
+                </div>
+            </div>
+            <div class="flex-container pt">
+                <div class="flex-item">
+                    <asee-integer-input appearance="outline" [control]="formGroup.controls['idValidityPeriod']"
+                        [label]="'lblIdValidityPeriod' | translate : locale.language">
+                    </asee-integer-input>
+                    <error-handling [control]="formGroup.controls['idValidityPeriod']"></error-handling>
+                </div>
+                <div class="flex-item">
+                    <asee-datepicker #clientDateOfBirthPicker appearance="outline"
+                        [control]="formGroup.controls['idExpirationDate']" (click)="markAsTouched('idExpirationDate')"
+                        startView="month" [label]="'lblIdExpirationDate' | translate : locale.language"
+                        [max]=""></asee-datepicker>
+                    <error-handling [control]="formGroup.controls['idExpirationDate']"></error-handling>
+                </div>
+            </div>
+        </mat-card-content>
+        <div class="bottom-end-alignment">
+            <customer-actions [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
+            </customer-actions>
+        </div>
+    </mat-card>
+</div>

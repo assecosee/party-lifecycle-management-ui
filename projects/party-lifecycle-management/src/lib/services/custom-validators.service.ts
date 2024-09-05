@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -228,5 +228,88 @@ export class CustomValidatorsService {
     return (typeof additionalCondition === 'undefined') ? kb : additionalCondition(kb);
   }
 
+  static futureDateValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      // Skip validation if the control is empty
+      if (!value) {
+        return null;
+      }
+
+      const inputDate = new Date(value); // Parse the input date
+      const today = new Date(); // Get the current date
+
+      // Reset the time part of today's date to compare only the date parts
+      today.setHours(0, 0, 0, 0);
+
+      // Check if the input date is in the past
+      if (inputDate < today) {
+        return { dateInPast: true }; // Return an error object if the date is in the past
+      }
+
+      return null; // Return null if the date is not in the past
+    };
+  }
+
+  static dateNotInFutureValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      // Skip validation if the control is empty
+      if (!value) {
+        return null;
+      }
+
+      const inputDate = new Date(value); // Parse the input date
+      const today = new Date(); // Get the current date
+
+      // Reset the time part of today's date to compare only the date parts
+      today.setHours(0, 0, 0, 0);
+
+      // Check if the input date is in the future
+      if (inputDate > today) {
+        return { dateInFuture: true }; // Return an error object if the date is in the future
+      }
+
+      return null; // Return null if the date is not in the future
+    };
+  }
+
+  // static dateGreaterThanValidator(compareToControlName: string): ValidatorFn {
+  //   return (control: AbstractControl): ValidationErrors | null => {
+  //     // Get the form group from the control
+  //     const formGroup = control.parent as FormGroup;
+
+  //     // Return null if the form group does not exist
+  //     if (!formGroup) {
+  //       return null;
+  //     }
+
+  //     // Get the control to compare with
+  //     const compareToControl = formGroup.get(compareToControlName);
+
+  //     // Return null if the control to compare with does not exist
+  //     if (!compareToControl) {
+  //       return null;
+  //     }
+
+  //     const currentDate = new Date(control.value);
+  //     const compareToDate = new Date(compareToControl.value);
+
+  //     // Skip validation if either date is empty
+  //     if (!control.value || !compareToControl.value) {
+  //       return null;
+  //     }
+
+  //     // Check if the current date is not greater than the comparison date
+  //     if (currentDate <= compareToDate) {
+  //       return { dateNotGreater: true }; // Return an error object if the date is not greater
+  //     }
+
+  //     return null; // Return null if the date is greater
+  //   };
+
+  // }
 
 }
