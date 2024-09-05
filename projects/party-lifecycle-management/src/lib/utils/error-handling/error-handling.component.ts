@@ -6,7 +6,7 @@ import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from '
 @Component({
   selector: 'error-handling',
   standalone: true,
-  imports: [L10nTranslationModule,L10nIntlModule,AssecoMaterialModule],
+  imports: [L10nTranslationModule, L10nIntlModule, AssecoMaterialModule],
   templateUrl: './error-handling.component.html',
   styleUrl: './error-handling.component.scss'
 })
@@ -28,10 +28,14 @@ export class ErrorHandlingComponent {
     invalidTaxNumber: 'errorLblInvalidTaxNumber',
     matDatepickerParse: 'errorLblInvalidDateFormat',
     onlyCharactersAllowed: 'errorLblOnlyCharactersAllowed',
-    onlyCharactersSpacesAndHyphensAllowed: 'errorLblOnlyCharactersSpacesAndHyphensAllowed'
+    onlyCharactersSpacesAndHyphensAllowed: 'errorLblOnlyCharactersSpacesAndHyphensAllowed',
+    max: 'errorLblMaxNumber',
+    min: 'errorLblMinNumber',
+    dateInPast: 'errorLblDateInPast',
+    dateInFuture: 'errorLblDateInFuture'
   };
 
-  constructor(protected injector: Injector){
+  constructor(protected injector: Injector) {
     this.locale = injector.get(L10N_LOCALE);
   }
 
