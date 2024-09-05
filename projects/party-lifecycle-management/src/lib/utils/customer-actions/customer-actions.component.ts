@@ -34,10 +34,15 @@ export class MaterialCustomerActionsComponent implements OnInit {
   public ngOnInit() {
   }
 
-  public removeTimeZoneFromDate() {
+  public modifyControlsBeforeSubmit() {
     // Go through each date and subtract time zone (sending one date before current problem)
     Object.keys(this.formGroup.controls).forEach((key) => {
       const control = this.formGroup.get(key);
+      if ((typeof control.value) === 'string') {
+        control.value = control.value.toUpperCase();
+        control.updateValueAndValidity();
+      }
+
       if (control.value instanceof Date) {
         const options = { timeZone: 'Europe/Belgrade', year: 'numeric', month: '2-digit', day: '2-digit' };
         const belgradeDateString = control.value.toLocaleDateString('en-CA', options); // 'en-CA' outputs in YYYY-MM-DD format
@@ -56,10 +61,8 @@ export class MaterialCustomerActionsComponent implements OnInit {
       this.onSubmit.emit();
       return;
     }
-    console.log(this.formGroup)
-    return;
 
-    this.removeTimeZoneFromDate();
+    this.modifyControlsBeforeSubmit();
 
     this.bpmTasksHttpClient.complete(this.currentTask.id, this.formGroup)
       .build().subscribe((res) => {
