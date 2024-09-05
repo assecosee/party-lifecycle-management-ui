@@ -228,5 +228,53 @@ export class CustomValidatorsService {
     return (typeof additionalCondition === 'undefined') ? kb : additionalCondition(kb);
   }
 
+  static futureDateValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      // Skip validation if the control is empty
+      if (!value) {
+        return null;
+      }
+
+      const inputDate = new Date(value); // Parse the input date
+      const today = new Date(); // Get the current date
+
+      // Reset the time part of today's date to compare only the date parts
+      today.setHours(0, 0, 0, 0);
+
+      // Check if the input date is in the past
+      if (inputDate < today) {
+        return { dateInPast: true }; // Return an error object if the date is in the past
+      }
+
+      return null; // Return null if the date is not in the past
+    };
+  }
+
+  static dateNotInFutureValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      // Skip validation if the control is empty
+      if (!value) {
+        return null;
+      }
+
+      const inputDate = new Date(value); // Parse the input date
+      const today = new Date(); // Get the current date
+
+      // Reset the time part of today's date to compare only the date parts
+      today.setHours(0, 0, 0, 0);
+
+      // Check if the input date is in the future
+      if (inputDate > today) {
+        return { dateInFuture: true }; // Return an error object if the date is in the future
+      }
+
+      return null; // Return null if the date is not in the future
+    };
+  }
+
 
 }

@@ -31,7 +31,7 @@ import { CaseOverviewComponent } from './components/case/case-overview/case-over
     MaterialModule,
     HttpClientModule,
     InfiniteScrollDirective,
-    L10nIntlModule
+    L10nIntlModule,
   ],
   exports: [
   ]

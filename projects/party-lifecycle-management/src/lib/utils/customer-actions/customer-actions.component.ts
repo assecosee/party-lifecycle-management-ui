@@ -61,6 +61,8 @@ export class MaterialCustomerActionsComponent implements OnInit {
       this.onSubmit.emit();
       return;
     }
+    console.log(this.formGroup);
+    return;
 
     this.modifyControlsBeforeSubmit();
 

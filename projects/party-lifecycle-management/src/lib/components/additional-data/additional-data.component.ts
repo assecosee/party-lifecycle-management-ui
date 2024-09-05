@@ -57,8 +57,8 @@ export class AdditionalDataComponent implements OnInit {
 
 
   constructor(protected injector: Injector,
-    private referenceService: ReferenceService,
-    private customService: CustomService) {
+              private referenceService: ReferenceService,
+              private customService: CustomService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -148,8 +148,8 @@ export class AdditionalDataComponent implements OnInit {
     });
 
     this.formGroup.controls['basisForClientRegistration'].valueChanges.subscribe(basis => {
-      if (basis == "klijent") {
-        this.formGroup.controls['accountManager'].addValidators(Validators.required)
+      if (basis === 'klijent') {
+        this.formGroup.controls['accountManager'].addValidators(Validators.required);
       }
     });
 
@@ -178,7 +178,7 @@ export class AdditionalDataComponent implements OnInit {
       this.formGroup.controls['treatmentDateValidFrom'].setValue(new Date());
       this.formGroup.controls['tarrifDateValidFrom'].setValue(new Date());
     }
-    console.log(this.formGroup)
+    console.log(this.formGroup);
     // this.formGroup.markAllAsTouched();
     this.formGroupInitialized = true;
   }

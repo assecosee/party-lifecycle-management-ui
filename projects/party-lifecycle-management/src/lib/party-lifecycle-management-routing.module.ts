@@ -6,6 +6,7 @@ import { BasicDataComponent } from './components/basic-data/basic-data.component
 import { FinancialDataComponent } from './components/financial-data/financial-data.component';
 import { CompanyProfileComponent } from './components/company-profile/company-profile.component';
 import { AdditionalDataComponent } from './components/additional-data/additional-data.component';
+import { IdentificationDocumentComponent } from './components/identification-document/identification-document.component';
 
 const routes: Routes = [
   {
@@ -31,10 +32,14 @@ const routes: Routes = [
     path: 'tasks/additional-data/:taskId',
     component: AdditionalDataComponent,
   },
+  {
+    path: 'tasks/identification-document/:taskId',
+    component: IdentificationDocumentComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PartyLifecycleManagementRoutingModule {}
+export class PartyLifecycleManagementRoutingModule { }
