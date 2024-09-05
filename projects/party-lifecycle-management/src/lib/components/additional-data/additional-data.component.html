@@ -82,7 +82,7 @@
                     <error-handling [control]="formGroup.controls['classificationAccordingToNBS']"></error-handling>
                 </div>
                 <div class="flex-item">
-                    <asee-autocomplete readonly="true" #sectoralDivisionUSSPOAutocomplete
+                    <asee-autocomplete [readonly]="isRegistrationProcess" #sectoralDivisionUSSPOAutocomplete
                         [control]="formGroup.controls['sectoralDivisionUSSPO']"
                         [autocompleteList]="sectoralDivisionUSSPOList"
                         [label]="'lblSectoralDivisionUSSPO' | translate : locale.language" filterBehaviour="includes"

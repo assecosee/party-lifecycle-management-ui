@@ -45,7 +45,7 @@ export class AdditionalDataComponent implements OnInit {
     { key: 'backupAccountManager', validators: [] },
     { key: 'classificationAccordingToNBS', validators: [] },
     { key: 'note', validators: [] },
-    { key: 'sectoralDivisionUSSPO', validators: [Validators.required] },
+    { key: 'sectoralDivisionUSSPO', validators: [] },
     { key: 'riskLevel', validators: [] },
     { key: 'dateOfRiskLevel', validators: [] },
     { key: 'dateOfNextRiskLevel', validators: [] },
