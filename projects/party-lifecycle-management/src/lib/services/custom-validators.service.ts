@@ -185,7 +185,7 @@ export class CustomValidatorsService {
       this.validNumber(mb) &&
       parseInt(mb.charAt(7), 10) === this.mod11(mb.substring(0, 7),
         // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-        function (kb: any) { return kb > 9 ? 0 : kb; });
+        function(kb: any) { return kb > 9 ? 0 : kb; });
   };
 
 
@@ -199,7 +199,7 @@ export class CustomValidatorsService {
         return /^60|66$/.test(jmbg.substring(7, 9)) ||
           parseInt(jmbg.charAt(12), 10) === this.mod11(jmbg.substring(0, 12),
             // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-            function (kb: any) { return kb === 11 ? 0 : ((kb === 10) ? 'X' : kb); });
+            function(kb: any) { return kb === 11 ? 0 : ((kb === 10) ? 'X' : kb); });
       }
     }
     return false;

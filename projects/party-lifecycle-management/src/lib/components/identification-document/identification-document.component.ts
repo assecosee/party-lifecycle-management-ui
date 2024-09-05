@@ -46,7 +46,7 @@ export class IdentificationDocumentComponent implements OnInit {
       key: 'idExpirationDate',
       validators:
         [Validators.required,
-        CustomValidatorsService.futureDateValidator()]
+          CustomValidatorsService.futureDateValidator()]
     },
     { key: 'typeOfClient', validators: [] },
   ];
@@ -115,7 +115,7 @@ export class IdentificationDocumentComponent implements OnInit {
 
     // Add value change listeners
     this.formGroup.controls['countryOfIssuing'].valueChanges.subscribe(newValue => {
-      console.log(newValue)
+      console.log(newValue);
     });
 
     // Initialize controls with values (this is because some logic in control listeners must be triggered)
@@ -133,15 +133,15 @@ export class IdentificationDocumentComponent implements OnInit {
       }
     });
 
-    if (this.getFormFieldValue("identificationTypes")) {
-      this.idDocumentTypes = this.filterInUseIdentificationTypes(JSON.parse(this.getFormFieldValue("identificationTypes")));
+    if (this.getFormFieldValue('identificationTypes')) {
+      this.idDocumentTypes = this.filterInUseIdentificationTypes(JSON.parse(this.getFormFieldValue('identificationTypes')));
     };
 
     if (this.formGroup.controls['typeOfClient'].value.name === '1') {
-      this.formGroup.controls["countryOfIssuing"].setValue(this.findItemByProperty(this.countriesList, "name", "PORTUGALIJA"));
-      this.formGroup.controls["countryOfIssuing"].updateValueAndValidity();
+      this.formGroup.controls['countryOfIssuing'].setValue(this.findItemByProperty(this.countriesList, 'name', 'PORTUGALIJA'));
+      this.formGroup.controls['countryOfIssuing'].updateValueAndValidity();
       this.formGroup.controls['countryOfIssuing'].markAsTouched();
-      console.log("rs", this.formGroup.controls["countryOfIssuing"].value)
+      console.log('rs', this.formGroup.controls['countryOfIssuing'].value);
 
     }
 
@@ -155,7 +155,7 @@ export class IdentificationDocumentComponent implements OnInit {
   }
 
   private setValidatorsConditionally(newValue: any) {
-    if (newValue && newValue.literal == "national-id-card") {
+    if (newValue && newValue.literal === 'national-id-card') {
       this.formGroup.controls['nameOfIdIssuer'].addValidators(Validators.required);
     } else {
       this.formGroup.controls['nameOfIdIssuer'].clearValidators();
@@ -183,7 +183,7 @@ export class IdentificationDocumentComponent implements OnInit {
 
   private filterInUseIdentificationTypes(identificationTypes: any) {
     // Use the `filter` method to return only items where `additional-fields.in-use` is "true"
-    return identificationTypes.filter((item: any) => item["additional-fields"]["in-use"] === "true");
+    return identificationTypes.filter((item: any) => item['additional-fields']['in-use'] === 'true');
   }
 
   private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {
