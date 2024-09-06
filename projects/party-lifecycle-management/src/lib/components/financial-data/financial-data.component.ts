@@ -148,8 +148,8 @@ export class FinancialDataComponent implements OnInit {
 
     // Add value change listeners
     this.formGroup.controls['currency'].valueChanges.subscribe(newValue => {
-      if (newValue && newValue != null && newValue['currency-symbol']) {
-        this.chosenCurrency = newValue['currency-symbol'];
+      if (newValue && newValue != null && newValue.currencySymbol) {
+        this.chosenCurrency = newValue.currencySymbol;
       }
     });
 

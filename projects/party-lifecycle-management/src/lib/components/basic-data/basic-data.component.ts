@@ -77,6 +77,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
       key: 'clientActivity',
       validators: []
     },
+    {
+      key: 'dateOfDeactivation',
+      validators: []
+    }
   ];
   public formKeysLegalEntity = [
     {
@@ -110,6 +114,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
       key: 'clientActivity',
       validators: []
     },
+    {
+      key: 'dateOfDeactivation',
+      validators: []
+    }
   ];
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
@@ -269,10 +277,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
 
     // Add new control based on clientActivity
     this.formGroup.controls['clientActivity'].valueChanges.subscribe(clientActivity => {
-      this.formGroup.removeControl('dateOfDeactivation');
-
       if (!clientActivity) {
-        this.formGroup.addControl('dateOfDeactivation', new AseeFormControl(new Date()));
+        this.formGroup.controls['dateOfDeactivation'].setValue(new Date());
+      } else {
+        this.formGroup.controls['dateOfDeactivation'].setValue(null);
       }
     });
 
