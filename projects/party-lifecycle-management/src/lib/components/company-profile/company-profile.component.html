@@ -19,6 +19,7 @@
                 </div>
                 <div class="flex-item">
                     <asee-autocomplete [control]="formGroup.controls['activityCode']"
+                        filterBehaviour="includes"
                         [autocompleteList]="activityCodeList" [label]="'lblActivityCode' | translate:locale.language"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
                         (click)="markAsTouched('activityCode')"></asee-autocomplete>
@@ -39,14 +40,14 @@
             </div>
             <div class="flex-container pt">
                 <div class="flex-item">
-                    <asee-autocomplete readonly="true" [control]="formGroup.controls['codeOfBranchPredominantActivity']"
+                    <asee-autocomplete filterBehaviour="includes" readonly="true" [control]="formGroup.controls['codeOfBranchPredominantActivity']"
                         [autocompleteList]="codeOfBranchPredominantActivityList" [label]="'lblCodeOfBranchPredominantActivity' | translate:locale.language"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
                         (click)="markAsTouched('codeOfBranchPredominantActivity')"></asee-autocomplete>
                     <error-handling [control]="formGroup.controls['codeOfBranchPredominantActivity']"></error-handling>
                 </div>
                 <div class="flex-item">
-                    <asee-autocomplete [readonly]="isRegistrationProcess" [control]="formGroup.controls['statusOfLegalEntity']"
+                    <asee-autocomplete filterBehaviour="includes" [readonly]="isRegistrationProcess" [control]="formGroup.controls['statusOfLegalEntity']"
                         [autocompleteList]="statusOfLegalEntityList" [label]="'lblStatusOfLegalEntity' | translate:locale.language"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
                         (click)="markAsTouched('statusOfLegalEntity')"></asee-autocomplete>
@@ -55,14 +56,14 @@
             </div>
             <div class="flex-container pt">
                 <div class="flex-item">
-                    <asee-autocomplete [control]="formGroup.controls['sizeOfLegalEntity']"
+                    <asee-autocomplete filterBehaviour="includes" [control]="formGroup.controls['sizeOfLegalEntity']"
                         [autocompleteList]="sizeOfLegalEntityList" [label]="'lblSizeOfLegalEntity' | translate:locale.language"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
                         (click)="markAsTouched('sizeOfLegalEntity')"></asee-autocomplete>
                     <error-handling [control]="formGroup.controls['sizeOfLegalEntity']"></error-handling>
                 </div>
                 <div class="flex-item">
-                    <asee-autocomplete [control]="formGroup.controls['typeOfProperty']"
+                    <asee-autocomplete filterBehaviour="includes" [control]="formGroup.controls['typeOfProperty']"
                         [autocompleteList]="typeOfPropertyList" [label]="'lblTypeOfProperty' | translate:locale.language"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
                         (click)="markAsTouched('typeOfProperty')"></asee-autocomplete>
@@ -85,14 +86,14 @@
             </div>
             <div class="flex-container pt">
                 <div class="flex-item">
-                    <asee-autocomplete [control]="formGroup.controls['naceCodeCustomer']"
+                    <asee-autocomplete filterBehaviour="includes" [control]="formGroup.controls['naceCodeCustomer']"
                         [autocompleteList]="naceCodeList" [label]="'lblNaceCodeCustomer' | translate:locale.language"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
                         (click)="markAsTouched('naceCodeCustomer')"></asee-autocomplete>
                     <error-handling [control]="formGroup.controls['naceCodeCustomer']"></error-handling>
                 </div>
                 <div class="flex-item">
-                    <asee-autocomplete [control]="formGroup.controls['naceCodeRisk']"
+                    <asee-autocomplete filterBehaviour="includes" [control]="formGroup.controls['naceCodeRisk']"
                         [autocompleteList]="naceCodeList" [label]="'lblNaceCodeRisk' | translate:locale.language"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
                         (click)="markAsTouched('naceCodeRisk')"></asee-autocomplete>
@@ -101,7 +102,7 @@
             </div>
             <div class="flex-container pt">
                 <div class="flex-item">
-                    <asee-autocomplete [control]="formGroup.controls['crmIndCode']"
+                    <asee-autocomplete filterBehaviour="includes" [control]="formGroup.controls['crmIndCode']"
                         [autocompleteList]="crmIndCodeList" [label]="'lblCrmIndCode' | translate:locale.language"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
                         (click)="markAsTouched('crmIndCode')"></asee-autocomplete>
