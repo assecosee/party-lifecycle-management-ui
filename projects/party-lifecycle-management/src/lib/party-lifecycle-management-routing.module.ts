@@ -7,6 +7,7 @@ import { FinancialDataComponent } from './components/financial-data/financial-da
 import { CompanyProfileComponent } from './components/company-profile/company-profile.component';
 import { AdditionalDataComponent } from './components/additional-data/additional-data.component';
 import { IdentificationDocumentComponent } from './components/identification-document/identification-document.component';
+import { ProcessSelectionComponent } from './components/process-selection/process-selection.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,10 @@ const routes: Routes = [
   {
     path: 'tasks/identification-document/:taskId',
     component: IdentificationDocumentComponent,
+  },
+  {
+    path: 'tasks/process-selection/:taskId',
+    component: ProcessSelectionComponent
   },
 ];
 

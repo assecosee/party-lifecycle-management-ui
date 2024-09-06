@@ -17,7 +17,7 @@ import { combineLatest, forkJoin, tap } from 'rxjs';
   imports: [AssecoMaterialModule,
     L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent, UppercaseDirective],
   templateUrl: './additional-data.component.html',
-  styleUrl: './additional-data.component.css'
+  styleUrl: './additional-data.component.scss'
 })
 export class AdditionalDataComponent implements OnInit {
 

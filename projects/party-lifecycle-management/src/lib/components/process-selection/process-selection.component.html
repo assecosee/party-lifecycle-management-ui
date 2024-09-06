@@ -1,0 +1,29 @@
+<div class="card-wrapper">
+    <mat-card appearance="outlined" class="task-card">
+      <mat-card-header class="task-header">
+        <mat-card-title class="task-title flex-row-wrap">
+          <span class="title-text">
+            {{ task?.name | translate : locale.language }}
+          </span>
+        </mat-card-title>
+      </mat-card-header>
+      @if(formGroupInitialized) {
+      <mat-card-content class="pt">
+        <div class="flex-container">
+          <div class="flex-item">
+            <asee-autocomplete #processSelectionAutocomplete [control]="formGroup.controls['selectedProcess']"
+              [autocompleteList]="processSelectionList" [label]="'lblSelectedProcess' | translate : locale.language"
+              filterBehaviour="includes" labelProperty="name" valueProperty="name" appearance="outline"
+              (click)="markAsTouched('selectedProcess')"></asee-autocomplete>
+            <error-handling [control]="formGroup.controls['selectedProcess']"></error-handling>
+          </div>
+          <div class="flex-item"> </div>
+        </div>
+      </mat-card-content>
+      <div class="bottom-end-alignment">
+        <customer-actions [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
+        </customer-actions>
+      </div>
+      }
+    </mat-card>
+  </div>
