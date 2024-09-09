@@ -1,0 +1,177 @@
+<div class="card-wrapper">
+  <mat-card appearance="outlined" class="task-card">
+    <mat-card-header class="task-header">
+      <mat-card-title class="task-title flex-row-wrap">
+        <span class="title-text">
+          {{ task?.name | translate : locale.language }}
+        </span>
+      </mat-card-title>
+    </mat-card-header>
+    @if(formGroupInitialized) {
+    <mat-card-content class="pt">
+      <div class="flex-container">
+        <div class="flex-item">
+          <asee-autocomplete
+            [control]="formGroup.controls['employmentStatus']"
+            [autocompleteList]="employmentStatusList"
+            [label]="'lblEmploymentStatus' | translate : locale.language"
+            filterBehaviour="includes"
+            labelProperty="formattedName"
+            valueProperty="name"
+            appearance="outline"
+            (click)="markAsTouched('employmentStatus')"
+          ></asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['employmentStatus']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-autocomplete
+            [control]="formGroup.controls['legalStatusOfIndividualPerson']"
+            [autocompleteList]="legalStatusList"
+            [label]="
+              'lblLegalStatusOfIndividualPerson' | translate : locale.language
+            "
+            filterBehaviour="includes"
+            labelProperty="formattedName"
+            valueProperty="name"
+            appearance="outline"
+            (click)="markAsTouched('legalStatusOfIndividualPerson')"
+          ></asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['legalStatusOfIndividualPerson']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-autocomplete
+            [control]="formGroup.controls['companyRegistrationNumber']"
+            [autocompleteList]="clientCategoryList"
+            [label]="
+              'lblCompanyRegistrationNumber' | translate : locale.language
+            "
+            filterBehaviour="includes"
+            labelProperty="formattedName"
+            valueProperty="name"
+            appearance="outline"
+            (click)="markAsTouched('companyRegistrationNumber')"
+          ></asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['companyRegistrationNumber']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-text-input
+            appUppercase
+            appearance="outline"
+            [control]="formGroup.controls['companyOrganizationPart']"
+            [label]="'lblCompanyOrganizationPart' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['companyOrganizationPart']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-text-input
+            appUppercase
+            appearance="outline"
+            [control]="formGroup.controls['jobTitle']"
+            [label]="'lblJobTitle' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['jobTitle']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-text-input
+            readonly="true"
+            appUppercase
+            appearance="outline"
+            [control]="formGroup.controls['occupationTitle']"
+            [label]="'lblOccupationTitle' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['occupationTitle']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          @if(showDatePicker) {
+          <asee-datepicker
+            (click)="markAsTouched('employedSince')"
+            [control]="formGroup.controls['employedSince']"
+            startView="month"
+            [label]="'lblEmployedSince' | translate : locale.language"
+            appearance="outline"
+            [max]="maxDate"
+            (input)="clearDateOnEmptyInput()"
+          ></asee-datepicker>
+          <error-handling
+            [control]="formGroup.controls['employedSince']"
+          ></error-handling>
+          }
+        </div>
+        <div class="flex-item">
+          <asee-text-input
+            appUppercase
+            [control]="formGroup.controls['workExperience']"
+            appearance="outline"
+            [label]="'lblWorkExperience' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['workExperience']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-autocomplete
+            [control]="formGroup.controls['levelOfEducation']"
+            [autocompleteList]="levelOfEducationList"
+            [label]="'lblLevelOfEducation' | translate : locale.language"
+            filterBehaviour="includes"
+            labelProperty="formattedName"
+            valueProperty="name"
+            appearance="outline"
+            (click)="markAsTouched('levelOfEducation')"
+          ></asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['levelOfEducation']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-autocomplete
+            [control]="formGroup.controls['companyPositionCode']"
+            [autocompleteList]="companyPositionCodeList"
+            [label]="'lblCompanyPositionCode' | translate : locale.language"
+            filterBehaviour="includes"
+            labelProperty="formattedName"
+            valueProperty="name"
+            appearance="outline"
+            (click)="markAsTouched('companyPositionCode')"
+          ></asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['companyPositionCode']"
+          ></error-handling>
+        </div>
+      </div>
+    </mat-card-content>
+    <div class="bottom-end-alignment">
+      <customer-actions
+        [currentTask]="task"
+        submitButtonName="Complete"
+        [formGroup]="formGroup"
+      >
+      </customer-actions>
+    </div>
+    }
+  </mat-card>
+</div>

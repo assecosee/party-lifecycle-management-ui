@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdditionalDataComponent } from './components/additional-data/additional-data.component';
+import { BasicDataComponent } from './components/basic-data/basic-data.component';
 import { CaseListComponent } from './components/case/case-list/case-list.component';
 import { CaseOverviewComponent } from './components/case/case-overview/case-overview.component';
-import { BasicDataComponent } from './components/basic-data/basic-data.component';
-import { FinancialDataComponent } from './components/financial-data/financial-data.component';
 import { CompanyProfileComponent } from './components/company-profile/company-profile.component';
-import { AdditionalDataComponent } from './components/additional-data/additional-data.component';
+import { EmploymentDataComponent } from './components/employment-data/employment-data.component';
+import { FinancialDataComponent } from './components/financial-data/financial-data.component';
 import { IdentificationDocumentComponent } from './components/identification-document/identification-document.component';
 import { ProcessSelectionComponent } from './components/process-selection/process-selection.component';
 
@@ -40,6 +41,10 @@ const routes: Routes = [
   {
     path: 'tasks/process-selection/:taskId',
     component: ProcessSelectionComponent
+  },
+  {
+    path: 'tasks/employment-data/:taskId',
+    component: EmploymentDataComponent
   },
 ];
 
