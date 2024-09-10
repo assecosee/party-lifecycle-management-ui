@@ -64,6 +64,14 @@
     flex-grow: 1;
 }
 
+.disable-div {
+	pointer-events: none;
+	background-color: #f0f0f0;
+	border: 1px solid #b0b0b0;
+	border-radius: 4px;
+	color: #333;
+}
+
 @media (max-width: 768px) {
     .flex-item {
         flex: 100%; /* Stack items on smaller screens */

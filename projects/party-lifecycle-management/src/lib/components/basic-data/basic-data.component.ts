@@ -1,7 +1,7 @@
 import { Component, DoCheck, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AseeFormControl, BpmTasksHttpClient, FormField, LoaderService } from '@asseco/common-ui';
+import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { catchError, combineLatest, forkJoin, of, tap } from 'rxjs';
@@ -29,7 +29,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public formFields: FormField[] = [];
   public formGroupInitialized = false;
   public previousValue = null;
-  public isIndividualPerson = -1;
+  public isIndividualPerson = false;
   public formKeysIndividualPerson = [
     {
       key: 'registrationNumber',
@@ -125,12 +125,15 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public typeOfClientList: any = [];
   public countriesList: any = [];
   public typeOfAPRList: any = [];
+  public notResidentCodesList: any = [];
   public isRegistration = false;
+  public notResidentClient = false;
   public maxDate = new Date();
   public showClientDateOfBirthPicker = true;
   // Store references and prefilled flags
   constructor(
     protected injector: Injector,
+    protected configurationService: ConfigurationHttpClient,
     private referenceService: ReferenceService,
     private customService: CustomService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
@@ -144,12 +147,14 @@ export class BasicDataComponent implements OnInit, DoCheck {
     forkJoin({
       typeOfClientList: this.customService.getClassification('JK2TIPKM'),
       typeOfAPRList: this.customService.getClassification('JK2APRTS'),
-      countriesList: this.referenceService.getCountries()
+      countriesList: this.referenceService.getCountries(),
+      notResidentCodes: this.configurationService.getEffective('party-lcm/basic-data-not-resident-codes').build()
     }).pipe(
-      tap(({ typeOfClientList, typeOfAPRList, countriesList }) => {
+      tap(({ typeOfClientList, typeOfAPRList, countriesList, notResidentCodes }) => {
         this.typeOfClientList = typeOfClientList.items.filter((item: any) => item.description);
         this.typeOfAPRList = typeOfAPRList.items.filter((item: any) => item.description);
         this.countriesList = countriesList.items.filter((item: any) => item.name);
+        this.notResidentCodesList = JSON.parse(notResidentCodes)['not-resident-codes'];
       }),
       catchError(error => {
         console.error('Error fetching data:', error);
@@ -235,13 +240,21 @@ export class BasicDataComponent implements OnInit, DoCheck {
 
     // Initialize empty form
     this.formGroup = new FormGroup({});
+
     this.formGroup.addControl('typeOfClient', typeOfClientControl);
 
-    const notResidentClient = this.getFormFieldValue('notResident');
+    this.notResidentClient = false;
     const registration = this.getFormFieldValue('isRegistrationProcess');
     this.isRegistration = registration == null ? false : registration;
     const formKeys = this.formGroup.controls['typeOfClient'].value
       && this.formGroup.controls['typeOfClient'].value.value === '1' ? this.formKeysLegalEntity : this.formKeysIndividualPerson;
+    this.isIndividualPerson = this.formGroup.controls['typeOfClient'].value
+      && this.formGroup.controls['typeOfClient'].value.value === '1' ? false : true;
+
+    if (this.formGroup.controls['typeOfClient'].value
+      && this.notResidentCodesList.includes(this.formGroup.controls['typeOfClient'].value.name)) {
+      this.notResidentClient = true;
+    }
 
     // Create controls
     formKeys.forEach(formKey => {
@@ -260,7 +273,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
     if (this.formGroup.controls['registrationNumber'].value
       && this.formGroup.controls['typeOfClient'].value
       && this.formGroup.controls['typeOfClient'].value.value === '0'
-      && !notResidentClient) {
+      && !this.notResidentClient) {
       this.formGroup.controls['clientDateOfBirth']
         .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value.toString()));
     }
@@ -307,6 +320,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
       this.formGroup.markAllAsTouched();
     }
     this.formGroupInitialized = true;
+
     console.log('Form group: ', this.formGroup);
   }
 
@@ -325,12 +339,39 @@ export class BasicDataComponent implements OnInit, DoCheck {
     return null;
   }
 
+  private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {
+    if (!arrayToSearch) {
+      return null;
+    }
+
+    for (const item of arrayToSearch) {
+      if (item[propertyName] && item[propertyName].toLowerCase() === propertyValue.toLowerCase()) {
+        return item;
+      }
+    }
+
+    return null;
+  }
+
   ngDoCheck() {
     if (this.formGroup.controls['typeOfClient']
       && this.formGroup.controls['typeOfClient'].value
       && this.previousValue !== this.formGroup.controls['typeOfClient'].value.value) {
       this.previousValue = this.formGroup.controls['typeOfClient'].value.value;
       this.initFormGroup(false);
+    }
+    if (!this.notResidentClient && this.isIndividualPerson) {
+      this.formGroup.controls['countryOfficialAddress']
+        ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
+      this.formGroup.controls['clientCitizenship']
+        ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
+    }
+
+    if (!this.notResidentClient && !this.isIndividualPerson) {
+      this.formGroup.controls['countryOfHeadquartersOfficialAddress']
+        ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
+      this.formGroup.controls['countryOfOrigin']
+        ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
     }
   }
 }
