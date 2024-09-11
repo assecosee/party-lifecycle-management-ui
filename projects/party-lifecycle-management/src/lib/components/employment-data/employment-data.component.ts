@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
   AseeFormControl,
@@ -30,7 +30,7 @@ export class EmploymentDataComponent implements OnInit {
   public formGroup: FormGroup = new FormGroup({});
   public formFields: FormField[] = [];
   public formKeys = [
-    { key: 'employmentStatus', validators: [] },
+    { key: 'employmentStatus', validators: [Validators.required] },
     { key: 'legalStatusOfIndividualPerson', validators: [] },
     { key: 'companyRegistrationNumber', validators: [] },
     { key: 'companyOrganizationPart', validators: [] },
@@ -74,17 +74,17 @@ export class EmploymentDataComponent implements OnInit {
     }).pipe(
       tap(({ employmentStatuses, legalStatuses, levelsOfEducation, companyPositionCodes }) => {
 
-        employmentStatuses.items.map((element: any) =>
-          element.formattedName = `${element.name}`);
+        employmentStatuses.items.filter((item: any) => item.name).map((element: any) =>
+          element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
 
-        legalStatuses.items.map((element: any) =>
-          element.formattedName = `${element.name}`);
+        legalStatuses.items.filter((item: any) => item.name).map((element: any) =>
+          element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
 
-        levelsOfEducation.items.map((element: any) =>
-          element.formattedName = `${element.name}`);
+        levelsOfEducation.items.filter((item: any) => item.name).map((element: any) =>
+          element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
 
-        companyPositionCodes.items.map((element: any) =>
-          element.formattedName = `${element.name}`);
+        companyPositionCodes.items.filter((item: any) => item.name).map((element: any) =>
+          element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
 
         this.employmentStatusList = employmentStatuses.items;
         this.legalStatusList = legalStatuses.items;
