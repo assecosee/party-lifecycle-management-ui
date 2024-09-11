@@ -151,7 +151,9 @@ export class BasicDataComponent implements OnInit, DoCheck {
       notResidentCodes: this.configurationService.getEffective('party-lcm/basic-data-not-resident-codes').build()
     }).pipe(
       tap(({ typeOfClientList, typeOfAPRList, countriesList, notResidentCodes }) => {
-        this.typeOfClientList = typeOfClientList.items.filter((item: any) => item.description);
+        typeOfClientList.items.filter((item: any) => item.name).map((element: any) =>
+          element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
+        this.typeOfClientList = typeOfClientList.items;
         this.typeOfAPRList = typeOfAPRList.items.filter((item: any) => item.description);
         this.countriesList = countriesList.items.filter((item: any) => item.name);
         this.notResidentCodesList = JSON.parse(notResidentCodes)['not-resident-codes'];
