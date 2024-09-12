@@ -98,7 +98,7 @@ export class ProcessSelectionComponent implements OnInit {
       }
     });
 
-    if (this.basisForClientRegistration.toUpperCase() !== 'KLIJENT'
+    if (this.basisForClientRegistration !== null && this.basisForClientRegistration.toUpperCase() !== 'KLIJENT'
       && this.basisForClientRegistration.toUpperCase() !== 'POVREMENI KLIJENT') {
       this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'kyc-renewal');
       this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'recalculation-of-risk-level');
