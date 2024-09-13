@@ -43,20 +43,37 @@
           ></error-handling>
         </div>
       </div>
+      <div class="border"></div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-lookup
+            [control]="formGroup.controls['searchCompany']"
+            service="party"
+            endPoint="parties/search?kind=organization&search-mode=any&search-fields=registration-number&page=1&page-size=10&q="
+            responseProperty="parties"
+            labelProperty="contactName"
+            valueProperty="contactName"
+            [label]="'lblSearchCompany' | translate : locale.language"
+            auto="true"
+            [sublabels]="['partyNumber']"
+            appearance="outline"
+          ></asee-lookup>
+          <error-handling
             [control]="formGroup.controls['companyRegistrationNumber']"
-            [autocompleteList]="clientCategoryList"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div [class]="controlsEnabled ? 'flex-item' : 'flex-item disable-div'">
+          <asee-text-input
+            [readonly]="!controlsEnabled"
+            [control]="formGroup.controls['companyRegistrationNumber']"
             [label]="
               'lblCompanyRegistrationNumber' | translate : locale.language
             "
-            filterBehaviour="includes"
-            labelProperty="formattedName"
-            valueProperty="name"
+            auto="true"
             appearance="outline"
-            (click)="markAsTouched('companyRegistrationNumber')"
-          ></asee-autocomplete>
+          ></asee-text-input>
           <error-handling
             [control]="formGroup.controls['companyRegistrationNumber']"
           ></error-handling>
@@ -75,18 +92,23 @@
         </div>
       </div>
       <div class="flex-container pt">
-        <div class="flex-item">
+        <div [class]="controlsEnabled ? 'flex-item' : 'flex-item disable-div'">
           <asee-text-input
+            [readonly]="!controlsEnabled"
             appUppercase
             appearance="outline"
-            [control]="formGroup.controls['jobTitle']"
-            [label]="'lblJobTitle' | translate : locale.language"
+            [control]="formGroup.controls['companyRegisteredName']"
+            [label]="'lblCompanyRegisteredName' | translate : locale.language"
           >
           </asee-text-input>
           <error-handling
-            [control]="formGroup.controls['jobTitle']"
+            [control]="formGroup.controls['companyRegisteredName']"
           ></error-handling>
         </div>
+        <div class="flex-item"></div>
+      </div>
+      <div class="border"></div>
+      <div class="flex-container pt">
         <div class="flex-item">
           <asee-text-input
             readonly="true"
@@ -100,8 +122,6 @@
             [control]="formGroup.controls['occupationTitle']"
           ></error-handling>
         </div>
-      </div>
-      <div class="flex-container pt">
         <div class="flex-item">
           @if(showDatePicker) {
           <asee-datepicker
@@ -118,6 +138,8 @@
           ></error-handling>
           }
         </div>
+      </div>
+      <div class="flex-container pt">
         <div class="flex-item">
           <asee-text-input
             appUppercase
@@ -130,8 +152,6 @@
             [control]="formGroup.controls['workExperience']"
           ></error-handling>
         </div>
-      </div>
-      <div class="flex-container pt">
         <div class="flex-item">
           <asee-autocomplete
             [control]="formGroup.controls['levelOfEducation']"
@@ -147,6 +167,8 @@
             [control]="formGroup.controls['levelOfEducation']"
           ></error-handling>
         </div>
+      </div>
+      <div class="flex-container pt">
         <div class="flex-item">
           <asee-autocomplete
             [control]="formGroup.controls['companyPositionCode']"
@@ -162,6 +184,7 @@
             [control]="formGroup.controls['companyPositionCode']"
           ></error-handling>
         </div>
+        <div class="flex-item"></div>
       </div>
     </mat-card-content>
     <div class="bottom-end-alignment">

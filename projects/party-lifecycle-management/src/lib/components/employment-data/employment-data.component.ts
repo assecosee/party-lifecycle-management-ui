@@ -34,7 +34,7 @@ export class EmploymentDataComponent implements OnInit {
     { key: 'legalStatusOfIndividualPerson', validators: [] },
     { key: 'companyRegistrationNumber', validators: [] },
     { key: 'companyOrganizationPart', validators: [] },
-    { key: 'jobTitle', validators: [] },
+    { key: 'companyRegisteredName', validators: [] },
     { key: 'occupationTitle', validators: [] },
     { key: 'employedSince', validators: [] },
     { key: 'workExperience', validators: [] },
@@ -53,6 +53,8 @@ export class EmploymentDataComponent implements OnInit {
   public legalStatusList: any;
   public levelOfEducationList: any;
   public companyPositionCodeList: any;
+  public previousCompany = null;
+  public controlsEnabled = true;
 
   constructor(
     private customService: CustomService,
@@ -168,6 +170,35 @@ export class EmploymentDataComponent implements OnInit {
         }
         this.formGroup.controls[formKey.key].setValue(controlValue);
         this.formGroup.controls[formKey.key].updateValueAndValidity();
+      }
+    });
+
+    this.formGroup.addControl('searchCompany', new AseeFormControl(null));
+
+    this.formGroup.controls['searchCompany'].valueChanges.subscribe(value => {
+      if ((typeof value) === 'string' && value === '') {
+        this.controlsEnabled = true;
+
+        this.formGroup.controls['companyRegistrationNumber'].setValue('');
+        this.formGroup.controls['companyRegistrationNumber'].updateValueAndValidity();
+
+        this.formGroup.controls['companyRegisteredName'].setValue('');
+        this.formGroup.controls['companyRegisteredName'].updateValueAndValidity();
+      }
+
+      if ((typeof value) === 'object' && value !== null && value !== this.previousCompany) {
+        this.previousCompany = value;
+
+        // Prefill samo ako je u pitanju organizacija
+        if (value.customer.kind === 'organization') {
+          this.controlsEnabled = false;
+
+          this.formGroup.controls['companyRegistrationNumber'].setValue(value.primaryId.number);
+          this.formGroup.controls['companyRegistrationNumber'].updateValueAndValidity();
+
+          this.formGroup.controls['companyRegisteredName'].setValue(value.registeredName);
+          this.formGroup.controls['companyRegisteredName'].updateValueAndValidity();
+        }
       }
     });
 
