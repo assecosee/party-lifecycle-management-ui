@@ -44,15 +44,13 @@ export class EmploymentDataComponent implements OnInit {
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
   protected loaderService: LoaderService;
-  public clientCategoryList: any = [];
-  public currencyList: any = [];
   public showDatePicker = true;
   public maxDate = new Date();
   public formGroupInitialized = false;
-  public employmentStatusList: any;
-  public legalStatusList: any;
-  public levelOfEducationList: any;
-  public companyPositionCodeList: any;
+  public employmentStatusList: any = [];
+  public legalStatusList: any = [];
+  public levelOfEducationList: any = [];
+  public companyPositionCodeList: any = [];
   public previousCompany = null;
   public controlsEnabled = true;
 
