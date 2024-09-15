@@ -73,4 +73,30 @@
         /* Stack items on smaller screens */
         min-width: 100%;
     }
+
+    .btn-container {
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mat-mdc-button:not(:disabled) {
+        margin-bottom: 20px;
+    }
+}
+
+.btn-container {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.mat-mdc-button:not(:disabled) {
+    color: white;
+    background-color: var(--palette-accent-500);
+}
+
+mat-expansion-panel {
+    margin-bottom: 20px;
 }

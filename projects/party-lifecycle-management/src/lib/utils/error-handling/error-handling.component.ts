@@ -31,8 +31,6 @@ export class ErrorHandlingComponent {
     onlyCharactersAndHyphensAllowed: 'errorLblOnlyCharactersAndHyphensAllowed',
     max: 'errorLblMaxNumber',
     min: 'errorLblMinNumber',
-    dateInPast: 'errorLblDateInPast',
-    dateInFuture: 'errorLblDateInFuture'
   };
 
   constructor(protected injector: Injector) {

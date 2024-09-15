@@ -3,20 +3,19 @@ import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { AuthService, EnvironmentService, BpmTasksHttpClient, LoaderService, AseeFormControl, FormField } from '@asseco/common-ui';
-import { forkJoin, tap, combineLatest, Observable, map } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService, BpmTasksHttpClient, LoaderService, AseeFormControl, FormField, ErrorEmitterService } from '@asseco/common-ui';
+import { forkJoin, tap, combineLatest } from 'rxjs';
 import { ReferenceService } from '../../services/reference.service';
-import { CustomValidatorsService } from '../../services/custom-validators.service';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 
 @Component({
   selector: 'lib-identification-document',
   standalone: true,
   // eslint-disable-next-line max-len
-  imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent, UppercaseDirective],
+  imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent, UppercaseDirective, ReactiveFormsModule],
   templateUrl: './identification-document.component.html',
   styleUrl: './identification-document.component.scss'
 })
@@ -35,19 +34,23 @@ export class IdentificationDocumentComponent implements OnInit {
   public registrationProcess = false;
   public taskId = '';
   public task: any;
+  public limitDate = new Date();
+  public idExpirationDateDisabled = false;
+  public form: FormGroup;
+  protected router: Router;
+
   public formKeys = [
     { key: 'typeOfID', validators: [Validators.required] },
-    { key: 'numberOfID', validators: [Validators.required] },
+    { key: 'numberOfID', validators: [Validators.required, Validators.pattern('^[A-Za-z0-9]+$')] },
     { key: 'countryOfIssuing', validators: [Validators.required] },
     { key: 'placeOfIssuing', validators: [Validators.required] },
     { key: 'nameOfIdIssuer', validators: [] },
-    { key: 'dateOfIssue', validators: [Validators.required, CustomValidatorsService.dateNotInFutureValidator()] },
+    { key: 'dateOfIssue', validators: [Validators.required] },
     { key: 'idValidityPeriod', validators: [Validators.max(99), Validators.min(0)] },
     {
       key: 'idExpirationDate',
       validators:
-        [Validators.required,
-          CustomValidatorsService.futureDateValidator()]
+        [Validators.required]
     },
     { key: 'typeOfClient', validators: [] },
   ];
@@ -55,17 +58,22 @@ export class IdentificationDocumentComponent implements OnInit {
   constructor(
     protected injector: Injector,
     protected http: HttpClient,
-    protected authConfig: AuthService,
     private referenceService: ReferenceService,
-
+    protected errorEmitterService: ErrorEmitterService,
+    private fb: FormBuilder,
   ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
     this.locale = injector.get(L10N_LOCALE);
+    this.form = this.fb.group({
+      groups: this.fb.array([])  // Initialize FormArray to hold groups
+    });
+    this.router = this.injector.get(Router);
   }
 
   ngOnInit(): void {
+
     // Combine multiple HTTP requests using forkJoin
     forkJoin({
       countries: this.referenceService.getCountries(),
@@ -81,6 +89,10 @@ export class IdentificationDocumentComponent implements OnInit {
         this.taskId = params[0]['taskId'];
         this.getTask();
       });
+  };
+
+  get groups(): FormArray {
+    return this.form.get('groups') as FormArray;
   }
 
   public getTask() {
@@ -105,6 +117,70 @@ export class IdentificationDocumentComponent implements OnInit {
 
   private initFormGroup() {
     this.formGroupInitialized = false;
+
+    const identificationList = JSON.parse(this.getFormFieldValue('identificationList'));
+    // if (identificationList && identificationList.length > 0) {
+    if (!identificationList) {
+      this.initEmptyFormGroup();
+      return;
+    }
+
+    identificationList.forEach((id: any) => {
+      const fg: FormGroup = new FormGroup({});
+      this.formKeys.forEach(formKey => {
+        if (formKey) {
+          const control = new AseeFormControl(null, formKey.validators);
+          fg.addControl(formKey.key, control);
+          fg.controls[formKey.key].setValue(id[formKey.key]);
+          fg.controls[formKey.key].updateValueAndValidity();
+        }
+      });
+      this.updateValueAndValidateControls(fg);
+    });
+
+    this.formGroupInitialized = true;
+
+  }
+
+  private updateValueAndValidateControls(fg: FormGroup) {
+    if (this.getFormFieldValue('identificationTypes')) {
+      this.idDocumentTypes = this.filterInUseIdentificationTypes(JSON.parse(this.getFormFieldValue('identificationTypes')));
+    };
+
+    if (fg.controls['typeOfClient'].value.name === '1') {
+      fg.controls['countryOfIssuing'].setValue(this.findItemByProperty(this.countriesList, 'alpha2', 'RS'));
+      fg.controls['countryOfIssuing'].updateValueAndValidity();
+      fg.controls['countryOfIssuing'].markAsTouched();
+    }
+
+    fg.controls['typeOfID'].valueChanges.subscribe((newValue: any) => {
+      this.setValidatorsConditionally(newValue, fg);
+    });
+
+
+    fg.markAllAsTouched();
+
+
+    fg.controls['idValidityPeriod'].valueChanges.subscribe((newValue: any) => {
+      if (fg.controls['dateOfIssue'].value && fg.controls['idValidityPeriod'].value) {
+        fg.controls['idExpirationDate'].setValue(this.addYearsToDate(fg.controls['dateOfIssue'].value,
+          fg.controls['idValidityPeriod'].value));
+        this.idExpirationDateDisabled = true;
+      }
+    });
+
+    fg.controls['dateOfIssue'].valueChanges.subscribe((newValue: any) => {
+      if (fg.controls['idValidityPeriod'].value && fg.controls['dateOfIssue'].value) {
+        fg.controls['idExpirationDate'].setValue(this.addYearsToDate(fg.controls['dateOfIssue'].value,
+          fg.controls['idValidityPeriod'].value));
+        this.idExpirationDateDisabled = true;
+      }
+    });
+
+    this.groups.push(fg);
+  }
+
+  private initEmptyFormGroup() {
     this.formGroup = new FormGroup({});
     // Create controls
     this.formKeys.forEach(formKey => {
@@ -114,18 +190,12 @@ export class IdentificationDocumentComponent implements OnInit {
       }
     });
 
-    // Add value change listeners
-    this.formGroup.controls['countryOfIssuing'].valueChanges.subscribe(newValue => {
-      console.log(newValue);
-    });
-
-    // Initialize controls with values (this is because some logic in control listeners must be triggered)
-    // So this is the reason why creation and initialization are separated
     this.formKeys.forEach(formKey => {
       if (formKey) {
         let controlValue = null;
         try {
           controlValue = JSON.parse(this.getFormFieldValue(formKey.key));
+
         } catch (e) {
           controlValue = this.getFormFieldValue(formKey.key);
         }
@@ -134,36 +204,29 @@ export class IdentificationDocumentComponent implements OnInit {
       }
     });
 
-    if (this.getFormFieldValue('identificationTypes')) {
-      this.idDocumentTypes = this.filterInUseIdentificationTypes(JSON.parse(this.getFormFieldValue('identificationTypes')));
-    };
-
-    if (this.formGroup.controls['typeOfClient'].value.name === '1') {
-      this.formGroup.controls['countryOfIssuing'].setValue(this.findItemByProperty(this.countriesList, 'alpha2', 'RS'));
-      this.formGroup.controls['countryOfIssuing'].updateValueAndValidity();
-      this.formGroup.controls['countryOfIssuing'].markAsTouched();
-      console.log('rs', this.formGroup.controls['countryOfIssuing'].value);
-
-    }
-
-    this.formGroup.controls['typeOfID'].valueChanges.subscribe(newValue => {
-      this.setValidatorsConditionally(newValue);
-    });
-
-
-    this.formGroup.markAllAsTouched();
+    this.updateValueAndValidateControls(this.formGroup);
     this.formGroupInitialized = true;
+
   }
 
-  private setValidatorsConditionally(newValue: any) {
+  public addGroup() {
+    this.initEmptyFormGroup();
+  }
+
+  public removeGroup() {
+    this.groups.controls.pop();
+    this.groups.updateValueAndValidity();
+  }
+
+  private setValidatorsConditionally(newValue: any, fg: FormGroup) {
     if (newValue && newValue.literal === 'national-id-card') {
-      this.formGroup.controls['nameOfIdIssuer'].addValidators(Validators.required);
+      fg.controls['nameOfIdIssuer'].addValidators(Validators.required);
     } else {
-      this.formGroup.controls['nameOfIdIssuer'].clearValidators();
+      fg.controls['nameOfIdIssuer'].clearValidators();
     }
 
-    this.formGroup.controls['nameOfIdIssuer'].updateValueAndValidity();
-    this.formGroup.controls['nameOfIdIssuer'].markAsTouched();
+    fg.controls['nameOfIdIssuer'].updateValueAndValidity();
+    fg.controls['nameOfIdIssuer'].markAsTouched();
   }
 
   private getFormFieldValue(formField: any) {
@@ -201,4 +264,56 @@ export class IdentificationDocumentComponent implements OnInit {
     return null;
   }
 
+  // private filterIdentificationTypesLeftToAdd() {
+  //   const usedIdTypes: any = [];
+  //   this.groups.controls.forEach((fg: any) => {
+  //     usedIdTypes.push(fg.controls["typeOfID"].value.literal);
+  //   });
+  //   this.idDocumentTypes = this.idDocumentTypes.filter((obj: any) => !usedIdTypes.includes(obj.literal));
+  // }
+
+  private addYearsToDate(date: Date, yearsToAdd: number): Date {
+    // Create a new Date object to avoid mutating the original date
+    const newDate = new Date(date);
+
+    // Add the years to the current year
+    newDate.setFullYear(newDate.getFullYear() + yearsToAdd);
+
+    return newDate;
+  }
+
+  public onSubmit() {
+    this.formGroup = new FormGroup({});
+    this.modifyControlsBeforeSubmit();
+    this.formGroup.addControl('identificationList', new AseeFormControl(this.groups.value));
+    this.bpmTaskService.complete(this.task.id, this.formGroup)
+      .build().subscribe((res) => {
+        this.router.navigateByUrl('tasks');
+      },
+        (err) => {
+          this.errorEmitterService.setError(err);
+        }
+      );
+  }
+
+  public modifyControlsBeforeSubmit() {
+    // Go through each date and subtract time zone (sending one date before current problem)
+    this.groups.controls.forEach((formGroup: any) => {
+      Object.keys(formGroup.controls).forEach((key) => {
+        const control = formGroup.get(key);
+        if ((typeof control.value) === 'string') {
+          control.value = control.value.toUpperCase();
+          control.updateValueAndValidity();
+        }
+
+        if (control.value instanceof Date) {
+          const options = { timeZone: 'Europe/Belgrade', year: 'numeric', month: '2-digit', day: '2-digit' };
+          const belgradeDateString = control.value.toLocaleDateString('en-CA', options); // 'en-CA' outputs in YYYY-MM-DD format
+          control.value = belgradeDateString;
+          control.updateValueAndValidity();
+        }
+      });
+    });
+
+  }
 }

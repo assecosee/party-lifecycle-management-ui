@@ -8,75 +8,102 @@
             </mat-card-title>
         </mat-card-header>
         @if(formGroupInitialized){
-        <mat-card-content class="pt">
-
-            <div class="flex-container">
-                <div class="flex-item">
-                    <asee-autocomplete #typeOfClientAutocomplete appearance="outline"
-                        [control]="formGroup.controls['typeOfID']" [autocompleteList]="idDocumentTypes"
-                        [label]="'lblTypeOfID' | translate : locale.language" filterBehaviour="includes"
-                        labelProperty="description" valueProperty="name"
-                        (click)="markAsTouched('typeOfID')"></asee-autocomplete>
-                    <error-handling [control]="formGroup.controls['typeOfID']"></error-handling>
-                </div>
-
-                <div class="flex-item">
-                    <asee-integer-input appearance="outline" [control]="formGroup.controls['numberOfID']"
-                        [label]="'lblNumberOfID' | translate : locale.language">
-                    </asee-integer-input>
-                    <error-handling [control]="formGroup.controls['numberOfID']"></error-handling>
-                </div>
-
+        <mat-card-content class="pt" [formGroup]="form">
+            <div formArrayName="groups">
+                @for (group of groups.controls; track $index){
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <span>{{group.get('typeOfID')?.value?.name}} </span>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div [formGroup]="group">
+                        <div class="flex-container">
+                            <div class="flex-item">
+                                <asee-autocomplete #typeOfClientAutocomplete appearance="outline"
+                                    [control]="group.get('typeOfID')" [autocompleteList]="idDocumentTypes"
+                                    [label]="'lblTypeOfID' | translate : locale.language" filterBehaviour="includes"
+                                    labelProperty="description" valueProperty="name"
+                                    (click)="markAsTouched('typeOfID')"></asee-autocomplete>
+                                <error-handling [control]="group.get('typeOfID')"></error-handling>
+                            </div>
+                            <div class="flex-item">
+                                <asee-text-input appUppercase appearance="outline" [control]="group.get('numberOfID')"
+                                    [label]="'lblNumberOfID' | translate : locale.language">
+                                </asee-text-input>
+                                <error-handling [control]="group.get('numberOfID')"></error-handling>
+                            </div>
+                        </div>
+                        <div class="flex-container pt">
+                            <div class="flex-item">
+                                <asee-autocomplete appearance="outline" [control]="group.get('countryOfIssuing')"
+                                    [autocompleteList]="countriesList"
+                                    [label]="'lblCountryOfIssuing' | translate : locale.language"
+                                    filterBehaviour="includes" labelProperty="name" valueProperty="code"
+                                    (click)="markAsTouched('countryOfIssuing')"></asee-autocomplete>
+                                <error-handling [control]="group.get('countryOfIssuing')"></error-handling>
+                            </div>
+                            <div class="flex-item">
+                                <asee-text-input appUppercase appearance="outline"
+                                    [control]="group.get('placeOfIssuing')"
+                                    [label]="'lblPlaceOfIssuing' | translate : locale.language">
+                                </asee-text-input>
+                                <error-handling [control]="group.get('placeOfIssuing')"></error-handling>
+                            </div>
+                        </div>
+                        <div class="flex-container pt">
+                            <div class="flex-item">
+                                <asee-text-input appUppercase appearance="outline"
+                                    [control]="group.get('nameOfIdIssuer')"
+                                    [label]="'lblNameOfIdIssuer' | translate : locale.language">
+                                </asee-text-input>
+                                <error-handling [control]="group.get('nameOfIdIssuer')"></error-handling>
+                            </div>
+                            <div class="flex-item">
+                                <asee-datepicker appearance="outline" [control]="group.get('dateOfIssue')"
+                                    (click)="markAsTouched('dateOfIssue')" startView="month"
+                                    [label]="'lblDateOfIssue' | translate : locale.language"
+                                    [max]="limitDate"></asee-datepicker>
+                                <error-handling [control]="group.get('dateOfIssue')"></error-handling>
+                            </div>
+                        </div>
+                        <div class="flex-container pt">
+                            <div class="flex-item">
+                                <asee-integer-input appearance="outline" [control]="group.get('idValidityPeriod')"
+                                    [label]="'lblIdValidityPeriod' | translate : locale.language">
+                                </asee-integer-input>
+                                <error-handling [control]="group.get('idValidityPeriod')"></error-handling>
+                            </div>
+                            <div class="flex-item">
+                                <asee-datepicker appearance="outline" [disabled]="idExpirationDateDisabled"
+                                    [control]="group.get('idExpirationDate')"
+                                    (click)="markAsTouched('idExpirationDate')" startView="month"
+                                    [label]="'lblIdExpirationDate' | translate : locale.language"
+                                    [min]="limitDate"></asee-datepicker>
+                                <error-handling [control]="group.get('idExpirationDate')"></error-handling>
+                            </div>
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+                }
             </div>
-            <div class="flex-container pt">
-                <div class="flex-item">
-                    <asee-autocomplete appearance="outline" [control]="formGroup.controls['countryOfIssuing']"
-                        [autocompleteList]="countriesList" [label]="'lblCountryOfIssuing' | translate : locale.language"
-                        filterBehaviour="includes" labelProperty="name" valueProperty="code"
-                        (click)="markAsTouched('countryOfIssuing')"></asee-autocomplete>
-                    <error-handling [control]="formGroup.controls['countryOfIssuing']"></error-handling>
-                </div>
-                <div class="flex-item">
-                    <asee-text-input appUppercase appearance="outline" [control]="formGroup.controls['placeOfIssuing']"
-                        [label]="'lblPlaceOfIssuing' | translate : locale.language">
-                    </asee-text-input>
-                    <error-handling [control]="formGroup.controls['placeOfIssuing']"></error-handling>
-                </div>
-            </div>
-            <div class="flex-container pt">
-                <div class="flex-item">
-                    <asee-text-input appUppercase appearance="outline" [control]="formGroup.controls['nameOfIdIssuer']"
-                        [label]="'lblNameOfIdIssuer' | translate : locale.language">
-                    </asee-text-input>
-                    <error-handling [control]="formGroup.controls['nameOfIdIssuer']"></error-handling>
-                </div>
-                <div class="flex-item">
-                    <asee-datepicker #clientDateOfBirthPicker appearance="outline"
-                        [control]="formGroup.controls['dateOfIssue']" (click)="markAsTouched('dateOfIssue')"
-                        startView="month" [label]="'lblDateOfIssue' | translate : locale.language"
-                        [max]=""></asee-datepicker>
-                    <error-handling [control]="formGroup.controls['dateOfIssue']"></error-handling>
-                </div>
-            </div>
-            <div class="flex-container pt">
-                <div class="flex-item">
-                    <asee-integer-input appearance="outline" [control]="formGroup.controls['idValidityPeriod']"
-                        [label]="'lblIdValidityPeriod' | translate : locale.language">
-                    </asee-integer-input>
-                    <error-handling [control]="formGroup.controls['idValidityPeriod']"></error-handling>
-                </div>
-                <div class="flex-item">
-                    <asee-datepicker #clientDateOfBirthPicker appearance="outline"
-                        [control]="formGroup.controls['idExpirationDate']" (click)="markAsTouched('idExpirationDate')"
-                        startView="month" [label]="'lblIdExpirationDate' | translate : locale.language"
-                        [max]=""></asee-datepicker>
-                    <error-handling [control]="formGroup.controls['idExpirationDate']"></error-handling>
-                </div>
+            <div class="btn-container">
+                <button mat-button translate (click)="addGroup()" class="btn"
+                    [disabled]="idDocumentTypes?.length === groups?.controls?.length">
+                    Add new document
+                </button>
+                <button mat-button translate (click)="removeGroup()" class="btn"
+                    [disabled]="groups?.controls?.length == 1">
+                    Remove document
+                </button>
             </div>
         </mat-card-content>
         }
         <div class="bottom-end-alignment">
-            <customer-actions [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
+            <customer-actions [currentTask]="task" (onSubmit)="onSubmit()" submitButtonName="Complete"
+                [formGroup]="groups">
             </customer-actions>
         </div>
     </mat-card>
