@@ -80,6 +80,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
     {
       key: 'dateOfDeactivation',
       validators: []
+    },
+    {
+      key: 'notResident',
+      validators: []
     }
   ];
   public formKeysLegalEntity = [
@@ -116,6 +120,10 @@ export class BasicDataComponent implements OnInit, DoCheck {
     },
     {
       key: 'dateOfDeactivation',
+      validators: []
+    },
+    {
+      key: 'notResident',
       validators: []
     }
   ];
@@ -317,6 +325,8 @@ export class BasicDataComponent implements OnInit, DoCheck {
         this.formGroup.controls[formKey.key].updateValueAndValidity();
       }
     });
+
+    this.formGroup.controls['notResident'].setValue(this.notResidentClient);
 
     if (!isInitial) {
       this.formGroup.markAllAsTouched();
