@@ -389,10 +389,6 @@ export class GeneralRegistrationDataComponent implements OnInit {
     return null;
   }
 
-  public log() {
-    console.log(this.formGroup.controls['language'].value);
-  }
-
   private checkGender(number: string) {
     const num = parseInt(number.substring(8, 11), 10);
     if (num >= 0 && num <= 499) {
