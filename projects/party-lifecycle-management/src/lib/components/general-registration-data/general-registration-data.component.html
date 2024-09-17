@@ -24,6 +24,7 @@
         </div>
         <div class="flex-item">
           <asee-autocomplete
+            #orgUnits
             [autocompleteList]="organizationUnits"
             appearance="outline"
             labelProperty="lblName"
@@ -52,6 +53,7 @@
         </div>
         <div class="flex-item">
           <asee-autocomplete
+            #maritalStatus
             [autocompleteList]="martialStatus"
             labelProperty="description"
             valueProperty="description"
@@ -70,7 +72,7 @@
       <div class="flex-container pt">
         <div class="flex-item">
           <asee-autocomplete
-            #clientCountryOfBirthAutocomplete
+            #clientCountryOfBirth
             filterBehaviour="includes"
             appearance="outline"
             [control]="formGroup.controls['clientCountryOfBirth']"
@@ -100,6 +102,7 @@
         </div>
         <div class="flex-item">
           <asee-autocomplete
+            #propertyOwnership
             [autocompleteList]="ownership"
             labelProperty="description"
             valueProperty="description"

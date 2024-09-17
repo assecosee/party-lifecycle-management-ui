@@ -52,6 +52,14 @@ export class GeneralRegistrationDataComponent implements OnInit {
   public isIndividualPerson = false;
   @ViewChild('lang', { static: false })
   public lang: MaterialAutocompleteComponent | undefined;
+  @ViewChild('orgUnits', { static: false })
+  public orgUnits: MaterialAutocompleteComponent | undefined;
+  @ViewChild('maritalStatus', { static: false })
+  public maritalStatusAC: MaterialAutocompleteComponent | undefined;
+  @ViewChild('propertyOwnership', { static: false })
+  public ownershipAC: MaterialAutocompleteComponent | undefined;
+  @ViewChild('clientCountryOfBirth', { static: false })
+  public clientCountryOfBirth: MaterialAutocompleteComponent | undefined;
   public formKeysIndividualPerson = [
     {
       key: 'dateOfActivation',
@@ -70,7 +78,10 @@ export class GeneralRegistrationDataComponent implements OnInit {
       validators: [
         CustomValidatorsService.noSlashesAllowed(),
         CustomValidatorsService.onlyCharactersAllowed(),
-        CustomValidatorsService.parentLastNameRequired('gender', 'maritalStatus'),
+        CustomValidatorsService.parentLastNameRequired(
+          'gender',
+          'maritalStatus'
+        ),
       ],
     },
     {
@@ -324,37 +335,44 @@ export class GeneralRegistrationDataComponent implements OnInit {
     formKeys.forEach((formKey) => {
       if (formKey) {
         let controlValue = null;
+        const rawValue = this.getFormFieldValue(formKey.key);
+        let value;
+
         try {
-          controlValue = JSON.parse(this.getFormFieldValue(formKey.key));
+          value = JSON.parse(rawValue);
         } catch (e) {
-          controlValue = this.getFormFieldValue(formKey.key);
+          value = rawValue; // If parsing fails, fallback to raw value
         }
-        if (formKey.key === 'dateOfActivation') {
-          controlValue = new Date();
-        }
-        if (
-          formKey.key === 'nonResidentDateOfActivation' &&
-          this.notResidentClient
-        ) {
-          controlValue = new Date();
-        }
-        if (formKey.key === 'language' && !this.notResidentClient) {
-          controlValue = this.languages.find((item: any) => item.name === 'SR');
-          this.lang?.controlInternal.setValue(controlValue);
-        }
-        if (
-          formKey.key === 'gender' &&
-          !this.notResidentClient &&
-          this.getFormFieldValue('registrationNumber')
-        ) {
-          controlValue =
-            this.genderOptions[
-              this.checkGender(this.getFormFieldValue('registrationNumber'))
-            ]?.value;
+
+        if (value) {
+          controlValue = this.refillField(formKey.key, value);
+        } else {
+          if (
+            formKey.key === 'dateOfActivation' ||
+            (formKey.key === 'nonResidentDateOfActivation' &&
+              this.notResidentClient)
+          ) {
+            controlValue = new Date();
+          }
+          if (formKey.key === 'language' && !this.notResidentClient) {
+            controlValue = this.languages.find(
+              (item: any) => item.name === 'SR'
+            );
+            this.lang?.controlInternal.setValue(controlValue);
+          }
+          if (
+            formKey.key === 'gender' &&
+            !this.notResidentClient &&
+            this.getFormFieldValue('registrationNumber')
+          ) {
+            controlValue =
+              this.genderOptions[
+                this.checkGender(this.getFormFieldValue('registrationNumber'))
+              ]?.value;
+          }
         }
         const control = new AseeFormControl(controlValue, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
-        this.formGroup.controls[formKey.key].updateValueAndValidity();
       }
     });
 
@@ -369,8 +387,10 @@ export class GeneralRegistrationDataComponent implements OnInit {
     if (!isInitial) {
       this.formGroup.markAllAsTouched();
     }
-    this.formGroupInitialized = true;
-
+    setTimeout(() => {
+      this.formGroupInitialized = true;
+      this.formGroup.updateValueAndValidity();
+    }, 100);
     console.log('Form group: ', this.formGroup);
   }
 
@@ -395,5 +415,35 @@ export class GeneralRegistrationDataComponent implements OnInit {
       return 0;
     }
     return 1;
+  }
+
+  private refillField(key: string, value: any) {
+    const controlsMap: { [key: string]: any } = {
+      language: this.lang,
+      organizationUnit: this.orgUnits,
+      clientCountryOfBirth: this.clientCountryOfBirth,
+      maritalStatus: this.maritalStatusAC,
+      propertyOwnership: this.ownershipAC,
+    };
+    const val = controlsMap[key] || null;
+    if (val) {
+      val.controlInternal.setValue(value);
+    }
+    if (
+      [
+        'dateOfActivation',
+        'nonResidentDateOfActivation',
+        'dateOfDeath',
+        'onAddressFrom',
+      ].includes(key)
+    ) {
+      return value;
+    }
+    if (key === 'gender') {
+      return this.genderOptions.find(
+        (obj) => obj.value.toLowerCase() === value.toLowerCase()
+      )?.value;
+    }
+    return value;
   }
 }
