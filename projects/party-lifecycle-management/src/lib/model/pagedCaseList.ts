@@ -8,7 +8,7 @@ export interface PagedCaseList extends PagedList {
   /**
    * Collection of managed cases
    */
-  cases?: Array<Case>;
+  lifecycleCases?: Array<Case>;
 }
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PagedCaseList {

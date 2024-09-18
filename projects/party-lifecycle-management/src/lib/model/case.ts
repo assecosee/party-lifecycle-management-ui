@@ -1,10 +1,12 @@
+import { EntityInfo } from './entityInfo';
 import { IdentificationKindsEnum } from './identificationKindsEnum';
+import { PartyReference } from './partyReference';
 
 export interface Case {
   /**
    * Unique identifier of case
    */
-  readonly caseNumber: string;
+  readonly id: string;
   /**
    * Type of party maintenance administrativa plan, bpm proccess
    */
@@ -32,6 +34,7 @@ export interface Case {
   partyKind?: Case.PartyKindEnum;
   partyIdentificationNumber?: string;
   partyIdentificationKind?: IdentificationKindsEnum;
+  partyReference: PartyReference;
   /**
    * DB creation time
    */
@@ -48,6 +51,7 @@ export interface Case {
    * Unique identifier of agent, agent code or agent name
    */
   readonly lastModifiedBy?: string;
+  entityInfo?: EntityInfo;
 }
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Case {

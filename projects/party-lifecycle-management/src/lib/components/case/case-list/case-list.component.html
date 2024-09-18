@@ -25,18 +25,18 @@
             <ng-container matColumnDef="caseNumber">
               <mat-header-cell *matHeaderCellDef translate>Case number</mat-header-cell>
               <mat-cell *matCellDef="let row">
-              {{row.caseNumber}} </mat-cell>
+              {{row.id}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="partyNumber">
               <mat-header-cell *matHeaderCellDef translate>Party number</mat-header-cell>
               <mat-cell *matCellDef="let row" translate> 
-                @if (row?.partyNumber) {
+                @if (row?.partyReference?.partyNumber) {
                   <span class="icon-prefix party-name">
                     <i class="material-icons secondary-icon">account_box</i>
-                    <span>{{row.partyNumber}}</span>
+                    <span>{{row.partyReference.partyNumber}}</span>
                   </span>
                 }
-                @if (!row?.partyNumber) {
+                @if (!row?.partyReference?.partyNumber) {
                   <span class="no-data">
                     {{'no data'}}
                   </span>
@@ -46,10 +46,10 @@
             <ng-container matColumnDef="partyName">
               <mat-header-cell *matHeaderCellDef translate>Party name</mat-header-cell>
               <mat-cell *matCellDef="let row" translate>
-                @if (row?.partyName) {
-                  {{row.partyName}}
+                @if (row?.partyReference?.partyName) {
+                  {{row?.partyReference?.partyName}}
                 }
-                @if (!row?.partyName) {
+                @if (!row?.partyReference?.partyName) {
                   <span class="no-data">
                     {{'no data'}}
                   </span>
@@ -59,13 +59,13 @@
             <ng-container matColumnDef="partyIdentificationNumber">
               <mat-header-cell *matHeaderCellDef translate>Identification number</mat-header-cell>
               <mat-cell *matCellDef="let row" translate>
-                @if (row?.partyIdentificationNumber) {
+                @if (row?.partyReference?.partyIdentificationNumber) {
                   <span class="icon-prefix customer-name">
                     <i class="material-icons secondary-icon">account_box</i>
-                    <span>{{row.partyIdentificationNumber}}</span>
+                    <span>{{row.partyReference?.partyIdentificationNumber}}</span>
                   </span>
                 }
-                @if (!row?.partyIdentificationNumber) {
+                @if (!row?.partyReference?.partyIdentificationNumber) {
                   <span class="no-data">
                     {{'no data'}}
                   </span>
@@ -75,7 +75,7 @@
           <ng-container matColumnDef="creationDate">
             <mat-header-cell *matHeaderCellDef class="requestDate cente sortable">
               <span translate>Creation date</span>
-              @if (selectedFilters && selectedFilters.sortBy === 'creationDate') {
+              @if (selectedFilters && selectedFilters.sortBy === 'creation-time') {
                 <span>
                   @if (selectedFilters.sortOrder === 'desc') {
                     <i class="material-icons">arrow_drop_down</i>
@@ -87,13 +87,13 @@
               }
             </mat-header-cell>
             <mat-cell *matCellDef="let row" class="dateColumn center">
-              @if (row?.creationTime) {
+              @if (row?.entityInfo?.creationTime) {
                 <span class="icon-prefix center">
                   <i class="material-icons secondary-icon">today</i>
-                  <span [options]="{ dateStyle: 'medium'}" l10nDate>{{row.creationTime}}</span>
+                  <span [options]="{ dateStyle: 'medium'}" l10nDate>{{row?.entityInfo?.creationTime}}</span>
                 </span>
               }
-              @if (!row?.creationTime) {
+              @if (!row?.entityInfo?.creationTime) {
                 <span class="no-data">
                   {{'no data'}}
                 </span>

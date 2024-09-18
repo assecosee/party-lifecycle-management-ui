@@ -38,7 +38,7 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   public selectedFilters: any = {
     page: 1,
     pageSize: 30,
-    sortBy: 'creationDate',
+    sortBy: 'creation-time',
     sortOrder: 'desc',
   };
   public totalPages: number | undefined = 0;
@@ -68,13 +68,13 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   ngOnInit(): void {
     this.sortFields = [
       {
-        label: 'Request Date (asc)',
-        sortBy: 'requestDate',
+        label: 'Creation Date (asc)',
+        sortBy: 'creation-time',
         sortOrder: 'asc'
       },
       {
-        label: 'Request Date (desc)',
-        sortBy: 'requestDate',
+        label: 'Creation Date (desc)',
+        sortBy: 'creation-time',
         sortOrder: 'desc'
       }
     ];
@@ -112,7 +112,9 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   public sort(sortField: any) {
-    console.log('SORT LIST');
+    this.selectedFilters.sortOrder = sortField.sortOrder;
+    this.selectedFilters.sortBy = sortField.sortBy;
+    this.resetLoading();
   }
 
   public onScroll() {
@@ -126,7 +128,7 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   public openCase(c: Case) {
-    this.router.navigate([`party-lifecycle-management/cases/${c.caseNumber}`]);
+    this.router.navigate([`party-lifecycle-management/cases/${c.id}`]);
   }
 
   public getCases() {
@@ -135,8 +137,8 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
     this.getCasesSubscription = this.partyLifecycleManagementService.getCases(this.selectedFilters).subscribe(
       (res: PagedCaseList) => {
         this.loading = false;
-        if(res.cases) {
-          this.cases = res.cases;
+        if(res.lifecycleCases) {
+          this.cases = res.lifecycleCases;
         }
         if(res.totalCount) {
           this.totalCount = res.totalCount;
