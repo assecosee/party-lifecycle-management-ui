@@ -9,6 +9,7 @@ export interface FilterCaseCommandQuery {
   pageSize?: number;
   sortOrder?: FilterCaseCommandQuery.SortOrderEnum;
   sortBy?: string;
+  include?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
