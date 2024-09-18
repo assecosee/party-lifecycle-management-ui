@@ -26,6 +26,7 @@ import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { DirectoryService } from '../../services/directory.service';
 
 @Component({
   selector: 'lib-basic-data',
@@ -195,12 +196,19 @@ export class GeneralRegistrationDataComponent implements OnInit {
   public isRegistration = false;
   public notResidentClient = false;
   public showClientDateOfBirthPicker = true;
+  private filters = {
+    page: 1,
+    pageSize: 50,
+    sortBy: 'name',
+    sortOrder: 'asc'
+  };
   // Store references and prefilled flags
   constructor(
     protected injector: Injector,
     protected configurationService: ConfigurationHttpClient,
     private referenceService: ReferenceService,
-    private customService: CustomService
+    private customService: CustomService,
+    private directoryService: DirectoryService
   ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
@@ -210,7 +218,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
 
   ngOnInit(): void {
     forkJoin([
-      this.customService.getClassification('JO2ORGJED').pipe(
+      this.directoryService.getOrganizationUnits(this.filters).pipe(
         catchError((error) => {
           console.error('Error fetching organizationUnits:', error);
           return of({ items: [] });
@@ -260,7 +268,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
       ]) => {
         // Now process the responses
         this.organizationUnits = organizationUnits.items.filter(
-          (item: any) => item.description
+          (item: any) => item.name && item.isActive
         );
         this.languages = languages.items.filter(
           (item: any) => item.description
@@ -304,7 +312,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
             this.formFields = result;
             console.log('Form data: ', this.formFields);
             // Populate form group with controls received from task
-            this.initFormGroup(true);
+            this.initFormGroup();
           });
       });
   }
@@ -441,7 +449,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
     }
     if (key === 'gender') {
       return this.genderOptions.find(
-        (obj) => obj.value.toLowerCase() === value.toLowerCase()
+        (obj: any) => obj.value.toLowerCase() === value.toLowerCase()
       )?.value;
     }
     return value;
