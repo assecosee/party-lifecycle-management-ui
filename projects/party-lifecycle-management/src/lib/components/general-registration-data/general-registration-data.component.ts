@@ -200,7 +200,9 @@ export class GeneralRegistrationDataComponent implements OnInit {
     page: 1,
     pageSize: 50,
     sortBy: 'name',
-    sortOrder: 'asc'
+    sortOrder: 'asc',
+    includeHierarchy: true,
+    kind: 'branch-network-node'
   };
   // Store references and prefilled flags
   constructor(
@@ -268,7 +270,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
       ]) => {
         // Now process the responses
         this.organizationUnits = organizationUnits.items.filter(
-          (item: any) => item.name && item.isActive
+          (item: any) => item.name
         );
         this.languages = languages.items.filter(
           (item: any) => item.description

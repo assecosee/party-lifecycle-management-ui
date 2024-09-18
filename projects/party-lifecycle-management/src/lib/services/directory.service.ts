@@ -16,8 +16,9 @@ export class DirectoryService extends AbstractHttpClient {
 
   public getOrganizationUnits(filters?: any): Observable<any> {
     const builder = this.getHttpClientBuilder<any[]>()
-      // eslint-disable-next-line max-len
-      .setUrl(`${this.url}agents/organization-units?page=${filters.page}&page-size=${filters.pageSize}&sort-by=${filters.sortBy}&sort-order=${filters.sortOrder}`)
+      .setUrl(`${this.url}agents/organization-units?page=${filters.page}&page-size=${filters.pageSize}`
+       + `&sort-by=${filters.sortBy}&sort-order=${filters.sortOrder}`
+       + `&include-hierarchy=${filters.includeHierarchy}&kind=${filters.kind}`)
       .setHttpMethod(HttpMethod.GET)
       .mapResponseToCamelCase()
       .addAuthentication();
