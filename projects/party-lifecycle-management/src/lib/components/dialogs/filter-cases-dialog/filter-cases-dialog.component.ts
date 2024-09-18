@@ -128,6 +128,7 @@ export class FilterCasesDialogComponent implements OnInit {
   private initForm() {
     this.filtersGroup = this.formService.getFormGroup('party-lcm/filter-cases-dialog',
       {
+        caseNumber: new AseeFormControl(null),
         partyName: new AseeFormControl(null),
         partyNumber: new AseeFormControl(null),
         partyIdentificationNumber: new AseeFormControl(null),

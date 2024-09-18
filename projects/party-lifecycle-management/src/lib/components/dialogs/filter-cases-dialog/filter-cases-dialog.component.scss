@@ -5,7 +5,7 @@
       .filter-cases-filter-form {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        grid-gap: 1rem;
+        gap: 2%;
       }
     }
     mat-dialog-actions {
