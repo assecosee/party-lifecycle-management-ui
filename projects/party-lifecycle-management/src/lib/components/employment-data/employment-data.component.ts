@@ -182,6 +182,9 @@ export class EmploymentDataComponent implements OnInit {
 
         this.formGroup.controls['companyRegisteredName'].setValue('');
         this.formGroup.controls['companyRegisteredName'].updateValueAndValidity();
+
+        this.formGroup.controls['companyOrganizationPart'].setValue('');
+        this.formGroup.controls['companyOrganizationPart'].updateValueAndValidity();
       }
 
       if ((typeof value) === 'object' && value !== null && value !== this.previousCompany) {
@@ -196,6 +199,9 @@ export class EmploymentDataComponent implements OnInit {
 
           this.formGroup.controls['companyRegisteredName'].setValue(value.registeredName);
           this.formGroup.controls['companyRegisteredName'].updateValueAndValidity();
+
+          this.formGroup.controls['companyOrganizationPart'].setValue(value.branchIdentifier);
+          this.formGroup.controls['companyOrganizationPart'].updateValueAndValidity();
         }
       }
     });
