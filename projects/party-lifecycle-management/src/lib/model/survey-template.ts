@@ -88,6 +88,7 @@ export interface Answer {
   selectedOption?: string;
 }
 
+// eslint-disable-next-line max-len
 export type AnswerTypeEnum = 'text' | 'numeric' | 'date' | 'bool' | 'options' | 'multiple-options' | 'currency' | 'unit-of-measure' | 'complex';
 
 export const AnswerTypeEnum = {
