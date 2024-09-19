@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/dot-notation */
 import { Component, DoCheck, Injector, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -138,6 +139,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public notResidentClient = false;
   public maxDate = new Date();
   public showClientDateOfBirthPicker = true;
+  public initalDataSet = false;
   // Store references and prefilled flags
   constructor(
     protected injector: Injector,
@@ -328,11 +330,27 @@ export class BasicDataComponent implements OnInit, DoCheck {
 
     this.formGroup.controls['notResident'].setValue(this.notResidentClient);
 
+    // For non resident clients set default country (REPUBLIKA SRBIJA)
+    if (!this.notResidentClient) {
+      if (this.isIndividualPerson) {
+        this.formGroup.controls['countryOfficialAddress']
+          ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
+        this.formGroup.controls['clientCitizenship']
+          ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
+      } else {
+        this.formGroup.controls['countryOfHeadquartersOfficialAddress']
+          ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
+        this.formGroup.controls['countryOfOrigin']
+          ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
+      }
+    }
+
+
     if (!isInitial) {
       this.formGroup.markAllAsTouched();
     }
-    this.formGroupInitialized = true;
 
+    this.formGroupInitialized = true;
     console.log('Form group: ', this.formGroup);
   }
 
@@ -371,19 +389,6 @@ export class BasicDataComponent implements OnInit, DoCheck {
       && this.previousValue !== this.formGroup.controls['typeOfClient'].value.value) {
       this.previousValue = this.formGroup.controls['typeOfClient'].value.value;
       this.initFormGroup(false);
-    }
-    if (!this.notResidentClient && this.isIndividualPerson) {
-      this.formGroup.controls['countryOfficialAddress']
-        ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
-      this.formGroup.controls['clientCitizenship']
-        ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
-    }
-
-    if (!this.notResidentClient && !this.isIndividualPerson) {
-      this.formGroup.controls['countryOfHeadquartersOfficialAddress']
-        ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
-      this.formGroup.controls['countryOfOrigin']
-        ?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
     }
   }
 }

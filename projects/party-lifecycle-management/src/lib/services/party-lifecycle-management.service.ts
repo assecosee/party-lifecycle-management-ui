@@ -2,8 +2,9 @@ import { Injectable, Injector } from '@angular/core';
 import { PagedCaseList } from '../model/pagedCaseList';
 import { Observable, of } from 'rxjs';
 import { FilterCaseCommandQuery } from '../model/filterCaseCommandQuery';
-import { AbstractHttpClient, ConfigurationHttpClient, HttpClientBuilder } from '@asseco/common-ui';
+import { AbstractHttpClient, ConfigurationHttpClient, HttpClientBuilder, HttpMethod } from '@asseco/common-ui';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ClassificationSchema } from '../model/classification-schema';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,15 @@ export class PartyLifecycleManagementService extends AbstractHttpClient {
     if (filterCaseCommandQuery) {
       builder.addRawQueryParams(filterCaseCommandQuery);
     }
+    return builder.build();
+  }
+  public getClassification(classificationName: string): Observable<ClassificationSchema> {
+    const builder = this.getHttpClientBuilder<ClassificationSchema>()
+      .setUrl(`${this.getUrl()}classifications/${classificationName}`)
+      .setHttpMethod(HttpMethod.GET)
+      .mapResponseToCamelCase()
+      .addAuthentication();
+
     return builder.build();
   }
 }

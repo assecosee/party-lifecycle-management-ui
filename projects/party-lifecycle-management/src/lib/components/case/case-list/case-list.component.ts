@@ -10,6 +10,7 @@ import { PagedCaseList } from '../../../model/pagedCaseList';
 import { Case } from '../../../model/case';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FilterCasesDialogComponent } from '../../dialogs/filter-cases-dialog/filter-cases-dialog.component';
+import { FilterCaseCommandQuery } from '../../../model/filterCaseCommandQuery';
 
 @Component({
   selector: 'party-lcm-case-list',
@@ -102,10 +103,36 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   public openFilters() {
-    this.filterDialog = this.dialog.open(FilterCasesDialogComponent, {});
-    this.filterDialog.afterClosed().subscribe((selectedFilters) => {
+    // this.parseRouteQueryParams();
+    this.filterDialog = this.dialog.open(FilterCasesDialogComponent, {
+      data: this.selectedFilters
+    });
+    this.filterDialog.afterClosed().subscribe((selectedFilters: FilterCaseCommandQuery) => {
       if (selectedFilters) {
         this.selectedFilters = selectedFilters;
+        const filterKey = Object.keys(this.selectedFilters);
+        if(filterKey && filterKey.length) {
+          filterKey.forEach((el: string) => {
+            if(!this.selectedFilters[el] || this.selectedFilters[el] === undefined) {
+              delete this.selectedFilters[el];
+            }
+          });
+        }
+        if(this.selectedFilters.dateTo) {
+          this.selectedFilters.dateTo = this.convertUTCDateToLocalDate(this.selectedFilters.dateTo);
+        }
+        if(this.selectedFilters.dateFrom) {
+          this.selectedFilters.dateFrom = this.convertUTCDateToLocalDate(this.selectedFilters.dateFrom);
+        }
+        if(this.selectedFilters.agent && this.selectedFilters.agent !== undefined) {
+          this.selectedFilters.agent = this.selectedFilters.agent.username;
+        }
+        if(this.selectedFilters.channel) {
+          this.selectedFilters.channel = this.selectedFilters.channel.join(',');
+        }
+        if(this.selectedFilters.statuses) {
+          this.selectedFilters.statuses = this.selectedFilters.statuses.join(',');
+        }
         this.resetLoading();
       }
     });
@@ -120,7 +147,9 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   public onScroll() {
     if (!this.loading) {
       if (this.selectedFilters.page !== this.totalPages) {
-        this.selectedFilters.page++;
+        if(this.selectedFilters.page) {
+          this.selectedFilters.page++;
+        }
         this.getCases();
         this.loaderService.stopLoader();
       }
@@ -192,4 +221,10 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
     this.getCases();
   }
 
+  private convertUTCDateToLocalDate(d: Date) {
+    const date = new Date(d);
+    date.setHours(0, 0, 0, 0);
+    const isoDateTime = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
+    return isoDateTime;
+  }
 }

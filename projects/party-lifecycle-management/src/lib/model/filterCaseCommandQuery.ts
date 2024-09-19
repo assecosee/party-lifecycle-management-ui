@@ -1,9 +1,13 @@
 export interface FilterCaseCommandQuery {
   partyName?: string;
+  partyNumber?: string;
+  id?: string;
+  statuses?: string;
+  channel?: string;
   partyIdentificationNumber?: string;
   dateFrom?: Date;
   dateTo?: Date;
-  createdBy?: string;
+  agent?: string;
   limit?: number;
   page?: number;
   pageSize?: number;

@@ -4,7 +4,7 @@
         @if (filtersGroup) {
         <form [formGroup]="filtersGroup">
             <div class="filter-cases-filter-form">
-                <asee-text-input [control]="filtersGroup.controls['caseNumber']" [label]="'Case number'"
+                <asee-text-input [control]="filtersGroup.controls['id']" [label]="'Case number'"
                     [appearance]="'outline'"></asee-text-input>
                 <div></div>
                 <asee-text-input [control]="filtersGroup.controls['partyNumber']" [label]="'Party number'"
@@ -13,17 +13,21 @@
                     [appearance]="'outline'"></asee-text-input>
                 <asee-text-input [control]="filtersGroup.controls['partyIdentificationNumber']"
                     [label]="'Party identification number'" [appearance]="'outline'"></asee-text-input>
-                <asee-select [appearance]="'outline'" [control]="filtersGroup.controls['status']" [multiple]="true"
+                <asee-select [appearance]="'outline'" [control]="filtersGroup.controls['statuses']" [multiple]="true"
                     [options]="caseStatuses" [label]="'Status'" [labelProperty]="'name'" [valueProperty]="'literal'"
                     labelProperty="description"></asee-select>
                 @if (channels) {
                 <asee-tree-select appearance="outline" parentReferenceProperty="parentChannelId" [options]="channels"
-                    [labelProperty]="'literal'" [valueProperty]="'code'" [label]="'Channels'"
-                    [control]="filtersGroup.controls['channels']">
+                    [labelProperty]="'description'" [valueProperty]="'code'" [label]="'Channels'"
+                    [control]="filtersGroup.controls['channel']">
                 </asee-tree-select>
                 }
-                <asee-text-input [control]="filtersGroup.controls['agent']" [label]="'Agent'"
-                    [appearance]="'outline'"></asee-text-input>
+                <asee-autocomplete appearance="outline" [control]="filtersGroup.controls['agent']" [resetOnBlurDisabled]="false"
+                    valueProperty="username" labelProperty="displayName" [autocompleteList]="agents" filterValue="false"
+                    [showClear]="false" [label]="'Agent'" disableFilter="true">
+                </asee-autocomplete>
+                <!-- <asee-text-input [control]="filtersGroup.controls['agent']" [label]="'Agent'"
+                    [appearance]="'outline'"></asee-text-input> -->
                 <asee-datepicker [appearance]="'outline'" [label]="'Date From'"
                     [control]="filtersGroup.controls['dateFrom']" [startView]="'month'"></asee-datepicker>
                 <asee-datepicker [appearance]="'outline'" [label]="'Date To'"
@@ -35,7 +39,7 @@
     <mat-dialog-actions>
         <button mat-button color="primary" (click)="clearFilter()" translate>Clear all</button>
         <button mat-button color="secondary" (click)="closeDialog()" translate>Cancel</button>
-        <button mat-button color="primary" [disabled]="!filtersGroup!.valid" (click)="filter()"
+        <button mat-button color="primary" [disabled]="!filtersGroup?.valid" (click)="filter()"
             translate>Filter</button>
     </mat-dialog-actions>
 </div>
