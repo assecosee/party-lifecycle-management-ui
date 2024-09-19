@@ -1,0 +1,156 @@
+.task-card {
+    width: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    height: initial !important;
+    box-sizing: border-box;
+  }
+  
+  .gen-task-cont {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+    -ms-flex-direction: row;
+  }
+  
+  .flex-row-wrap {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+    -ms-flex-direction: row;
+    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+  }
+  
+  .fxFlex {
+    flex: 1 1 0.000000001px;
+    -ms-flex: 1 1 0.000000001px;
+    box-sizing: border-box;
+  }
+  
+  .flex-col {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    -ms-flex-direction: column;
+  }
+  
+  .as-card-wrapper {
+    min-width: 100%;
+    margin: 0 auto;
+    height: calc(100vh - 88px);
+    margin-top: 16px;
+  
+    @media screen and (min-width: 1440px) {
+      max-width: 800px;
+      min-width: 800px;
+      width: 800px;
+    }
+  
+    @media screen and (min-width: 800px) {
+      width: unset;
+    }
+  }
+  
+  .menuicon {
+    float: right;
+    margin-top: -10px;
+    margin-right: -10px;
+  }
+  
+  .as-task-title {
+    position: relative;
+    color: black;
+    float: left;
+  }
+  
+  .task-header {
+    padding: 24px 16px 16px 16px;
+  }
+  
+  .generic-form {
+    padding: 6px;
+    clear: both;
+  }
+  
+  @media screen and (min-width: 1280px) {
+    .as-mat-card {
+      padding: 0 50px 0 50px;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .as-title-text {
+      margin: 0 auto;
+    }
+  
+    .as-title-img {
+      padding-bottom: 20px;
+    }
+  
+    .as-mat-card {
+      padding-bottom: 16px !important;
+    }
+  }
+  
+  .as-title-text {
+    font-size: 20px;
+    text-align: left;
+    color: rgba(var(--primary-text-color),0.75);
+  }
+  
+  .mat-mdc-card-actions {
+    padding: 0px;
+  }
+  
+  .as-title-img :first-child {
+    height: 135px;
+    width: 134px;
+  }
+  
+  #complete {
+    margin: 0 30px 30px 0;
+  }
+  
+  .fill-space {
+    flex: 1 1 auto;
+  }
+  
+  .generic-task-header {
+    justify-content: space-between;
+    /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+    ::ng-deep .mat-card-header-text {
+      margin: 0px;
+    }
+  }
+  
+  .as-app-info {
+    height: 100%;
+  }
+  
+  #infoSideNav {
+    width: 310px;
+    padding-left: 15px;
+    background-color: inherit;
+  }
+  
+  #mainDiv * {
+    width: 100%;
+  }
+  
+  .as-mat-footer {
+    margin-bottom: 30px;
+  }
+  
+  .generic-task-footer {
+    box-sizing: border-box;
+    max-height: 100%;
+    position: absolute;
+    align-items: flex-end;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-left: 16px;
+    margin-bottom: 16px;
+    margin-right: 16px;
+  }

@@ -11,6 +11,8 @@ import { CaseListComponent } from './components/case/case-list/case-list.compone
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { FilterCasesDialogComponent } from './components/dialogs/filter-cases-dialog/filter-cases-dialog.component';
 import { CaseOverviewComponent } from './components/case/case-overview/case-overview.component';
+import { SurveyGenericFormComponent } from './components/survey-generic-form/survey-generic-form.component';
+import { MaterialTaskInboxModule } from '@asseco/task-inbox';
 
 
 
@@ -18,7 +20,8 @@ import { CaseOverviewComponent } from './components/case/case-overview/case-over
   declarations: [
     CaseListComponent,
     CaseOverviewComponent,
-    FilterCasesDialogComponent
+    FilterCasesDialogComponent,
+    SurveyGenericFormComponent
   ],
   imports: [
     PartyLifecycleManagementRoutingModule,
@@ -30,6 +33,7 @@ import { CaseOverviewComponent } from './components/case/case-overview/case-over
     CommonUiModule.forRoot(),
     MaterialModule,
     HttpClientModule,
+    MaterialTaskInboxModule,
     InfiniteScrollDirective,
     L10nIntlModule,
   ],

@@ -40,7 +40,6 @@ export class FilterCasesDialogComponent implements OnInit {
   ngOnInit(): void {
     forkJoin([this.getCaseStatuses(), this.getChannels(), this.searchAgents(this.data.agent)]).subscribe(
       ([caseStatuses, channels, agents]: [ClassificationSchema, ListChannels, any]) => {
-        console.log('agents', agents);
         if(agents && agents !== undefined) {
           this.selectedAgent = agents[0];
         }

@@ -26,6 +26,7 @@
     "@asseco/common-ui": "17.0.1",
     "@asseco/components-ui": "17.0.0",
     "angular-l10n": "^16.0.0",
+    "@asseco/task-inbox": "17.0.0-hotfix.1",
     "cdigit": "^3.1.1",
     "ngx-infinite-scroll": "^17.0.1",
     "rxjs": "~7.8.0",

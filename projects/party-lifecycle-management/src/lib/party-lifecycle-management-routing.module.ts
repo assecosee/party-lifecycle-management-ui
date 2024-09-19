@@ -10,6 +10,7 @@ import { FinancialDataComponent } from './components/financial-data/financial-da
 import { IdentificationDocumentComponent } from './components/identification-document/identification-document.component';
 import { ProcessSelectionComponent } from './components/process-selection/process-selection.component';
 import { GeneralRegistrationDataComponent } from './components/general-registration-data/general-registration-data.component';
+import { SurveyGenericFormComponent } from './components/survey-generic-form/survey-generic-form.component';
 
 const routes: Routes = [
   {
@@ -50,6 +51,10 @@ const routes: Routes = [
   {
     path: 'tasks/employment-data/:taskId',
     component: EmploymentDataComponent
+  },
+  {
+    path: 'tasks/survey/:templateId',
+    component: SurveyGenericFormComponent,
   },
 ];
 

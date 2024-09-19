@@ -21,7 +21,7 @@ export class PartyLcmUiModuleLoadService {
         id: 'party-lcm-onboarding',
         name: 'New onboarding',
         icon: 'person_add',
-        route: '/customer-information-file/enrollment-level/individual/tasks'
+        route: '/tasks/survey/kyc-fl'
       })
     ]
   });
