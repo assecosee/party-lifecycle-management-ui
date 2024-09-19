@@ -9,6 +9,7 @@ import { EmploymentDataComponent } from './components/employment-data/employment
 import { FinancialDataComponent } from './components/financial-data/financial-data.component';
 import { IdentificationDocumentComponent } from './components/identification-document/identification-document.component';
 import { ProcessSelectionComponent } from './components/process-selection/process-selection.component';
+import { GeneralRegistrationDataComponent } from './components/general-registration-data/general-registration-data.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'tasks/basic-data/:taskId',
     component: BasicDataComponent,
+  },
+  {
+    path: 'tasks/general-registration-data/:taskId',
+    component: GeneralRegistrationDataComponent,
   },
   {
     path: 'tasks/financial-data/:taskId',

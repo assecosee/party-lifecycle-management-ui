@@ -1,0 +1,289 @@
+<div class="card-wrapper">
+  <mat-card appearance="outlined" class="task-card">
+    <mat-card-header class="task-header">
+      <mat-card-title class="task-title flex-row-wrap">
+        <span class="title-text">
+          {{ task?.name | translate : locale.language }}
+        </span>
+      </mat-card-title>
+    </mat-card-header>
+    @if(formGroupInitialized) {
+    <mat-card-content class="pt">
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-datepicker
+            appearance="outline"
+            [control]="formGroup.controls['dateOfActivation']"
+            [label]="'lblDateOfActivation' | translate : locale.language"
+            readonly="true"
+          >
+          </asee-datepicker>
+          <error-handling
+            [control]="formGroup.controls['dateOfActivation']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-autocomplete
+            #orgUnits
+            [autocompleteList]="organizationUnits"
+            [readonly]="true"
+            appearance="outline"
+            labelProperty="name"
+            valueProperty="name"
+            filterBehaviour="includes"
+            [control]="formGroup.controls['organizationUnit']"
+            [label]="'lblOrganizationUnit' | translate : locale.language"
+            (click)="markAsTouched('organizationUnit')"
+          >
+          </asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['organizationUnit']"
+          ></error-handling>
+        </div>
+      </div>
+      @if(isIndividualPerson){
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-radio-button-group
+            class="gender"
+            [control]="formGroup.controls['gender']"
+            [options]="genderOptions"
+            valueProperty="value"
+            labelProperty="label"
+          ></asee-radio-button-group>
+        </div>
+        <div class="flex-item">
+          <asee-autocomplete
+            #maritalStatus
+            [autocompleteList]="martialStatus"
+            labelProperty="description"
+            valueProperty="description"
+            filterBehaviour="includes"
+            appearance="outline"
+            [control]="formGroup.controls['maritalStatus']"
+            [label]="'lblMaritalStatus' | translate : locale.language"
+            (click)="markAsTouched('martialStatus')"
+          >
+          </asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['maritalStatus']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-autocomplete
+            #clientCountryOfBirth
+            filterBehaviour="includes"
+            appearance="outline"
+            [control]="formGroup.controls['clientCountryOfBirth']"
+            [autocompleteList]="countriesList"
+            [label]="'lblClientCountryOfBirth' | translate : locale.language"
+            labelProperty="name"
+            valueProperty="name"
+            (click)="markAsTouched('clientCountryOfBirth')"
+          ></asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['clientCountryOfBirth']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-text-input
+            appUppercase
+            appearance="outline"
+            [control]="formGroup.controls['parentLastName']"
+            [label]="'lblparentLastName' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['parentLastName']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-autocomplete
+            #propertyOwnership
+            [autocompleteList]="ownership"
+            labelProperty="description"
+            valueProperty="description"
+            filterBehaviour="includes"
+            appearance="outline"
+            [control]="formGroup.controls['propertyOwnership']"
+            [label]="'lblPropertyOwnership' | translate : locale.language"
+            (click)="markAsTouched('propertyOwnership')"
+          >
+          </asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['propertyOwnership']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-datepicker
+            appearance="outline"
+            [control]="formGroup.controls['onAddressFrom']"
+            [label]="'lblOnAddressFrom' | translate : locale.language"
+          >
+          </asee-datepicker>
+          <error-handling
+            [control]="formGroup.controls['onAddressFrom']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-text-input
+            appearance="outline"
+            [control]="formGroup.controls['householdMembers']"
+            [label]="'lblHouseholdMembers' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['householdMembers']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-text-input
+            appearance="outline"
+            [control]="formGroup.controls['children']"
+            [label]="'lblChildren' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['children']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-text-input
+            appearance="outline"
+            [control]="formGroup.controls['employedHouseholdMembers']"
+            [label]="'lblEmployedHouseholdMembers' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['employedHouseholdMembers']"
+          ></error-handling>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-text-input
+            appearance="outline"
+            [control]="formGroup.controls['dependentHouseholdMembers']"
+            [label]="'lblDependentHouseholdMembers' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['dependentHouseholdMembers']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-datepicker
+            appearance="outline"
+            [control]="formGroup.controls['dateOfDeath']"
+            [label]="'lblDateOfDeath' | translate : locale.language"
+          >
+          </asee-datepicker>
+          <error-handling
+            [control]="formGroup.controls['dateOfDeath']"
+          ></error-handling>
+        </div>
+      </div>
+      } @if(!isIndividualPerson) {
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-text-input
+            appUppercase
+            appearance="outline"
+            [control]="formGroup.controls['fullClientName']"
+            [label]="'lblFullClientName' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['fullClientName']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-text-input
+            appearance="outline"
+            [control]="formGroup.controls['email']"
+            [label]="'lblEmail' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['email']"
+          ></error-handling>
+        </div>
+      </div>
+      } @if(notResidentClient) {
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-text-input
+            appearance="outline"
+            [control]="formGroup.controls['nonResidentCode']"
+            [label]="'lblNonResidentCode' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['nonResidentCode']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-datepicker
+            readonly="true"
+            appearance="outline"
+            [control]="formGroup.controls['nonResidentDateOfActivation']"
+            [label]="
+              'lblNonResidentDateOfActivation' | translate : locale.language
+            "
+          >
+          </asee-datepicker>
+          <error-handling
+            [control]="formGroup.controls['nonResidentDateOfActivation']"
+          ></error-handling>
+        </div>
+      </div>
+      }
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-autocomplete
+            #lang
+            [autocompleteList]="languages"
+            labelProperty="description"
+            valueProperty="description"
+            filterBehaviour="includes"
+            appearance="outline"
+            [control]="formGroup.controls['language']"
+            [label]="'lblLanguage' | translate : locale.language"
+            (click)="markAsTouched('language')"
+          >
+          </asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['language']"
+          ></error-handling>
+        </div>
+        <div class="flex-item">
+          <asee-text-input
+            appearance="outline"
+            [control]="formGroup.controls['taxNumber']"
+            [label]="'lblTaxNumber' | translate : locale.language"
+          ></asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['taxNumber']"
+          ></error-handling>
+        </div>
+      </div>
+    </mat-card-content>
+    <div class="bottom-end-alignment">
+      <customer-actions
+        [currentTask]="task"
+        submitButtonName="Complete"
+        [formGroup]="formGroup"
+      >
+      </customer-actions>
+    </div>
+    }
+  </mat-card>
+</div>

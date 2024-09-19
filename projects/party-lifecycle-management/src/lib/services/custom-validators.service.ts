@@ -78,6 +78,26 @@ export class CustomValidatorsService {
     };
   }
 
+  static parentLastNameRequired(controlNameA: string, controlNameB: string): ValidatorFn {
+    return (control: AbstractControl) => {
+      const formGroup = control.parent;
+      if (!formGroup) {
+        return null; // If the formGroup is not available, return null
+      }
+
+      const controlA = formGroup.get(controlNameA);
+      const controlB = formGroup.get(controlNameB);
+
+      // Check if both controls have the specific required values
+      if (controlA && controlA.value === 'female' && controlB && controlB.value.value === '1') {
+        return { required: true }; // Return error if the control is empty
+      }
+
+      return null; // If condition is not met, no error
+    };
+  }
+
+
 
   // Validator to allow only letters and hyphens in any text input (no spaces allowed)
   static onlyCharactersAndHyphensAllowed(): ValidatorFn {
@@ -231,6 +251,22 @@ export class CustomValidatorsService {
 
 
 
+
+  static nonResidentCodeValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      // Regular expression to match only numbers, E, +, and -
+      const validPattern = /^[0-9E\+\-]*$/;
+
+      if (!value) {
+        return null; // Allow empty values (optional)
+      }
+
+      // Check if value matches the pattern
+      const isValid = validPattern.test(value);
+      return isValid ? null : { invalidFormat: true };
+    };
+  }
 
 
 }
