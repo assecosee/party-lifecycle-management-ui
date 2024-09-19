@@ -64,7 +64,7 @@ export class FilterCasesDialogComponent implements OnInit {
 
   clearFilter() {
     const selectedFilters: any = {
-      page: 1,
+      pageNumber: 1,
       pageSize: 30,
       sortBy: 'creation-time',
       sortOrder: 'desc',

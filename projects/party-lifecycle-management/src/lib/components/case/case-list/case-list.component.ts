@@ -37,7 +37,7 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
   public displayedColumns = ['caseNumber', 'partyNumber', 'partyName', 'partyIdentificationNumber',
     'creationDate', 'status', 'actions'];
   public selectedFilters: any = {
-    page: 1,
+    pageNumber: 1,
     pageSize: 30,
     sortBy: 'creation-time',
     sortOrder: 'desc',
@@ -146,9 +146,9 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
 
   public onScroll() {
     if (!this.loading) {
-      if (this.selectedFilters.page !== this.totalPages) {
-        if(this.selectedFilters.page) {
-          this.selectedFilters.page++;
+      if (this.selectedFilters.pageNumber !== this.totalPages) {
+        if(this.selectedFilters.pageNumber) {
+          this.selectedFilters.pageNumber++;
         }
         this.getCases();
         this.loaderService.stopLoader();
@@ -173,9 +173,9 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
           this.totalCount = res.totalCount;
         }
         this.totalPages = res.totalPages;
-        this.selectedFilters.page = res.page;
+        this.selectedFilters.pageNumber = res.page;
         this.selectedFilters.pageSize = res.pageSize;
-        if (this.selectedFilters.page !== 1) {
+        if (this.selectedFilters.pageNumber !== 1) {
           this.casesData.data = this.casesData.data.concat(this.cases);
         } else {
           this.casesData.data = this.cases;
@@ -192,7 +192,7 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
     if (this.loading) {
       return;
     }
-    this.selectedFilters.page = 1;
+    this.selectedFilters.pageNumber = 1;
     this.loaderService.stopLoader();
     this.getCases();
   }
@@ -206,7 +206,7 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
 
   private setRouteQueryParams() {
     const queryParams = Object.assign({}, this.selectedFilters);
-    delete queryParams.page;
+    delete queryParams.pageNumber;
     delete queryParams.pageSize;
     this.router.navigate([], { queryParams });
     this.uiService.setTitle('List cases');
