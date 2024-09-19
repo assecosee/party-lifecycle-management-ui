@@ -127,6 +127,9 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
         if(this.selectedFilters.agent && this.selectedFilters.agent !== undefined) {
           this.selectedFilters.agent = this.selectedFilters.agent.username;
         }
+        if(this.selectedFilters.channel) {
+          this.selectedFilters.channel = this.selectedFilters.channel.join(',');
+        }
         if(this.selectedFilters.statuses) {
           this.selectedFilters.statuses = this.selectedFilters.statuses.join(',');
         }
