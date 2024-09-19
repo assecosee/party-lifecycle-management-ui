@@ -124,8 +124,11 @@ export class CaseListComponent implements OnInit, AfterViewInit, OnDestroy{
         if(this.selectedFilters.dateFrom) {
           this.selectedFilters.dateFrom = this.convertUTCDateToLocalDate(this.selectedFilters.dateFrom);
         }
-        if(this.selectedFilters.agent && this.selectedFilters.agent !==undefined ) {
+        if(this.selectedFilters.agent && this.selectedFilters.agent !== undefined) {
           this.selectedFilters.agent = this.selectedFilters.agent.username;
+        }
+        if(this.selectedFilters.statuses) {
+          this.selectedFilters.statuses = this.selectedFilters.statuses.join(',');
         }
         this.resetLoading();
       }

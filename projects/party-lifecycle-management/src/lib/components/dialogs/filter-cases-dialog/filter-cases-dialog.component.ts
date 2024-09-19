@@ -133,7 +133,9 @@ export class FilterCasesDialogComponent implements OnInit {
     this.filtersGroup?.controls['dateFrom'].setValue(this.data?.dateFrom);
     this.filtersGroup?.controls['dateTo'].setValue(this.data?.dateTo);
     this.filtersGroup?.controls['channel'].setValue(this.data?.channel);
-    this.filtersGroup?.controls['statuses'].setValue(this.data?.statuses);
+    if(this.data?.statuses) {
+      this.filtersGroup?.controls['statuses'].setValue(this.data?.statuses.split(','));
+    }
   }
 
 }
