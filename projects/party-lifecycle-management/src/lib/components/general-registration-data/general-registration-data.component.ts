@@ -67,7 +67,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
       validators: [Validators.required],
     },
     {
-      key: 'organizationUnit',
+      key: 'agentOuCode',
       validators: [Validators.required],
     },
     {
@@ -152,7 +152,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
       validators: [Validators.required],
     },
     {
-      key: 'organizationUnit',
+      key: 'agentOuCode',
       validators: [Validators.required],
     },
     {
@@ -196,6 +196,8 @@ export class GeneralRegistrationDataComponent implements OnInit {
   public isRegistration = false;
   public notResidentClient = false;
   public showClientDateOfBirthPicker = true;
+  public ouControl = new AseeFormControl(null, Validators.required);
+
   private filters = {
     page: 1,
     pageSize: 50,
@@ -325,9 +327,13 @@ export class GeneralRegistrationDataComponent implements OnInit {
 
   // Method to mark control as touched
   markAsTouched(controlName: string) {
-    const control = this.formGroup.get(controlName);
-    if (control) {
-      control.markAsTouched();
+    if (controlName === 'organizationUnit') {
+      this.ouControl.markAllAsTouched();
+    } else {
+      const control = this.formGroup.get(controlName);
+      if (control) {
+        control.markAsTouched();
+      }
     }
   }
 
@@ -358,7 +364,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
           value = rawValue; // If parsing fails, fallback to raw value
         }
 
-        if (value) {
+        if (value !== null && value !== undefined) {
           controlValue = this.refillField(formKey.key, value);
         } else {
           if (
@@ -413,10 +419,14 @@ export class GeneralRegistrationDataComponent implements OnInit {
       return null;
     }
 
-    if (formField === 'organizationUnit') {
-      const code = this.formFields.find(item => item.id === 'agentOuCode')?.data?.value;
-      if(code){
-        return this.organizationUnits.find((item: any)=> item.code === code);
+    if (formField === 'agentOuCode') {
+      const code = this.formFields.find((item) => item.id === 'agentOuCode')
+        ?.data?.value;
+      if (code) {
+        const value = this.organizationUnits.find(
+          (item: any) => item.code === code
+        );
+        this.ouControl.setValue(value);
       }
     }
 
@@ -441,7 +451,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
   private refillField(key: string, value: any) {
     const controlsMap: { [key: string]: any } = {
       language: this.lang,
-      organizationUnit: this.orgUnits,
+      agentOuCode: this.orgUnits,
       clientCountryOfBirth: this.clientCountryOfBirth,
       maritalStatus: this.maritalStatusAC,
       propertyOwnership: this.ownershipAC,
@@ -449,16 +459,6 @@ export class GeneralRegistrationDataComponent implements OnInit {
     const val = controlsMap[key] || null;
     if (val) {
       val.controlInternal.setValue(value);
-    }
-    if (
-      [
-        'dateOfActivation',
-        'nonResidentDateOfActivation',
-        'dateOfDeath',
-        'onAddressFrom',
-      ].includes(key)
-    ) {
-      return value;
     }
     if (key === 'gender') {
       return this.genderOptions.find(

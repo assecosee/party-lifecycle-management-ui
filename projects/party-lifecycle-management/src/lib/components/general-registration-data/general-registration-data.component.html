@@ -31,13 +31,13 @@
             labelProperty="name"
             valueProperty="name"
             filterBehaviour="includes"
-            [control]="formGroup.controls['organizationUnit']"
+            [control]="ouControl"
             [label]="'lblOrganizationUnit' | translate : locale.language"
             (click)="markAsTouched('organizationUnit')"
           >
           </asee-autocomplete>
           <error-handling
-            [control]="formGroup.controls['organizationUnit']"
+            [control]="ouControl"
           ></error-handling>
         </div>
       </div>
