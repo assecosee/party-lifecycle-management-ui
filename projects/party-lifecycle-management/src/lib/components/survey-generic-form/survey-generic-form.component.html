@@ -1,25 +1,54 @@
 
-<!-- @if (task) { -->
-    <div class="as-card-wrapper">
-      <mat-card appearance="outlined" class="task-card">
-        <mat-card-header class='generic-task-header'>
-          <mat-card-title class="as-task-title" class="flex-row-wrap">
-            <span class="as-title-text">{{task?.name | translateAseeRest:locale.language}}</span>
+@if (surveyTemplate) {
+    <div class="survey-card-wrapper">
+      <mat-card appearance="outlined" class="survey-task-card">
+        <mat-card-header class='survey-task-header'>
+          <mat-card-title class="survey-task-title" class="survey-flex-row-wrap">
+            <span class="survey-title-text">{{surveyTemplate?.info?.title | translateAseeRest:locale.language}}</span>
           </mat-card-title>
-          <button mat-icon-button [matMenuTriggerFor]="appMenu" class="menuicon">
-            <mat-icon class="sortIcon" color="menu">more_vert</mat-icon>
+          <button mat-icon-button [matMenuTriggerFor]="appMenu" class="survey-menu-icon">
+            <mat-icon class="survey-sort-icon" color="menu">more_vert</mat-icon>
           </button>
         </mat-card-header>
         <mat-card-content>
-          @if (formGroup) {
-            <form class='generic-form'>
-             
+          <!-- @if (formGroup) { -->
+            <form class='survey-generic-form'>
+                <cdk-accordion class="survey-accordion">
+                    @for (item of items; track item; let index = $index) {
+                      <cdk-accordion-item
+                        [expanded]=" index == 0 ? true: false"
+                        #accordionItem="cdkAccordionItem"
+                        class="survey-accordion-item"
+                        role="button"
+                        tabindex="0"
+                        [attr.id]="'accordion-header-' + index"
+                        [attr.aria-expanded]="accordionItem.expanded"
+                        [attr.aria-controls]="'accordion-body-' + index">
+                        <div class="survey-accordion-item-header" (click)="accordionItem.toggle()">
+                          {{ item }}
+                          <span class="survey-accordion-item-description" translate>
+                            Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+                          </span>
+                        </div>
+                        <div
+                          class="survey-accordion-item-body"
+                          role="region"
+                          [style.display]="accordionItem.expanded ? '' : 'none'"
+                          [attr.id]="'accordion-body-' + index"
+                          [attr.aria-labelledby]="'accordion-header-' + index">
+                          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis
+                          excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis
+                          veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?
+                        </div>
+                      </cdk-accordion-item>
+                    }
+                  </cdk-accordion>
             </form>
-          }
+          <!-- } -->
         </mat-card-content>
       </mat-card>
     </div>
-  <!-- } -->
+  }
   <mat-menu #appMenu="matMenu">
     <unclaim-task [taskId]="taskId"></unclaim-task>
     <!-- <task-events [eventNames]="task.eventNames" [applicationNumber]='task.businessKey'></task-events> -->
