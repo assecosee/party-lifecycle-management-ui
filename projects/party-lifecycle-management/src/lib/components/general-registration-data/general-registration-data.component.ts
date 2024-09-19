@@ -202,7 +202,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
     sortBy: 'name',
     sortOrder: 'asc',
     includeHierarchy: true,
-    kind: 'branch-network-node'
+    kind: 'branch-network-node',
   };
   // Store references and prefilled flags
   constructor(
@@ -286,24 +286,28 @@ export class GeneralRegistrationDataComponent implements OnInit {
         );
         this.notResidentCodesList =
           JSON.parse(notResidentCodes)['not-resident-codes'];
+        // Handle ActivatedRoute data as before
+        combineLatest([
+          this.activatedRoute.params,
+          this.activatedRoute.queryParams,
+        ]).subscribe((params) => {
+          this.taskId = params[0]['taskId'];
+          this.getTask();
+        });
       }
     );
-
-    // Handle ActivatedRoute data as before
-    combineLatest([
-      this.activatedRoute.params,
-      this.activatedRoute.queryParams,
-    ]).subscribe((params) => {
-      this.taskId = params[0]['taskId'];
-      this.getTask();
-    });
-    this.initFormGroup(true);
   }
 
   public getTask() {
     this.bpmTaskService
       .getTask(this.taskId)
       .build()
+      .pipe(
+        catchError(() => {
+          this.initFormGroup(true);
+          return of([]);
+        })
+      )
       .subscribe((task) => {
         this.task = task;
         console.log('Task data: ', this.task);
@@ -407,6 +411,13 @@ export class GeneralRegistrationDataComponent implements OnInit {
   private getFormFieldValue(formField: string) {
     if (!formField) {
       return null;
+    }
+
+    if (formField === 'organizationUnit') {
+      const code = this.formFields.find(item => item.id === 'agentOuCode')?.data?.value;
+      if(code){
+        return this.organizationUnits.find((item: any)=> item.code === code);
+      }
     }
 
     // eslint-disable-next-line @typescript-eslint/prefer-for-of
