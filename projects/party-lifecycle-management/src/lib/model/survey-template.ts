@@ -14,7 +14,7 @@ export interface SurveySection{
 }
 export interface SurveyQuestion {
 
-  questionId?: string;
+  questionId: string;
   /**
    * Templates order of question in a survey.
    */
@@ -27,7 +27,7 @@ export interface SurveyQuestion {
    * Templates textual description of the question.
    */
   description?: string;
-  kind?: AnswerTypeEnum;
+  kind: AnswerTypeEnum;
   /**
    * Dictionary contains possible drop down values if templates question type is options, multiple-options, currency or unit-of-measure.
    */
