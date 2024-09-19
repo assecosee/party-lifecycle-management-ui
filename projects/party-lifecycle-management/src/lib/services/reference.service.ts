@@ -1,6 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { AbstractHttpClient, EnvironmentService, HttpMethod } from '@asseco/common-ui';
 import { Observable } from 'rxjs';
+import { ListChannels } from '../model/reference/listChannels';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,14 @@ export class ReferenceService extends AbstractHttpClient {
       .mapResponseToCamelCase()
       .addAuthentication();
 
+    return builder.build();
+  }
+
+  public getChannels(ignoreLoader = false): Observable<ListChannels> {
+    const builder = this.getHttpClientBuilder<ListChannels>().mapResponseToCamelCase().
+      addAuthentication()
+      .setHttpMethod(HttpMethod.GET).setUrl(this.getUrl() + 'channels');
+    builder.setIgnoreLoader(ignoreLoader);
     return builder.build();
   }
 
