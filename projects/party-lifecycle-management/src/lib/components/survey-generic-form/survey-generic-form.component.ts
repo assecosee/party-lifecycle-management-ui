@@ -132,7 +132,7 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
               value: null
             },
             properties: {
-              wide: true,
+              wide: true
             },
             constraints: [
               {
@@ -153,13 +153,19 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
             );
           });
         }
+        if(q.conditionVisibility && q.conditionVisibility !== undefined) {
+          const validationRuleKey = Object.keys(q.conditionVisibility);
+          validationRuleKey.forEach((v: string) => {
+            listFormField[l].properties.condition = v + ' ' + this.readValueFromHashMap(q.conditionVisibility, v);
+          });
+        }
       });
       this.hashMapFormFields[i] = listFormField;
     });
   }
-  readValueFromHashMap(validationRules: { [key: string]: string } | undefined, k: string): any {
-    if(validationRules && validationRules !== undefined) {
-      return validationRules[k];
+  readValueFromHashMap(hasMap: { [key: string]: string } | undefined, k: string): any {
+    if(hasMap && hasMap !== undefined) {
+      return hasMap[k];
     }
     return null;
   }
