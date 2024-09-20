@@ -32,7 +32,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   private bapoIdentificationDocumentNumber: any = null;
   private bapoRegistrationBasis: any = null;
   private bapoClientKind: any = null;
-  private hasPrefilledData = false;
+  private agentHasRegistrationRole = false;
+  private agentHasDataUpdateRole = false;
   public selectedUser: any;
   public formGroupInitialized = false;
   public locale: L10nLocale;
@@ -107,6 +108,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     this.locale = injector.get(L10N_LOCALE);
     this.uiService.setTitle('Case initialization');
     this.agent = this.userService.getUserData();
+    this.agentHasRegistrationRole = this.agent.roles.includes('DO_Agent_Maticenje');
+    this.agentHasDataUpdateRole = this.agent.roles.includes('DO_Agent_Azuriranje');
   }
 
   ngOnInit(): void {
@@ -281,6 +284,15 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   }
 
   createRequest() {
+    const isRegistrationProcess = this.selectedUser && this.selectedUser.partyNumber ? false: true;
+    if(!isRegistrationProcess && !this.agentHasDataUpdateRole){
+      this.openSnackBar('Nemate rolu za ažuriranje podataka klijenta', 'OK');
+      return;
+    }
+    if(isRegistrationProcess && !this.agentHasRegistrationRole){
+      this.openSnackBar('Nemate rolu za matičenje klijenta', 'OK');
+      return;
+    }
     const payload = {
       type: 'individual-onboarding',
       'party-reference': {
