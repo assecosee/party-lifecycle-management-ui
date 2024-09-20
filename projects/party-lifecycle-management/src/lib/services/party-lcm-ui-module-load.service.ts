@@ -22,6 +22,12 @@ export class PartyLcmUiModuleLoadService {
         name: 'New onboarding',
         icon: 'person_add',
         route: '/tasks/survey/kyc-fl'
+      }),
+      new MenuItem({
+        id: 'party-lcm-onboarding',
+        name: 'Case initialization',
+        icon: 'person_add',
+        route: '/party-lifecycle-management/cases/case-initialization'
       })
     ]
   });

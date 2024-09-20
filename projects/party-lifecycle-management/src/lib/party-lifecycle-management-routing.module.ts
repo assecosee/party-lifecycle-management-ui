@@ -10,19 +10,27 @@ import { FinancialDataComponent } from './components/financial-data/financial-da
 import { IdentificationDocumentComponent } from './components/identification-document/identification-document.component';
 import { ProcessSelectionComponent } from './components/process-selection/process-selection.component';
 import { GeneralRegistrationDataComponent } from './components/general-registration-data/general-registration-data.component';
+import { FormRegistrationBasisComponent } from './components/form-registration-basis/form-registration-basis.component';
+
 import { SurveyGenericFormComponent } from './components/survey-generic-form/survey-generic-form.component';
+import { CaseInitializationComponent } from './components/case/case-initialization/case-initialization.component';
 
 const routes: Routes = [
   {
     path: 'party-lifecycle-management',
     children: [
       { path: 'cases', component: CaseListComponent },
+      { path: 'cases/case-initialization', component: CaseInitializationComponent },
       { path: 'cases/:caseNumber', component: CaseOverviewComponent },
     ],
   },
   {
     path: 'tasks/basic-data/:taskId',
     component: BasicDataComponent,
+  },
+  {
+    path: 'tasks/basis-of-registration/:taskId',
+    component: FormRegistrationBasisComponent,
   },
   {
     path: 'tasks/general-registration-data/:taskId',
