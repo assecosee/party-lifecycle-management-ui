@@ -1,0 +1,55 @@
+<div class="card-wrapper">
+  <mat-card appearance="outlined" class="task-card">
+    <mat-card-header class="task-header">
+      <mat-card-title class="task-title flex-row-wrap">
+        <span class="title-text">
+          {{ task?.name | translate : locale.language }}
+        </span>
+      </mat-card-title>
+    </mat-card-header>
+    @if(formGroupInitialized) {
+    <mat-card-content class="pt">
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-autocomplete
+            #basisOfReg
+            [autocompleteList]="basisOptions"
+            [readonly]="readonly"
+            labelProperty="label"
+            valueProperty="literal"
+            filterBehaviour="includes"
+            appearance="outline"
+            [control]="acControl"
+            [label]="'lblBasisForClientRegistration' | translate : locale.language"
+            (click)="markAsTouched('acControl')"
+          >
+          </asee-autocomplete>
+        </div>
+      </div>
+      <div class="flex-container pt">
+        <div class="flex-item">
+          <asee-text-input
+            [readonly]="true"
+            appUppercase
+            appearance="outline"
+            [control]="formGroup.controls['swFilteringResult']"
+            [label]="'lblSwFilteringResult' | translate : locale.language"
+          >
+          </asee-text-input>
+          <error-handling
+            [control]="formGroup.controls['swFilteringResult']"
+          ></error-handling>
+        </div>
+      </div>
+    </mat-card-content>
+    <div class="bottom-end-alignment">
+      <customer-actions
+        [currentTask]="task"
+        submitButtonName="Complete"
+        [formGroup]="formGroup"
+      >
+      </customer-actions>
+    </div>
+    }
+  </mat-card>
+</div>
