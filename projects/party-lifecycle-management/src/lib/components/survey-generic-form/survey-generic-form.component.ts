@@ -41,13 +41,17 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.initSurveyForm(this.templateId);
   }
-  public loadedFormGroup(listFormFields: FormField []) {
-    if(this.listFormFields.length) {
-      this.listFormFields.concat(listFormFields);
-    } else {
-      this.listFormFields = listFormFields;
-    }
-    this.initForm(listFormFields);
+  public loadedFormGroup() {
+    console.log(this.hashMapFormFields);
+    const listKey = Object.keys(this.hashMapFormFields);
+    listKey.forEach((k: string) => {
+      if(this.listFormFields.length) {
+        this.listFormFields.concat(this.hashMapFormFields[k]);
+      } else {
+        this.listFormFields = this.hashMapFormFields[k];
+      }
+    });
+    this.initForm(this.listFormFields);
   }
   public complate() {
     console.log(this.formGroup.getRawValue());
@@ -171,6 +175,7 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
       });
       this.hashMapFormFields[i] = listFormField;
     });
+    this.loadedFormGroup();
   }
   readValueFromHashMap(hasMap: { [key: string]: string } | undefined, k: string): any {
     if(hasMap && hasMap !== undefined) {
