@@ -1,16 +1,21 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit } from '@angular/core';
 import { AseeFormGroup, FormField, Task, UIService } from '@asseco/common-ui';
 import { L10N_LOCALE, L10nLocale } from 'angular-l10n';
 import { SurveyService } from '../../services/survey.service';
 import { SurveyQuestion, SurveySection, SurveyTemplate } from '../../model/survey-template';
 import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 
+interface RuleData {
+  key?: string;
+  value: string;
+}
+
 @Component({
-  selector: 'lib-survey-generic-form',
+  selector: 'party-lcm-survey-generic-form',
   templateUrl: './survey-generic-form.component.html',
   styleUrl: './survey-generic-form.component.scss'
 })
-export class SurveyGenericFormComponent implements OnInit {
+export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
   public locale: L10nLocale;
   public taskId: string | undefined;
   public task: Task | undefined ;
@@ -19,6 +24,10 @@ export class SurveyGenericFormComponent implements OnInit {
   public templateId = 'kyc-fl';
   public items: string [] = [];
   public listFormFields: FormField [] = [];
+  public hashMapFormFields: { [key: string]: FormField [] } = {};
+  public submitDisabled = false;
+  public submitButtonName = 'Continue';
+  public listComplexValidators: { [key: string]: RuleData [] } = {};
   constructor(
     protected surveyService: SurveyService,
     protected injector: Injector,
@@ -26,18 +35,24 @@ export class SurveyGenericFormComponent implements OnInit {
   ) {
     this.locale = this.injector.get(L10N_LOCALE);
   }
+  ngAfterViewInit(): void {
+    // this.listenValue();
+  }
   ngOnInit(): void {
     this.initSurveyForm(this.templateId);
   }
   public loadedFormGroup(listFormFields: FormField []) {
     this.initForm(listFormFields);
   }
+  public complate() {
+    console.log(this.formGroup.getRawValue());
+  }
   private initSurveyForm(templateId: any) {
     this.surveyService.getTemplateDetails(templateId).subscribe(
       (res: SurveyTemplate) => {
         this.surveyTemplate = res;
         this.uiService.setTitle(this.surveyTemplate.info.title);
-        this.listFormFields = this.transformSurveyTemplate(this.surveyTemplate);
+        this.transformSurveyTemplate(this.surveyTemplate);
         this.surveyTemplate.sections.forEach(
           (s: SurveySection) => {
             this.items.push(s.title);
@@ -84,13 +99,30 @@ export class SurveyGenericFormComponent implements OnInit {
           control
         );
       }
+      this.appendComplexValidators(field);
     }
   }
 
-  private transformSurveyTemplate(surveyTemplate: SurveyTemplate): FormField[] {
-    const listFormField: FormField [] = [];
-    surveyTemplate.sections.forEach((s: SurveySection) => {
-      s.questions.forEach((q: SurveyQuestion) => {
+  appendComplexValidators(field: FormField) {
+    this.listComplexValidators[field.id] = [];
+    if (field.constraints) {
+      if (field.constraints.length > 0) {
+        for (const constraint of field.constraints) {
+          if(constraint.value !== undefined && constraint.value ) {
+            this.listComplexValidators[field.id].push({
+              key: constraint.kind,
+              value: constraint.value
+            });
+          }
+        }
+      }
+    }
+  }
+
+  private transformSurveyTemplate(surveyTemplate: SurveyTemplate) {
+    surveyTemplate.sections.forEach((s: SurveySection, i) => {
+      const listFormField: FormField [] = [];
+      s.questions.forEach((q: SurveyQuestion, l) => {
         listFormField.push(
           {
             id: q.questionId,
@@ -100,7 +132,7 @@ export class SurveyGenericFormComponent implements OnInit {
               value: null
             },
             properties: {
-              wide: true
+              wide: true,
             },
             constraints: [
               {
@@ -110,9 +142,26 @@ export class SurveyGenericFormComponent implements OnInit {
             enumProps: q.possibleOptions ? this.getEnumProps(q.possibleOptions) : null
           }
         );
+        if(q.validationRules && q.validationRules !== undefined) {
+          const validationRuleKey = Object.keys(q.validationRules);
+          validationRuleKey.forEach((k: string) => {
+            listFormField[l].constraints?.push(
+              {
+                kind: k,
+                value: this.readValueFromHashMap(q.validationRules, k)
+              }
+            );
+          });
+        }
       });
+      this.hashMapFormFields[i] = listFormField;
     });
-    return listFormField;
+  }
+  readValueFromHashMap(validationRules: { [key: string]: string } | undefined, k: string): any {
+    if(validationRules && validationRules !== undefined) {
+      return validationRules[k];
+    }
+    return null;
   }
   private getEnumProps(possibleOptions: { [key: string]: string}): any [] {
     const keys =  Object.keys(possibleOptions);
@@ -174,11 +223,13 @@ export class SurveyGenericFormComponent implements OnInit {
             validators.push(Validators.min(constraint.value));
           } else if (constraint.kind === 'max') {
             validators.push(Validators.max(constraint.value));
-          } else if (constraint.kind === 'minlength') {
+          } else if (constraint.kind === 'maxElement') {
+            validators.push(Validators.nullValidator);
+          } else if (constraint.kind === 'minLength') {
             validators.push(Validators.minLength(constraint.value));
           } else if (constraint.kind === 'requiredTrue') {
             validators.push(Validators.requiredTrue);
-          } else if (constraint.kind === 'maxlength') {
+          } else if (constraint.kind === 'maxLength') {
             if (field.data.type === 'string') {
               if (constraint.value > 50) {
                 field.isTextArea = true;
@@ -194,5 +245,13 @@ export class SurveyGenericFormComponent implements OnInit {
       }
     }
     return validators;
+  }
+  private tryStringToNumber(v: string): any {
+    try {
+      return parseInt(v, 10);
+    } catch {
+      console.log(v);
+      return v;
+    }
   }
 }
