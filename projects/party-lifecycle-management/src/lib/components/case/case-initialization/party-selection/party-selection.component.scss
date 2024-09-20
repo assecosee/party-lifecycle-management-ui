@@ -1,0 +1,21 @@
+table {
+    width: 100%;
+  }
+
+  /* Styling for the selected row */
+.selected-row {
+    background-color: grey;
+    color: white;
+  }
+  
+  /* Styling for the hovered row */
+  .hovered-row {
+    background-color: lightblue;
+  }
+  
+  /* Additional styles to make the hover effect smooth */
+  .mat-row {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  

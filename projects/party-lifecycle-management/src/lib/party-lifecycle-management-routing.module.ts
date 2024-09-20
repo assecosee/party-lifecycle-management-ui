@@ -13,12 +13,14 @@ import { GeneralRegistrationDataComponent } from './components/general-registrat
 import { FormRegistrationBasisComponent } from './components/form-registration-basis/form-registration-basis.component';
 
 import { SurveyGenericFormComponent } from './components/survey-generic-form/survey-generic-form.component';
+import { CaseInitializationComponent } from './components/case/case-initialization/case-initialization.component';
 
 const routes: Routes = [
   {
     path: 'party-lifecycle-management',
     children: [
       { path: 'cases', component: CaseListComponent },
+      { path: 'cases/case-initialization', component: CaseInitializationComponent },
       { path: 'cases/:caseNumber', component: CaseOverviewComponent },
     ],
   },

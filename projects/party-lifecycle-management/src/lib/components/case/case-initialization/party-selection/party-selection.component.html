@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>{{'lblClients' | translate : locale.language }}</h2>
+@if(data?.parties?.length){
+<mat-dialog-content class="mat-typography">
+    <mat-form-field>
+        <mat-label>{{'lblSearch' | translate : locale.language }}</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+
+        @for (column of displayedColumns; track $index) {
+        <ng-container [matColumnDef]="column">
+            <th mat-header-cell *matHeaderCellDef> {{'lbl' + column | translate : locale.language }} </th>
+            @if(column === 'primaryId'){
+            <td mat-cell *matCellDef="let element"> {{element[column]['number']}} </td>
+            } @else if(column === 'primaryIdKind'){
+            <td mat-cell *matCellDef="let element"> {{element['primaryId']['kind']}} </td>
+            } @else {
+            <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+            }
+        </ng-container>
+        }
+
+        <!-- Header and Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"
+            [class]="{'selected-row': selectedRow === row, 'hovered-row': hoveredRow === row}"
+            (mouseenter)="hoverRow(row)" (mouseleave)="hoverRow(null)">
+        </tr>
+
+        <!-- No Data Row -->
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="7">{{'lblNoDataMatching' | translate : locale.language }}</td>
+        </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>{{'lblCancel' | translate : locale.language }}</button>
+    <button mat-button [disabled]="selectedRow === undefined" (click)="select()" cdkFocusInitial>{{'lblChoose' |
+        translate : locale.language }}</button>
+</mat-dialog-actions>
+}
