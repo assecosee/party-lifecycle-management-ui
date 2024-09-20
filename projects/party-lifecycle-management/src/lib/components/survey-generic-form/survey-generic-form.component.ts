@@ -42,6 +42,11 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
     this.initSurveyForm(this.templateId);
   }
   public loadedFormGroup(listFormFields: FormField []) {
+    if(this.listFormFields.length) {
+      this.listFormFields.concat(listFormFields);
+    } else {
+      this.listFormFields = listFormFields;
+    }
     this.initForm(listFormFields);
   }
   public complate() {
@@ -62,7 +67,7 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
     );
   }
 
-  private initForm(listFormFields: FormField []){
+  private initForm(listFormFields: FormField []) {
     for (const field of listFormFields) {
       let value = null;
       value = field.data.type === 'boolean' ? false : value;
@@ -101,6 +106,7 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
       }
       this.appendComplexValidators(field);
     }
+    this.resolveCondition();
   }
 
   appendComplexValidators(field: FormField) {
@@ -156,7 +162,10 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
         if(q.conditionVisibility && q.conditionVisibility !== undefined) {
           const validationRuleKey = Object.keys(q.conditionVisibility);
           validationRuleKey.forEach((v: string) => {
-            listFormField[l].properties.condition = v + ' ' + this.readValueFromHashMap(q.conditionVisibility, v);
+            if(!listFormField[l].properties.conditions || listFormField[l].properties.conditions === undefined) {
+              listFormField[l].properties.conditions = [];
+            }
+            listFormField[l].properties.conditions.push(v + ' ' + this.readValueFromHashMap(q.conditionVisibility, v));
           });
         }
       });
@@ -252,12 +261,53 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
     }
     return validators;
   }
-  private tryStringToNumber(v: string): any {
-    try {
-      return parseInt(v, 10);
-    } catch {
-      console.log(v);
-      return v;
+  private resolveCondition() {
+    for (let index = 0; index < this.listFormFields.length; index++) {
+      const element = this.listFormFields[index];
+      if (element.properties && element.properties.conditions) {
+        element.properties.conditions.forEach((c: any) => {
+          const parseCondition = c.split(' ');
+          if (this.formGroup.controls[parseCondition[0]]) {
+            const controlName = parseCondition[0];
+            const operator = parseCondition[1];
+            let value = parseCondition[2];
+            value = parseCondition[2] === 'true' ?
+              value = true : parseCondition[2] === 'false' ? value = false : value;
+            const formGroup = this.formGroup;
+            this.formGroup.controls[controlName].valueChanges.subscribe((_res) => {
+              const res = this.compare(formGroup.controls[controlName].value
+                , operator, value);
+              this.updateConditionalValidator(index, res);
+              this.listFormFields[index].properties.hidden = !res;
+            });
+            this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true });
+          }
+        });
+      }
+    }
+  }
+  private compare(post: any, operator: string, value: any): any {
+    switch (operator) {
+      case '>': return post > value;
+      case '<': return post < value;
+      case '>=': return post >= value;
+      case '<=': return post <= value;
+      case '==': return post === value;
+      case '!=': return post !== value;
+      case '===': return post === value;
+      case '!==': return post !== value;
+    }
+  }
+
+  private updateConditionalValidator(index: any, conditionResult: any) {
+    if (this.formGroup.controls[this.listFormFields[index].id]) {
+      if (conditionResult) {
+        this.formGroup.controls[this.listFormFields[index].id]
+          .setValidators(this.appendValidators(this.listFormFields[index]));
+      } else {
+        this.formGroup.controls[this.listFormFields[index].id].clearValidators();
+      }
+      this.formGroup.controls[this.listFormFields[index].id].updateValueAndValidity();
     }
   }
 }
