@@ -32,9 +32,9 @@
               [attr.id]="'accordion-body-' + index" [attr.aria-labelledby]="'accordion-header-' + index">
               <!-- <generic-form *ngIf="hashMapFormFields" #genericForm (formFieldsLoaded)="loadedFormGroup($event)"
                 [formGroup]="formGroup" [formFields]="hashMapFormFields[index]"></generic-form> -->
-                @if (formGroup && listFormFields) {
+                @if (formGroup && hashMapFormFields[index]) {
                   <div id="fieldsWrapper">
-                    @for (field of listFormFields; track field) {
+                    @for (field of hashMapFormFields[index]; track field) {
                       <div id="fields"
                         [ngClass]="((field.data.type === 'string' && field.isTextArea) || (field.properties.wide) || (field.data.type === 'string' && field?.properties?.componentType)) ? 'flex100' : 'flex50'"
                         [class.hidden]="(field?.properties?.condition && !field.properties.conditionResult) || field?.properties?.hidden">
