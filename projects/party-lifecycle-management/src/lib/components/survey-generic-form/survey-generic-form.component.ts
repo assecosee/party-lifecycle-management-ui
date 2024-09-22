@@ -46,8 +46,10 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
     const listKey = Object.keys(this.hashMapFormFields);
     listKey.forEach((k: string) => {
       if(this.listFormFields.length) {
-        this.listFormFields.concat(this.hashMapFormFields[k]);
+        console.log(this.listFormFields);
+        this.listFormFields = this.listFormFields.concat(this.hashMapFormFields[k]);
       } else {
+        console.log(this.listFormFields);
         this.listFormFields = this.hashMapFormFields[k];
       }
     });
@@ -127,6 +129,7 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
         }
       }
     }
+    console.log('listComplexValidators', this.listComplexValidators);
   }
 
   private transformSurveyTemplate(surveyTemplate: SurveyTemplate) {
