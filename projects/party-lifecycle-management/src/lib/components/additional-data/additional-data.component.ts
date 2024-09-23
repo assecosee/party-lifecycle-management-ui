@@ -1,15 +1,18 @@
-import { Component, Injector, OnInit, ViewChild } from '@angular/core';
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/prefer-for-of */
+/* eslint-disable @typescript-eslint/dot-notation */
+import { Component, Injector, OnInit } from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
-import { L10nTranslationModule, L10nIntlModule, L10N_LOCALE, L10nLocale } from 'angular-l10n';
+import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
+import { combineLatest, forkJoin, tap } from 'rxjs';
+import { CustomService } from '../../services/custom.service';
+import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
-import { ReferenceService } from '../../services/reference.service';
-import { CustomService } from '../../services/custom.service';
-import { ActivatedRoute } from '@angular/router';
-import { AseeFormControl, BpmTasksHttpClient, EnvironmentConfig, FormField, LoaderService } from '@asseco/common-ui';
-import { FormGroup, Validators } from '@angular/forms';
-import { combineLatest, forkJoin, tap } from 'rxjs';
 
 @Component({
   selector: 'additional-data',
@@ -36,6 +39,7 @@ export class AdditionalDataComponent implements OnInit {
   public marketingConsentList: any = [];
   public maxDate = new Date();
   public datePickerFlags: any = { treatmentDateValidFrom: true, tarrifDateValidFrom: true };
+  public defaultData = null;
   public formKeys = [
     { key: 'treatmentOfClientInterest', validators: [Validators.required] },
     { key: 'treatmentDateValidFrom', validators: [Validators.required] },
@@ -57,6 +61,7 @@ export class AdditionalDataComponent implements OnInit {
 
 
   constructor(protected injector: Injector,
+              protected configurationService: ConfigurationHttpClient,
               private referenceService: ReferenceService,
               private customService: CustomService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
@@ -72,13 +77,16 @@ export class AdditionalDataComponent implements OnInit {
       accountManagerCategories: this.customService.getClassification('ACC_MNG'),
       sectoralDivisionUSSPOCategories: this.customService.getClassification('KS3USEK'),
       marketingConsentListCategories: this.customService.getClassification('SAGMARK'),
-      currencies: this.referenceService.getCurrencies()
+      currencies: this.referenceService.getCurrencies(),
+      defaultData: this.configurationService.getEffective('party-lcm/treatment-and-additional-attributes-default-data').build()
+
     }).pipe(
       tap(({
         treatmentOfClientInterestCategories,
         accountManagerCategories,
         sectoralDivisionUSSPOCategories,
-        marketingConsentListCategories }) => {
+        marketingConsentListCategories,
+        defaultData }) => {
 
         treatmentOfClientInterestCategories.items.map((element: any) =>
           element.formattedName = `${element.description} - ${element.name}`
@@ -100,6 +108,7 @@ export class AdditionalDataComponent implements OnInit {
         this.accountManagerList = accountManagerCategories.items;
         this.sectoralDivisionUSSPOList = sectoralDivisionUSSPOCategories.items;
         this.marketingConsentList = marketingConsentListCategories.items;
+        this.defaultData = JSON.parse(defaultData);
 
       })
     ).subscribe();
@@ -178,9 +187,63 @@ export class AdditionalDataComponent implements OnInit {
       this.formGroup.controls['treatmentDateValidFrom'].setValue(new Date());
       this.formGroup.controls['tarrifDateValidFrom'].setValue(new Date());
     }
+
+    this.setDefaultData();
+
     console.log(this.formGroup);
     // this.formGroup.markAllAsTouched();
     this.formGroupInitialized = true;
+  }
+
+  private setDefaultData() {
+    // Check if it's the registration process and if defaultData exists
+    if (this.isRegistrationProcess && this.defaultData) {
+
+      // Combine 'individual' and 'legal' data from defaultData, and filter only unique values
+      const treatmentsToFind = [
+        ...Object.values(this.defaultData['individual']),
+        ...Object.values(this.defaultData['legal'])
+      ].filter(this.onlyUnique);
+
+      // Initialize an object to store matched treatments by their name
+      const treatmentsByName: { [key: string]: any } = {};
+
+      // Iterate over each treatment name to find a matching treatment from treatmentOfClientInterestList
+      treatmentsToFind.forEach((treatmentName: any) => {
+        const matchingTreatment = this.treatmentOfClientInterestList.find(
+          (treatment: any) => treatment['name'] === treatmentName
+        );
+        // If a match is found, store it in treatmentsByName object
+        if (matchingTreatment) {
+          treatmentsByName[treatmentName] = matchingTreatment;
+        }
+      });
+
+      // If the entity is an individual, set form controls with corresponding 'individual' data
+      if (this.isIndividualEntity && this.defaultData['individual']) {
+        this.formGroup.controls['tariffGroupOfClientCommissions'].setValue(
+          this.defaultData['individual']['tariffGroupOfClientCommissions']
+        );
+        this.formGroup.controls['treatmentOfClientInterest'].setValue(
+          this.defaultData['individual']['treatmentOfClientInterest']
+        );
+      }
+      // If the entity is legal, set form controls with corresponding 'legal' data
+      else if (!this.isIndividualEntity && this.defaultData['legal']) {
+        this.formGroup.controls['tariffGroupOfClientCommissions'].setValue(
+          this.defaultData['legal']['tariffGroupOfClientCommissions']
+        );
+        this.formGroup.controls['treatmentOfClientInterest'].setValue(
+          this.defaultData['legal']['treatmentOfClientInterest']
+        );
+      }
+    }
+  }
+
+
+
+  private onlyUnique(value: any, index: any, array: any) {
+    return array.indexOf(value) === index;
   }
 
   private getFormFieldValue(formField: any) {
