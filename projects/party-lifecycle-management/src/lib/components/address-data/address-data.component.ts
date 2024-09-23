@@ -12,11 +12,13 @@ import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { LocationService } from '../../services/location.service';
 import { OfferService } from '../../services/offer.service';
+import { MatOption } from '@angular/material/core';
 
 @Component({
   selector: 'lib-address-data',
   standalone: true,
-  imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule, ErrorHandlingComponent, MaterialCustomerActionsComponent, UppercaseDirective, ReactiveFormsModule],
+  imports: [AssecoMaterialModule, L10nTranslationModule, L10nIntlModule, MaterialModule,
+    ErrorHandlingComponent, MaterialCustomerActionsComponent, UppercaseDirective, ReactiveFormsModule],
   templateUrl: './address-data.component.html',
   styleUrl: './address-data.component.scss'
 })
@@ -36,7 +38,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
   public notResidentClient = false;
   public addressTypes: any = [];
   public submitDisable = true;
-  public originalAutocompleteOptions = null;
+  public originalAutocompleteOptions: Array<MatOption> = [];
   protected router: Router;
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
@@ -214,11 +216,11 @@ export class AddressDataComponent implements OnInit, DoCheck {
   private updateValueAndValidateControls(fg: FormGroup) {
 
     if (!this.getFormFieldValue('isLegalEntity')) {
-      this.addressTypes = this.addressTypes.filter((element: any) => element?.literal !== "work")
+      this.addressTypes = this.addressTypes.filter((element: any) => element?.literal !== 'work');
     }
 
     if (!this.getFormFieldValue('notResident')) {
-      fg.controls["country"]?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
+      fg.controls['country']?.setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
     };
 
 
@@ -226,7 +228,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
       if (status === 'VALID') {
         // Update the submitDisable flag based on the presence of a 'legal' address
         this.submitDisable = !this.groups.controls.some(group =>
-          group.controls["typeOfAddress"]?.value?.literal === 'legal'
+          group.controls['typeOfAddress']?.value?.literal === 'legal'
         );
       }
     });
@@ -247,9 +249,10 @@ export class AddressDataComponent implements OnInit, DoCheck {
     fg.controls['placeName'].valueChanges.subscribe((newValue: any) => {
       this.locationService.getPlacesByPlaceQuery(newValue).subscribe(placesList => {
         placesList.items.filter((item: any) => item.name).map((element: any) =>
-          element.formattedName = element["administrativeDivision"] ? `${element.name} - ${element["placeCode"]} - ${element["administrativeDivision"]}` : `${element.name} - ${element["placeCode"]}`);
+          element.formattedName = element.administrativeDivision ?
+            `${element.name} - ${element.placeCode} - ${element.administrativeDivision}` : `${element.name} - ${element.placeCode}`);
         this.placesList = placesList.items;
-      })
+      });
 
     });
 
@@ -283,14 +286,14 @@ export class AddressDataComponent implements OnInit, DoCheck {
 
   private filterAddressTypes() {
     const singleUseAddresses = this.addressTypes.filter((address: any) =>
-      address.additionalFields.single === "true"
+      address.additionalFields.single === 'true'
     );
 
     // remove already used single address from dropdown
     this.groups.controls.forEach(element => {
-      const matchingAddress = singleUseAddresses.find((a: any) => element.controls["typeOfAddress"].value?.literal === a.literal)
+      const matchingAddress = singleUseAddresses.find((a: any) => element.controls['typeOfAddress'].value?.literal === a.literal);
       if (matchingAddress) {
-        this.addressTypes = this.addressTypes.filter((item: any) => item.literal !== matchingAddress.literal)
+        this.addressTypes = this.addressTypes.filter((item: any) => item.literal !== matchingAddress.literal);
       }
     });
   }
@@ -298,9 +301,9 @@ export class AddressDataComponent implements OnInit, DoCheck {
   public removeGroup() {
     const removedAddress = this.groups.controls.pop();
 
-    if (!removedAddress) return;
+    if (!removedAddress) { return; }
 
-    const { value: removedAddressType } = removedAddress.controls["typeOfAddress"] || {};
+    const { value: removedAddressType } = removedAddress.controls['typeOfAddress'] || {};
     const removedLiteral = removedAddressType?.literal;
 
     if (removedLiteral) {
@@ -314,7 +317,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
 
     // Update the submitDisable flag based on the presence of a 'legal' address
     this.submitDisable = !this.groups.controls.some(group =>
-      group.controls["typeOfAddress"]?.value?.literal === 'legal'
+      group.controls['typeOfAddress']?.value?.literal === 'legal'
     );
   }
 
@@ -336,15 +339,14 @@ export class AddressDataComponent implements OnInit, DoCheck {
     this.formGroup = new FormGroup({});
     this.modifyControlsBeforeSubmit();
     this.formGroup.addControl('addressDataList', new AseeFormControl(this.groups.value));
-    console.log(this.formGroup);
-    // this.bpmTaskService.complete(this.task.id, this.formGroup)
-    //   .build().subscribe((res) => {
-    //     this.router.navigateByUrl('tasks');
-    //   },
-    //     (err) => {
-    //       this.errorEmitterService.setError(err);
-    //     }
-    //   );
+    this.bpmTaskService.complete(this.task.id, this.formGroup)
+      .build().subscribe((res) => {
+        this.router.navigateByUrl('tasks');
+      },
+        (err) => {
+          this.errorEmitterService.setError(err);
+        }
+      );
   }
 
   public modifyControlsBeforeSubmit() {
@@ -369,28 +371,25 @@ export class AddressDataComponent implements OnInit, DoCheck {
   }
 
   private prefillAutocompleteField(viewChild: any, controlName: any, controlValue: any) {
-    const selMatOption = (this.originalAutocompleteOptions! as Array<any>)
-      .find((o: any) => {
-        return JSON.stringify(o.value) === JSON.stringify(controlValue)
-      });
+    const selMatOption = this.originalAutocompleteOptions?.find((o: any) => JSON.stringify(o.value) === JSON.stringify(controlValue));
     // If option found
     if (selMatOption) {
       // Select autocomplete option
       selMatOption?.select();
 
       // Set view child internal control
-      viewChild.controlInternal.setValue(controlValue)
-      viewChild.controlInternal.updateValueAndValidity({ emitEvent: true })
-      viewChild.optionSelected.emit(controlValue)
+      viewChild.controlInternal.setValue(controlValue);
+      viewChild.controlInternal.updateValueAndValidity({ emitEvent: true });
+      viewChild.optionSelected.emit(controlValue);
 
       // Set form control
       this.formGroup.controls[controlName].setValue(controlValue);
-      this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true })
+      this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true });
     }
   }
 
   ngDoCheck() {
-    if (this.countryAutocomplete && this.originalAutocompleteOptions == null) {
+    if (this.countryAutocomplete && this.originalAutocompleteOptions.length === 0) {
       this.originalAutocompleteOptions = this.countryAutocomplete.autocomplete.options.toArray();
     }
   }

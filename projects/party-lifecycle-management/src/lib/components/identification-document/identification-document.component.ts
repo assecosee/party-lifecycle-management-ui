@@ -213,7 +213,7 @@ export class IdentificationDocumentComponent implements OnInit {
 
   public addGroup() {
     this.initEmptyFormGroup();
-    this.filterIdentificationTypesLeftToAdd()
+    this.filterIdentificationTypesLeftToAdd();
   }
 
   public removeGroup() {
@@ -269,9 +269,9 @@ export class IdentificationDocumentComponent implements OnInit {
 
   private filterIdentificationTypesLeftToAdd() {
     this.groups.controls.forEach(element => {
-      const matchingAddress = this.idDocumentTypes.find((a: any) => element.controls["typeOfID"].value?.literal === a.literal)
+      const matchingAddress = this.idDocumentTypes.find((a: any) => element.controls['typeOfID'].value?.literal === a.literal);
       if (matchingAddress) {
-        this.idDocumentTypes = this.idDocumentTypes.filter((item: any) => item.literal !== matchingAddress.literal)
+        this.idDocumentTypes = this.idDocumentTypes.filter((item: any) => item.literal !== matchingAddress.literal);
       }
     });
   }
