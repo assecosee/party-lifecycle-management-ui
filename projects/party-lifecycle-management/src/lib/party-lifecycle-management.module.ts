@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { MaterialTaskInboxModule } from '@asseco/task-inbox';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { CheckUpWidgetComponent, TrackingWidgetComponent } from '../public-api';
+import { CheckUpWidgetComponent } from './components/check-up-widget/check-up-widget.component';
 import { CaseListComponent } from './components/case/case-list/case-list.component';
 import { CaseOverviewHeaderComponent } from './components/case/case-overview-header/case-overview-header.component';
 import { CaseOverviewComponent } from './components/case/case-overview/case-overview.component';
@@ -20,6 +20,7 @@ import { WIDocumentsWidgetComponent } from './components/widocuments-widget/wido
 import { WIServicingInfoWidgetComponent } from './components/wiservicing-info-widget/wiservicing-info-widget.component';
 import { PartyLifecycleManagementRoutingModule } from './party-lifecycle-management-routing.module';
 import { PartyLcmUiModuleLoadService } from './services/party-lcm-ui-module-load.service';
+import { TrackingWidgetComponent } from './components/tracking-widget/tracking-widget.component';
 
 
 
