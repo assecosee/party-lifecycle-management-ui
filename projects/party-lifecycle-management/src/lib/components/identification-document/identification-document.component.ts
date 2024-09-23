@@ -6,7 +6,7 @@ import { ErrorHandlingComponent } from '../../utils/error-handling/error-handlin
 import { HttpClient } from '@angular/common/http';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService, BpmTasksHttpClient, LoaderService, AseeFormControl, FormField, ErrorEmitterService } from '@asseco/common-ui';
+import { BpmTasksHttpClient, LoaderService, AseeFormControl, FormField, ErrorEmitterService } from '@asseco/common-ui';
 import { forkJoin, tap, combineLatest } from 'rxjs';
 import { ReferenceService } from '../../services/reference.service';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
@@ -31,6 +31,7 @@ export class IdentificationDocumentComponent implements OnInit {
   public countriesList: any = [];
   public typeOfIdList: any = [];
   public idDocumentTypes: any = [];
+  public originalDocumentTypes: any = [];
   public registrationProcess = false;
   public taskId = '';
   public task: any;
@@ -91,7 +92,7 @@ export class IdentificationDocumentComponent implements OnInit {
       });
   };
 
-  get groups(): FormArray {
+  get groups(): FormArray<FormGroup> {
     return this.form.get('groups') as FormArray;
   }
 
@@ -145,10 +146,11 @@ export class IdentificationDocumentComponent implements OnInit {
   private updateValueAndValidateControls(fg: FormGroup) {
     if (this.getFormFieldValue('identificationTypes')) {
       this.idDocumentTypes = this.filterInUseIdentificationTypes(JSON.parse(this.getFormFieldValue('identificationTypes')));
+      this.originalDocumentTypes = this.idDocumentTypes;
     };
 
     if (fg.controls['typeOfClient'].value.name === '1') {
-      fg.controls['countryOfIssuing'].setValue(this.findItemByProperty(this.countriesList, 'alpha2', 'RS'));
+      fg.controls['countryOfIssuing'].setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
       fg.controls['countryOfIssuing'].updateValueAndValidity();
       fg.controls['countryOfIssuing'].markAsTouched();
     }
@@ -211,6 +213,7 @@ export class IdentificationDocumentComponent implements OnInit {
 
   public addGroup() {
     this.initEmptyFormGroup();
+    this.filterIdentificationTypesLeftToAdd()
   }
 
   public removeGroup() {
@@ -264,13 +267,14 @@ export class IdentificationDocumentComponent implements OnInit {
     return null;
   }
 
-  // private filterIdentificationTypesLeftToAdd() {
-  //   const usedIdTypes: any = [];
-  //   this.groups.controls.forEach((fg: any) => {
-  //     usedIdTypes.push(fg.controls["typeOfID"].value.literal);
-  //   });
-  //   this.idDocumentTypes = this.idDocumentTypes.filter((obj: any) => !usedIdTypes.includes(obj.literal));
-  // }
+  private filterIdentificationTypesLeftToAdd() {
+    this.groups.controls.forEach(element => {
+      const matchingAddress = this.idDocumentTypes.find((a: any) => element.controls["typeOfID"].value?.literal === a.literal)
+      if (matchingAddress) {
+        this.idDocumentTypes = this.idDocumentTypes.filter((item: any) => item.literal !== matchingAddress.literal)
+      }
+    });
+  }
 
   private addYearsToDate(date: Date, yearsToAdd: number): Date {
     // Create a new Date object to avoid mutating the original date

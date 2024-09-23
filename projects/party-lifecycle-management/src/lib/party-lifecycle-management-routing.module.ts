@@ -13,6 +13,7 @@ import { GeneralRegistrationDataComponent } from './components/general-registrat
 import { FormRegistrationBasisComponent } from './components/form-registration-basis/form-registration-basis.component';
 
 import { SurveyGenericFormComponent } from './components/survey-generic-form/survey-generic-form.component';
+import { AddressDataComponent } from './components/address-data/address-data.component';
 import { CaseInitializationComponent } from './components/case/case-initialization/case-initialization.component';
 
 const routes: Routes = [
@@ -63,6 +64,10 @@ const routes: Routes = [
   {
     path: 'tasks/survey/:templateId',
     component: SurveyGenericFormComponent,
+  },
+  {
+    path: 'tasks/address-data/:taskId',
+    component: AddressDataComponent
   },
 ];
 

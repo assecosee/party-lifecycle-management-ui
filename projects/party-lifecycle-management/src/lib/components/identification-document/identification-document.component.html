@@ -14,7 +14,7 @@
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            <span>{{group.get('typeOfID')?.value?.name}} </span>
+                            <span>{{group.get('typeOfID')?.value?.name | translate : locale.language}} </span>
                         </mat-panel-title>
                         <mat-panel-description>
                         </mat-panel-description>
@@ -91,7 +91,7 @@
             </div>
             <div class="btn-container">
                 <button mat-button translate (click)="addGroup()" class="btn"
-                    [disabled]="idDocumentTypes?.length === groups?.controls?.length">
+                    [disabled]="originalDocumentTypes?.length === groups?.controls?.length">
                     Add new document
                 </button>
                 <button mat-button translate (click)="removeGroup()" class="btn"
