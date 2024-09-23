@@ -30,7 +30,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   private caseId = '';
   private bapoTypeOfIdentificationDocument: any = null;
   private bapoIdentificationDocumentNumber: any = null;
-  private bapoRegistrationBasis: any = null;
+  private bapoRegistrationProfile: any = null;
   private bapoClientKind: any = null;
   private agentHasRegistrationRole = false;
   private agentHasDataUpdateRole = false;
@@ -108,8 +108,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     this.locale = injector.get(L10N_LOCALE);
     this.uiService.setTitle('Case initialization');
     this.agent = this.userService.getUserData();
-    this.agentHasRegistrationRole = this.agent.roles.includes('DO_Agent_Maticenje');
-    this.agentHasDataUpdateRole = this.agent.roles.includes('DO_Agent_Azuriranje');
+    this.agentHasRegistrationRole = this.agent.roles.some((item: string) => item.includes('DO_Agent_Maticenje'));
+    this.agentHasDataUpdateRole = this.agent.roles.some((item: string) => item.includes('DO_Agent_Azuriranje'));
   }
 
   ngOnInit(): void {
@@ -117,7 +117,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       this.bapoClientKind = params['kind'] || null;
       this.bapoTypeOfIdentificationDocument = params['id-kind'] || null;
       this.bapoIdentificationDocumentNumber = params['id-number'] || null;
-      this.bapoRegistrationBasis = params['registration-basis'] || null;
+      this.bapoRegistrationProfile = params['registration-profile'] || null;
     });
     // Combine multiple HTTP requests using forkJoin
     forkJoin({
@@ -145,7 +145,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       this.bapoTypeOfIdentificationDocument = null;
       this.bapoIdentificationDocumentNumber = null;
       this.bapoClientKind = null;
-      this.bapoRegistrationBasis = null;
+      this.bapoRegistrationProfile = null;
     }
   }
 
