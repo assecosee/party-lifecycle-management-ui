@@ -1,0 +1,36 @@
+.case-overview-header{
+    align-items: left;
+    box-sizing: border-box;
+    min-height: 64px;
+    max-width: 1250px;
+    width: 100%;
+    margin: 0 auto 80px;
+}
+.case-overview-content{
+
+    >.more-button{
+        position: absolute;
+        right: 8px;
+    }
+
+        h2 {
+            padding: 0px;
+            margin-top: 8px;
+            color: rgba(0, 0, 0, 0.87);
+            font-weight: normal;
+            margin-bottom: 4px;
+        
+            >span {
+              color: rgba(0, 0, 0, 0.54);
+              font-weight: normal;
+        }   
+    }
+    .party-name {
+        margin-top: 15px;
+        margin-left: 12px;
+        font-size: 18px;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: rgba(0, 0, 0, 0.87);
+      }
+}

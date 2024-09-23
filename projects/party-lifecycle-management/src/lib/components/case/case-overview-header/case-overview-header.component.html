@@ -1,0 +1,69 @@
+
+    <mat-card class="case-overview-header" *ngIf="_caseOverview">
+        <mat-card-content class="case-overview-content">
+        <div class="more-button">
+        <button mat-icon-button [matMenuTriggerFor]="menu"
+            aria-label="Toggle menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </div>
+            <h2>
+                <span translate>Case number</span>:
+                <span>{{_caseOverview.id || ('Unknown' | translate: locale.language)}}</span>
+            </h2>
+            <div class="work-item-type">
+            <span translate> Work Item Type</span>:
+            <span translate>{{_caseOverview.type || 'Unknown'}}</span>
+            </div>
+            <div class="work-item-status">
+              <span translate> Work Item Status</span>:
+              <span translate>{{_caseOverview.status || 'Unknown'}}</span>
+            </div>
+            <div>
+              <span translate>Work Item Relationship mng</span>:
+              <span>{{_caseOverview.servicingInfo?.agent || ('Unknown' | translate: locale.language)}}</span>
+            </div>
+
+<mat-menu #menu="matMenu" xPosition="before">
+            <ng-container *ngIf="menuItems?.length">
+              <ng-container *ngFor="let item of menuItems">
+                <!-- handle menu item with children -->
+                <span class="menu-item-wrapper" mat-menu-item *ngIf="item.children?.length"
+                  [matTooltip]="item.tooltip | translate: locale.language"
+                  [matTooltipDisabled]="item.tooltip == null || item.tooltip == 'null'">
+                  <button mat-menu-item [matMenuTriggerFor]="subMenu" [disabled]="item.disabled ?? false" translate>
+                    <mat-icon color="primary" *ngIf="item.icon">
+                      {{item.icon}}
+                    </mat-icon>
+                    {{item.title}}
+                  </button>
+                </span>
+                <mat-menu #subMenu="matMenu" xPosition="before">
+                  <button class="menu-item-wrapper" mat-menu-item *ngFor="let childItem of item?.children"
+                    [matTooltip]="childItem.tooltip | translate: locale.language"
+                    [matTooltipDisabled]="childItem.tooltip == null || childItem.tooltip == 'null'"
+                    (click)="customMenuItemClick(childItem.callback)" [disabled]="childItem.disabled ?? false"
+                    translate>
+                    <mat-icon color="primary" *ngIf="childItem.icon">
+                      {{childItem.icon}}
+                    </mat-icon>
+                    <span> {{childItem.title}}</span>
+                  </button>
+
+                </mat-menu>
+                <!-- handle normal menu item -->
+                <button class="menu-item-wrapper" mat-menu-item *ngIf="!item.children?.length"
+                  [matTooltip]="item.tooltip | translate: locale.language"
+                  [matTooltipDisabled]="item.tooltip == null || item.tooltip == 'null'"
+                  (click)="customMenuItemClick( item.callback)" [disabled]="item.disabled ?? false" translate>
+                  <mat-icon color="primary" *ngIf="item.icon">
+                    {{item.icon}}
+                  </mat-icon>
+                  <span> {{item.title}}</span>
+                </button>
+              </ng-container>
+              <mat-divider></mat-divider>
+            </ng-container>
+          </mat-menu>
+        </mat-card-content>
+    </mat-card>

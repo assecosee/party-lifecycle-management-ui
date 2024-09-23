@@ -5,6 +5,7 @@ import { FilterCaseCommandQuery } from '../model/filterCaseCommandQuery';
 import { AbstractHttpClient, ConfigurationHttpClient, HttpClientBuilder, HttpMethod } from '@asseco/common-ui';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ClassificationSchema } from '../model/classification-schema';
+import { Case } from '../model/case';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,14 @@ export class PartyLifecycleManagementService extends AbstractHttpClient {
     if (filterCaseCommandQuery) {
       builder.addRawQueryParams(filterCaseCommandQuery);
     }
+    return builder.build();
+  }
+  public getCaseById(caseId: string, filterCaseCommandQuery: FilterCaseCommandQuery): Observable<Case> {
+    const builder = this.getHttpClientBuilder<Case>()
+      .setUrl(this.getUrl() + 'lifecycle-cases/' + caseId)
+      .addRawQueryParams(filterCaseCommandQuery)
+      .mapResponseToCamelCase()
+      .addAuthentication();;
     return builder.build();
   }
   public getClassification(classificationName: string): Observable<ClassificationSchema> {

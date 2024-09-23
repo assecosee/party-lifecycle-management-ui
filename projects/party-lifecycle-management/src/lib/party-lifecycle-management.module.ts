@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { L10nIntlModule, L10nTranslationModule } from 'angular-l10n';
-import { CommonUiModule } from '@asseco/common-ui';
+import { CommonUiModule, WidgetService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { CommonModule } from '@angular/common';
 import { PartyLcmUiModuleLoadService } from './services/party-lcm-ui-module-load.service';
@@ -13,6 +13,13 @@ import { FilterCasesDialogComponent } from './components/dialogs/filter-cases-di
 import { CaseOverviewComponent } from './components/case/case-overview/case-overview.component';
 import { SurveyGenericFormComponent } from './components/survey-generic-form/survey-generic-form.component';
 import { MaterialTaskInboxModule } from '@asseco/task-inbox';
+import { CaseOverviewHeaderComponent } from './components/case/case-overview-header/case-overview-header.component';
+import { WIDocumentsWidgetComponent } from './components/widocuments-widget/widocuments-widget.component';
+import { WIServicingInfoWidgetComponent } from './components/wiservicing-info-widget/wiservicing-info-widget.component';
+import { ContextWidgetComponent } from './components/context-widget/context-widget.component';
+import { TaskWidgetComponent } from './components/task-widget/task-widget.component';
+import { TrackingWidgetComponent } from './components/tracking-widget/tracking-widget.component';
+import { CheckUpWidgetComponent } from './components/check-up-widget/check-up-widget.component';
 
 
 
@@ -21,7 +28,14 @@ import { MaterialTaskInboxModule } from '@asseco/task-inbox';
     CaseListComponent,
     CaseOverviewComponent,
     FilterCasesDialogComponent,
-    SurveyGenericFormComponent
+    SurveyGenericFormComponent,
+    CaseOverviewHeaderComponent,
+    WIDocumentsWidgetComponent,
+    WIServicingInfoWidgetComponent,
+    ContextWidgetComponent,
+    TaskWidgetComponent,
+    TrackingWidgetComponent,
+    CheckUpWidgetComponent
   ],
   imports: [
     PartyLifecycleManagementRoutingModule,
@@ -35,16 +49,59 @@ import { MaterialTaskInboxModule } from '@asseco/task-inbox';
     HttpClientModule,
     MaterialTaskInboxModule,
     InfiniteScrollDirective,
-    L10nIntlModule,
+    L10nIntlModule
   ],
   exports: [
+    WIDocumentsWidgetComponent,
+    WIServicingInfoWidgetComponent,
+    ContextWidgetComponent,
+    TaskWidgetComponent,
+    TrackingWidgetComponent,
+    CheckUpWidgetComponent
   ]
 })
 export class PartyLifecycleManagementModule {
 
   constructor(
-    private partyLcmUiModuleLoadService: PartyLcmUiModuleLoadService
+    private partyLcmUiModuleLoadService: PartyLcmUiModuleLoadService,
+    private widgetService: WidgetService
   ) {
+    const widgets = [
+      {
+        title: 'Documents',
+        componentName: 'WIDocumentsWidgetComponent',
+        tags: ['case'],
+        thumbnail: ''
+      },{
+        title: 'Servicing Info',
+        componentName: 'WIServicingInfoWidgetComponent',
+        tags: ['case'],
+        thumbnail: ''
+      },{
+        title: 'Tasks',
+        componentName: 'TaskWidgetComponent',
+        tags: ['case'],
+        thumbnail: ''
+      },{
+        title: 'Context widget',
+        componentName: 'ContextWidgetComponent',
+        tags: ['case'],
+        thumbnail: ''
+      },{
+        title: 'Tracking widget',
+        componentName: 'TrackingWidgetComponent',
+        tags: ['case'],
+        thumbnail: ''
+      },{
+        title: 'Check ups widget',
+        componentName: 'CheckUpWidgetComponent',
+        tags: ['case'],
+        thumbnail: ''
+      }
+    ];
+    widgets.forEach((widget) => {
+      this.widgetService.registerWidget(widget);
+    });
 
   }
 

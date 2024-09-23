@@ -1,6 +1,7 @@
 import { EntityInfo } from './entityInfo';
 import { IdentificationKindsEnum } from './identificationKindsEnum';
 import { PartyReference } from './partyReference';
+import { ServicingInfo } from './servicingInfo';
 
 export interface Case {
   /**
@@ -52,6 +53,8 @@ export interface Case {
    */
   readonly lastModifiedBy?: string;
   entityInfo?: EntityInfo;
+  servicingInfo?: ServicingInfo;
+  type?: string;
 }
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Case {
