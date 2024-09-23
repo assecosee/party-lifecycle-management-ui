@@ -188,6 +188,7 @@ export class CompanyProfileComponent implements OnInit {
       this.formGroup.controls['codeOfBranchPredominantActivity'].disable();
       this.formGroup.controls['statusOfLegalEntity']
         .setValue(this.findItemByProperty(this.statusOfLegalEntityList, 'description', 'Redovan/aktivan'));
+        this.formGroup.controls['statusOfLegalEntity'].disable();
     }
 
     this.formGroupInitialized = true;
