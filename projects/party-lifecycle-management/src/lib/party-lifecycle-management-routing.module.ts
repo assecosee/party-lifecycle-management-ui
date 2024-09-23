@@ -62,7 +62,7 @@ const routes: Routes = [
     component: EmploymentDataComponent
   },
   {
-    path: 'tasks/survey/:templateId',
+    path: 'tasks/survey/:templateId/:taskId',
     component: SurveyGenericFormComponent,
   },
   {

@@ -1,9 +1,14 @@
-import { AfterViewInit, Component, Injector, OnInit } from '@angular/core';
-import { AseeFormGroup, FormField, Task, UIService } from '@asseco/common-ui';
+import { AfterViewInit, Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { AseeFormGroup, BpmTasksHttpClient, FormField, LoaderService, Task, UIService } from '@asseco/common-ui';
 import { L10N_LOCALE, L10nLocale } from 'angular-l10n';
 import { SurveyService } from '../../services/survey.service';
 import { SurveyQuestion, SurveySection, SurveyTemplate } from '../../model/survey-template';
 import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { ActivatedRoute, Params } from '@angular/router';
+import { catchError, combineLatest, EMPTY, forkJoin, map, Subscription, switchMap } from 'rxjs';
+import { MaterialErrorDialogComponent } from '@asseco/components-ui';
+import { MatDialog } from '@angular/material/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 
 interface RuleData {
   key?: string;
@@ -15,10 +20,10 @@ interface RuleData {
   templateUrl: './survey-generic-form.component.html',
   styleUrl: './survey-generic-form.component.scss'
 })
-export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
+export class SurveyGenericFormComponent implements OnInit, OnDestroy {
   public locale: L10nLocale;
-  public taskId: string | undefined;
-  public task: Task | undefined ;
+  public taskId: string;
+  public task: Task;
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   public surveyTemplate: SurveyTemplate | undefined;
   public templateId = 'kyc-fl';
@@ -28,28 +33,93 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
   public submitDisabled = false;
   public submitButtonName = 'Continue';
   public listComplexValidators: { [key: string]: RuleData [] } = {};
+  private routeSubscription: Subscription = new Subscription();
+  private taskSubscription: Subscription  = new Subscription();
+
   constructor(
     protected surveyService: SurveyService,
     protected injector: Injector,
-    protected uiService: UIService
+    protected uiService: UIService,
+    protected route: ActivatedRoute,
+    protected taskService: BpmTasksHttpClient,
+    protected loaderService: LoaderService,
+    protected dialog: MatDialog
   ) {
     this.locale = this.injector.get(L10N_LOCALE);
+  }
+  ngOnDestroy(): void {
+    if(this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
   }
   ngAfterViewInit(): void {
     // this.listenValue();
   }
   ngOnInit(): void {
-    this.initSurveyForm(this.templateId);
+    this.routeSubscription = this.route.params.pipe(
+      switchMap((params: Params) => {
+        this.templateId = params['templateId'];
+        this.taskId = params['taskId'];
+        if (params['taskId'] && this.task?.id === params['taskId']) {
+          return EMPTY;
+        }
+
+        this.task = null as any;
+
+        if (!params['taskId']) {
+          this.loaderService.stopLoader();
+
+          this.uiService.setTitle('Error: No task');
+
+          this.dialog.open(MaterialErrorDialogComponent, {
+            data: {
+              status: 440,
+              error: { message: 'Task ID is required' }
+            },
+            disableClose: true
+          });
+
+          return EMPTY;
+        }
+        return forkJoin([
+          this.taskService.getTask(params['taskId']).build(),
+          this.initSurveyForm(this.templateId)
+        ]).pipe(
+          catchError(
+            (error: HttpErrorResponse) => {
+              this.loaderService.stopLoader();
+
+              this.uiService.setTitle('Error: No task');
+
+              this.dialog.open(MaterialErrorDialogComponent, {
+                data: error,
+                disableClose: true
+              });
+
+              return EMPTY;
+            }
+          )
+        );
+      }
+      )).subscribe(
+        ([task, surverField]: [Task, SurveyTemplate]) => {
+          this.task = task;
+          this.surveyTemplate = surverField;
+          this.uiService.setTitle(this.surveyTemplate.info.title);
+          this.transformSurveyTemplate(this.surveyTemplate);
+          this.surveyTemplate.sections.forEach(
+          (s: SurveySection) => {
+            this.items.push(s.title);
+          }
+          );
+        });
   }
   public loadedFormGroup() {
-    console.log(this.hashMapFormFields);
     const listKey = Object.keys(this.hashMapFormFields);
     listKey.forEach((k: string) => {
       if(this.listFormFields.length) {
-        console.log(this.listFormFields);
         this.listFormFields = this.listFormFields.concat(this.hashMapFormFields[k]);
       } else {
-        console.log(this.listFormFields);
         this.listFormFields = this.hashMapFormFields[k];
       }
     });
@@ -59,18 +129,22 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
     console.log(this.formGroup.getRawValue());
   }
   private initSurveyForm(templateId: any) {
-    this.surveyService.getTemplateDetails(templateId).subscribe(
-      (res: SurveyTemplate) => {
-        this.surveyTemplate = res;
-        this.uiService.setTitle(this.surveyTemplate.info.title);
-        this.transformSurveyTemplate(this.surveyTemplate);
-        this.surveyTemplate.sections.forEach(
-          (s: SurveySection) => {
-            this.items.push(s.title);
-          }
-        );
-      }
-    );
+    if(templateId === null || templateId === undefined) {
+      return EMPTY;
+    }
+    return this.surveyService.getTemplateDetails(templateId);
+    // .subscribe(
+    //   (res: SurveyTemplate) => {
+    //     this.surveyTemplate = res;
+    //     this.uiService.setTitle(this.surveyTemplate.info.title);
+    //     this.transformSurveyTemplate(this.surveyTemplate);
+    //     this.surveyTemplate.sections.forEach(
+    //       (s: SurveySection) => {
+    //         this.items.push(s.title);
+    //       }
+    //     );
+    //   }
+    // );
   }
 
   private initForm(listFormFields: FormField []) {
@@ -129,7 +203,6 @@ export class SurveyGenericFormComponent implements OnInit, AfterViewInit {
         }
       }
     }
-    console.log('listComplexValidators', this.listComplexValidators);
   }
 
   private transformSurveyTemplate(surveyTemplate: SurveyTemplate) {
