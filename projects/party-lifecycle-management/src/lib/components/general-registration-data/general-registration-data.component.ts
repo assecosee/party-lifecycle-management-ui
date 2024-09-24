@@ -49,6 +49,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
   public task: any;
   public formGroup: FormGroup = new FormGroup({});
   public formFields: FormField[] = [];
+  public maxDate = new Date();
   public formGroupInitialized = false;
   public isIndividualPerson = false;
   @ViewChild('lang', { static: false })
@@ -81,7 +82,8 @@ export class GeneralRegistrationDataComponent implements OnInit {
         CustomValidatorsService.onlyCharactersAllowed(),
         CustomValidatorsService.parentLastNameRequired(
           'gender',
-          'maritalStatus'
+          'maritalStatus',
+          'parentLastName'
         ),
       ],
     },

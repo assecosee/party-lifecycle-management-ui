@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomValidatorsService {
-
-  constructor() { }
+  constructor() {}
 
   // Validator for a single form control
   static registrationNumberFormat(): ValidatorFn {
@@ -20,7 +19,7 @@ export class CustomValidatorsService {
 
       // Ensure value is a string before checking the format
       const stringValue = String(value);
-      const validFormat = /^[A-Z0-9]{6,13}$/;  // Example format: alphanumeric, 6 to 10 characters
+      const validFormat = /^[A-Z0-9]{6,13}$/; // Example format: alphanumeric, 6 to 10 characters
 
       // If the string value doesn't match the format, return an error object
       if (!validFormat.test(stringValue)) {
@@ -78,26 +77,36 @@ export class CustomValidatorsService {
     };
   }
 
-  static parentLastNameRequired(controlNameA: string, controlNameB: string): ValidatorFn {
+  static parentLastNameRequired(
+    gender: string,
+    maritalStatus: string,
+    parentLastName: string
+  ): ValidatorFn {
     return (control: AbstractControl) => {
       const formGroup = control.parent;
       if (!formGroup) {
         return null; // If the formGroup is not available, return null
       }
 
-      const controlA = formGroup.get(controlNameA);
-      const controlB = formGroup.get(controlNameB);
+      const genderControl = formGroup.get(gender);
+      const maritalStatusControl = formGroup.get(maritalStatus);
+      const parentLastNameControl = formGroup.get(parentLastName);
 
       // Check if both controls have the specific required values
-      if (controlA && controlA.value === 'female' && controlB && controlB.value.value === '1') {
+      if (
+        genderControl &&
+        genderControl.value === 'female' &&
+        maritalStatusControl &&
+        maritalStatusControl.value.value === '1' &&
+        parentLastNameControl &&
+        !parentLastNameControl.value
+      ) {
         return { required: true }; // Return error if the control is empty
       }
 
       return null; // If condition is not met, no error
     };
   }
-
-
 
   // Validator to allow only letters and hyphens in any text input (no spaces allowed)
   static onlyCharactersAndHyphensAllowed(): ValidatorFn {
@@ -131,7 +140,7 @@ export class CustomValidatorsService {
 
       // If value is empty there is no error
       if (!value) {
-        return { invalidRegistrationNumber: true };;
+        return { invalidRegistrationNumber: true };
       }
 
       // Ensure value is a string before checking the format
@@ -152,7 +161,7 @@ export class CustomValidatorsService {
 
       // If value is empty there is no error
       if (!value) {
-        return { invalidRegistrationNumber: true };;
+        return { invalidRegistrationNumber: true };
       }
 
       // Ensure value is a string before checking the format
@@ -186,49 +195,67 @@ export class CustomValidatorsService {
     };
   }
 
-
   private static validTaxNumber(pib: any) {
     if (pib.length === 9 && this.validNumber(pib)) {
       let sum = 10;
       for (let i = 0; i < 8; i++) {
         sum = (sum + parseInt(pib.charAt(i), 10)) % 10;
-        sum = (sum === 0 ? 10 : sum) * 2 % 11;
+        sum = ((sum === 0 ? 10 : sum) * 2) % 11;
       }
       sum = (11 - sum) % 10;
       return parseInt(pib.charAt(8), 10) === sum;
     }
     return false;
-  };
+  }
 
   private static validRegNumLegalEntity(mb: any) {
-    return mb.length === 8 &&
+    return (
+      mb.length === 8 &&
       this.validNumber(mb) &&
-      parseInt(mb.charAt(7), 10) === this.mod11(mb.substring(0, 7),
-        // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-        function(kb: any) { return kb > 9 ? 0 : kb; });
-  };
-
+      parseInt(mb.charAt(7), 10) ===
+        this.mod11(
+          mb.substring(0, 7),
+          // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+          function(kb: any) {
+            return kb > 9 ? 0 : kb;
+          }
+        )
+    );
+  }
 
   private static validRegNumIndividualPerson(jmbg: any) {
-    if (typeof jmbg !== 'undefined' && jmbg !== null &&
-      jmbg.length === 13 && this.validNumber(jmbg)) {
+    if (
+      typeof jmbg !== 'undefined' &&
+      jmbg !== null &&
+      jmbg.length === 13 &&
+      this.validNumber(jmbg)
+    ) {
       const day = parseInt(jmbg.substring(0, 2), 10);
       const month = parseInt(jmbg.substring(2, 4), 10) - 1;
       const year = parseInt('2' + jmbg.substring(4, 7), 10);
       if (this.validDate(new Date(year, month, day))) {
-        return /^60|66$/.test(jmbg.substring(7, 9)) ||
-          parseInt(jmbg.charAt(12), 10) === this.mod11(jmbg.substring(0, 12),
-            // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-            function(kb: any) { return kb === 11 ? 0 : ((kb === 10) ? 'X' : kb); });
+        return (
+          /^60|66$/.test(jmbg.substring(7, 9)) ||
+          parseInt(jmbg.charAt(12), 10) ===
+            this.mod11(
+              jmbg.substring(0, 12),
+              // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+              function(kb: any) {
+                return kb === 11 ? 0 : kb === 10 ? 'X' : kb;
+              }
+            )
+        );
       }
     }
     return false;
-  };
+  }
 
   private static validDate(value: any) {
-    if (Object.prototype.toString.call(value) === '[object Date]') { return !isNaN(value.getTime()); }
+    if (Object.prototype.toString.call(value) === '[object Date]') {
+      return !isNaN(value.getTime());
+    }
     return false;
-  };
+  }
 
   private static validNumber(value: any) {
     if (typeof value !== 'undefined' && value !== null) {
@@ -236,7 +263,7 @@ export class CustomValidatorsService {
       return !isNaN(parseFloat(value)) && isFinite(value);
     }
     return false;
-  };
+  }
 
   private static mod11(num: any, additionalCondition: any) {
     let kb = 0;
@@ -245,12 +272,10 @@ export class CustomValidatorsService {
       multiplier = multiplier === 7 ? 2 : multiplier + 1;
     }
     kb = 11 - (kb % 11);
-    return (typeof additionalCondition === 'undefined') ? kb : additionalCondition(kb);
+    return typeof additionalCondition === 'undefined'
+      ? kb
+      : additionalCondition(kb);
   }
-
-
-
-
 
   static nonResidentCodeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -267,6 +292,4 @@ export class CustomValidatorsService {
       return isValid ? null : { invalidFormat: true };
     };
   }
-
-
 }

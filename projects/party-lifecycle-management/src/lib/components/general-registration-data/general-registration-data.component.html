@@ -219,6 +219,7 @@
             appearance="outline"
             [control]="formGroup.controls['dateOfDeath']"
             [label]="'lblDateOfDeath' | translate : locale.language"
+            [max]="maxDate"
           >
           </asee-datepicker>
           <error-handling
