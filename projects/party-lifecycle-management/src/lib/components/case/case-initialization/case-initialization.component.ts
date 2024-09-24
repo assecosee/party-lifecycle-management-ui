@@ -301,9 +301,9 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
         'party-kind': this.selectedUser && this.selectedUser.kind ?
           this.selectedUser.kind : this.isIndividualPerson ? 'individual' : 'organization',
         'party-identification-number': this.selectedUser
-          && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.number : Math.floor(Math.random() * 1000000000).toString(),
+          && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.number : null,
         'party-identification-kind': this.selectedUser
-          && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.kind : 'passport'
+          && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.kind : null
       },
       priority: 'high',
       channel: 'DO',
