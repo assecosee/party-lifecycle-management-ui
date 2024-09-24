@@ -1,24 +1,44 @@
-.title {
+.tasks-card {
+  .section-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    font-size: 1.1rem;
-    color: #0000008a;
-    font-weight: 600;
-    line-height: 2rem;
   }
-  .no-content-placeholder {
-    text-align: center;
+  .card-title {
     color: rgba(0, 0, 0, 0.54);
-    font-weight: bold;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 10px;
-    font-size: 16px;
+    margin-top: 0px;
 
-    img {
-      max-width: 70px;
-      opacity: 0.16;
-      margin-bottom: 16px;
-    }
+    font-size: 1.10rem;
+    font-weight: 600;
   }
+}
+
+.tasks {
+  overflow: scroll;
+
+  ::ng-deep .add-new-task-button {
+    position: relative;
+    margin: 16px 20px 16px auto;
+    width: max-content;
+  }
+
+  ::ng-deep .task-list-table {
+    padding-bottom: 0px;
+  }
+}
+.no-content-placeholder {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.54);
+  font-weight: bold;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  font-size: 16px;
+
+  img {
+    max-width: 70px;
+    opacity: 0.16;
+    margin-bottom: 16px;
+  }
+}

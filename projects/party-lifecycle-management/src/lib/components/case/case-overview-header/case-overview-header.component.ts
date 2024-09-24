@@ -59,7 +59,6 @@ export class CaseOverviewHeaderComponent implements OnInit{
     confirmDialog.afterClosed().subscribe(e => {
       if(e === 1){
         // ubaciti metodu za preuzimanje work itema kada bude bila gotova
-        console.log('Takeover Work Item');
       }
     });
   }
@@ -87,7 +86,6 @@ export class CaseOverviewHeaderComponent implements OnInit{
       if(e){
         // potrebno je dodati metodu za dodelu kada bude odradjena
         // e vraca object user-a.
-        console.log(e);
       }
     }, (error) => {
       this.dialog.open(MaterialErrorDialogComponent,

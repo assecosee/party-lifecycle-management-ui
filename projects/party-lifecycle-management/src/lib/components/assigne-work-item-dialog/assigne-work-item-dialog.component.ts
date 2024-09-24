@@ -34,7 +34,6 @@ export class AssigneWorkItemDialogComponent implements OnInit{
     this.assignWorkItemFormControl = new AseeFormControl(null);
   }
   ngAfterViewInit(){
-    console.log(this.agentAutoComplate);
     this.agentAutoComplate.onInit();
   }
   save(){
