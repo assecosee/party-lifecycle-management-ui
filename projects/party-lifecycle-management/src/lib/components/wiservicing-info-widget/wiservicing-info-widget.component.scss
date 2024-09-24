@@ -6,3 +6,19 @@
     font-weight: 600;
     line-height: 2rem;
   }
+  .no-content-placeholder {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.54);
+    font-weight: bold;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    font-size: 16px;
+
+    img {
+      max-width: 70px;
+      opacity: 0.16;
+      margin-bottom: 16px;
+    }
+  }
