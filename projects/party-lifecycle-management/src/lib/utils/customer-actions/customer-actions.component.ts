@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BpmTasksHttpClient, ErrorEmitterService } from '@asseco/common-ui';
 import { MaterialModule } from '@asseco/components-ui';
+import { NotificationListenerService } from '@asseco/task-inbox';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 
 @Component({
@@ -11,7 +12,7 @@ import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from '
   templateUrl: './customer-actions.component.html',
   styleUrls: ['./customer-actions.component.scss']
 })
-export class MaterialCustomerActionsComponent implements OnInit {
+export class MaterialCustomerActionsComponent implements OnInit, OnChanges {
   @Input() public currentTask: any;
   @Input() public formGroup: any;
   @Input() public submitDisabled = false;
@@ -23,12 +24,19 @@ export class MaterialCustomerActionsComponent implements OnInit {
   protected router: Router;
   constructor(
     protected injector: Injector,
-    protected errorEmitterService: ErrorEmitterService
+    protected errorEmitterService: ErrorEmitterService,
+    protected notificationService: NotificationListenerService
   ) {
     this.locale = this.injector.get(L10N_LOCALE);
     this.bpmTasksHttpClient = this.injector.get(BpmTasksHttpClient);
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.router = this.injector.get(Router);
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['currentTask']?.currentValue && changes['currentTask']?.currentValue !== undefined) {
+      this.notificationService.lastBusinessKey = this.currentTask.businessKey;
+      this.notificationService.lastDate = new Date();
+    }
   }
 
   public ngOnInit() {
