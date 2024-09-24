@@ -4,7 +4,7 @@ import { L10N_LOCALE, L10nLocale } from 'angular-l10n';
 import { SurveyService } from '../../services/survey.service';
 import { SurveyQuestion, SurveySection, SurveyTemplate } from '../../model/survey-template';
 import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { catchError, combineLatest, EMPTY, forkJoin, map, of, Subscription, switchMap, throwError } from 'rxjs';
 import { MaterialErrorDialogComponent } from '@asseco/components-ui';
 import { MatDialog } from '@angular/material/dialog';
@@ -42,6 +42,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     protected injector: Injector,
     protected uiService: UIService,
     protected route: ActivatedRoute,
+    protected router: Router,
     protected taskService: BpmTasksHttpClient,
     protected loaderService: LoaderService,
     protected dialog: MatDialog,
@@ -52,12 +53,6 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if(this.routeSubscription) {
       this.routeSubscription.unsubscribe();
-    }
-    if(this.hashMapFormFields) {
-      this.hashMapFormFields = {};
-    }
-    if(this.listFormFields) {
-      this.listFormFields = [];
     }
   }
   ngAfterViewInit(): void {
@@ -78,6 +73,21 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
           this.loaderService.stopLoader();
           this.uiService.setTitle('Error: No task');
           return EMPTY;
+        }
+        if(this.hashMapFormFields) {
+          this.hashMapFormFields = {};
+        }
+        if(this.listFormFields) {
+          this.listFormFields = [];
+        }
+        if(this.items) {
+          this.items = [];
+        }
+        if(this.surveyTemplate) {
+          this.surveyTemplate = null as any;
+        }
+        if(this.formGroup) {
+          this.formGroup = new UntypedFormGroup({});
         }
         return forkJoin([
           this.taskService.getTask(params['taskId']).build(),
@@ -121,6 +131,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     this.initForm(this.listFormFields);
   }
   public complate() {
+    // this.router.navigate(['/tasks/survey/kyc-pep/499c9609-7673-11ef-92cd-7233c520c38f']);
     if(this.task && this.task !== undefined && this.task.id) {
       this.taskService.complete(this.task.id, this.formGroup).build()
         .pipe(

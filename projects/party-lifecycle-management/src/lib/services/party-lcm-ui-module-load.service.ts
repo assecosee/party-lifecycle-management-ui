@@ -21,7 +21,7 @@ export class PartyLcmUiModuleLoadService {
         id: 'party-lcm-onboarding',
         name: 'New onboarding',
         icon: 'person_add',
-        route: '/tasks/survey/kyc-fl/c7618237-799c-11ef-92cd-7233c520c38f'
+        route: '/tasks/survey/kyc-fl/08951d69-6aa6-11ef-bbd9-2287d8381924'
       }),
       new MenuItem({
         id: 'party-lcm-onboarding',
