@@ -1,0 +1,14 @@
+<div>
+    <mat-dialog-content>
+        <h3 mat-dialog-title>
+            Change Work Item status
+        </h3>
+        <asee-select [appearance]="'outline'" [multiple]="false" [control]="statusFormControl"
+                    [options]="caseStatuses" [label]="'Status'" [labelProperty]="'name'" [valueProperty]="'literal'"
+                    labelProperty="description"></asee-select>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button (click)="cancel()" color="secondary" translate>Cancel</button>
+        <button mat-button (click)="save()" color="primary" translate>Save</button>
+      </mat-dialog-actions>
+</div>

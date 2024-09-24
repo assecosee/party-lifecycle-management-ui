@@ -1,0 +1,20 @@
+<span class="agent-search-wrapper">
+    <mat-form-field class="agent-search" [appearance]="appearance">
+        <input (focusout)="searchCanceled($event)" #input matInput [placeholder]="label | translate: locale.language" [matAutocomplete]="auto"
+            [formControl]="autocompleteInputControl" (keyup)="searchCanceled($event)" (click)="inputClick($event)">
+        <mat-icon matSuffix (click)="clearValue()" *ngIf="showClear && !clearHidden" class="pointer">clear</mat-icon>
+        <mat-icon matSuffix *ngIf="showSearch && clearHidden" class="pointer">search</mat-icon>
+        <mat-autocomplete (optionsScroll)="onScroll()"  #auto="matAutocomplete" [displayWith]="displayWith">
+            <div *ngIf="control">
+                <mat-option
+                    *ngFor="let agent of filteredAgentList"
+                    [value]="agent" class="agent-search-option" id="agentSearch{{agent?.externalId}}">
+                    <span translate>
+                      {{agent?.displayName || 'Unknown'}}
+                    </span>
+                </mat-option>
+            </div>
+        </mat-autocomplete>
+    </mat-form-field>
+  </span>
+  

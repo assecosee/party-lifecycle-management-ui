@@ -11,17 +11,33 @@
                 <span translate>Case number</span>:
                 <span>{{_caseOverview.id || ('Unknown' | translate: locale.language)}}</span>
             </h2>
-            <div class="work-item-type">
-            <span translate> Work Item Type</span>:
-            <span translate>{{_caseOverview.type || 'Unknown'}}</span>
+            <div class="date-wrapper">
+            <div matTooltip="{{'Request Date' | translate:locale.language}}">
+              <mat-icon class="icon">today</mat-icon>
+              <span [options]="{ dateStyle: 'medium'}"
+              l10nDate>{{_caseOverview.entityInfo?.creationTime}}</span>
             </div>
+          </div>
+          <div class="relationship-mng">
+            <mat-icon class="icon">account_box</mat-icon>
+            <span>{{(_caseOverview.servicingInfo?.agent) || ('Unknown' | translate: locale.language)}}</span>
+          </div>
             <div class="work-item-status">
-              <span translate> Work Item Status</span>:
-              <span translate>{{_caseOverview.status || 'Unknown'}}</span>
-            </div>
-            <div>
-              <span translate>Work Item Relationship mng</span>:
-              <span>{{_caseOverview.servicingInfo?.agent || ('Unknown' | translate: locale.language)}}</span>
+              <mat-chip-option class="blue" [matTooltip]="'Work Item Status' | translate: locale.language" *ngIf="_caseOverview.status =='opened' || _caseOverview.status == 'active'">
+              <span style="color: white">{{ _caseOverview.status }}</span>
+              </mat-chip-option>
+              <mat-chip-option class="red" [matTooltip]="'Work Item Status' | translate: locale.language" *ngIf="_caseOverview.status =='rejected' || _caseOverview.status =='canceled'">
+                <span style="color: white">{{ _caseOverview.status }}</span>
+                </mat-chip-option>
+              <mat-chip-option class="green" [matTooltip]="'Work Item Status' | translate: locale.language" *ngIf="_caseOverview.status =='completed'">
+                <span style="color: white">{{ _caseOverview.status }}</span>
+                  </mat-chip-option>
+              <mat-chip class="chip" color="primary"
+                  [matTooltip]="'Work Item Type' | translate:locale.language">
+                  <mat-icon class="chip-icon">timeline</mat-icon>
+                  {{_caseOverview.type | translate:locale.language}}
+              </mat-chip>
+
             </div>
 
 <mat-menu #menu="matMenu" xPosition="before">

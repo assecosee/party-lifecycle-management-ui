@@ -21,6 +21,9 @@ import { WIServicingInfoWidgetComponent } from './components/wiservicing-info-wi
 import { PartyLifecycleManagementRoutingModule } from './party-lifecycle-management-routing.module';
 import { PartyLcmUiModuleLoadService } from './services/party-lcm-ui-module-load.service';
 import { TrackingWidgetComponent } from './components/tracking-widget/tracking-widget.component';
+import { ChangeCaseStatusDialogComponent } from './components/change-case-status-dialog/change-case-status-dialog.component';
+import { AssigneWorkItemDialogComponent } from './components/assigne-work-item-dialog/assigne-work-item-dialog.component';
+import { AgentSearchComponent } from './components/agent-search/agent-search.component';
 
 
 
@@ -36,7 +39,10 @@ import { TrackingWidgetComponent } from './components/tracking-widget/tracking-w
     ContextWidgetComponent,
     TaskWidgetComponent,
     TrackingWidgetComponent,
-    CheckUpWidgetComponent
+    CheckUpWidgetComponent,
+    ChangeCaseStatusDialogComponent,
+    AssigneWorkItemDialogComponent,
+    AgentSearchComponent
   ],
   imports: [
     PartyLifecycleManagementRoutingModule,
@@ -58,7 +64,9 @@ import { TrackingWidgetComponent } from './components/tracking-widget/tracking-w
     ContextWidgetComponent,
     TaskWidgetComponent,
     TrackingWidgetComponent,
-    CheckUpWidgetComponent
+    CheckUpWidgetComponent,
+    AssigneWorkItemDialogComponent,
+    AgentSearchComponent
   ]
 })
 export class PartyLifecycleManagementModule {

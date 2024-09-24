@@ -1,0 +1,16 @@
+<div>
+    <mat-dialog-content>
+        <h3 mat-dialog-title>
+            Assign Work Item
+        </h3>
+        <lib-agent-search  #agentSearch
+            [control]="assignWorkItemFormControl"
+            label="{{ 'Agent' | translate: locale.language }}"
+            appearance="outline"
+            ></lib-agent-search>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button (click)="cancel()" color="secondary" translate>Cancel</button>
+        <button mat-button (click)="save()" color="primary" translate>Save</button>
+      </mat-dialog-actions>
+</div>

@@ -44,6 +44,14 @@ export class PartyLifecycleManagementService extends AbstractHttpClient {
       .addAuthentication();;
     return builder.build();
   }
+  public patchCaseStatus(caseId: string, changeCaseStatusBody: any): Observable<any>{
+    const builder = this.getHttpClientBuilder<any>()
+      .setUrl(`${this.getUrl()}lifecycle-cases/${caseId}/status`)
+      .setHttpMethod(HttpMethod.PATCH)
+      .setBody(changeCaseStatusBody)
+      .addAuthentication();
+    return builder.build();
+  }
   public getClassification(classificationName: string): Observable<ClassificationSchema> {
     const builder = this.getHttpClientBuilder<ClassificationSchema>()
       .setUrl(`${this.getUrl()}classifications/${classificationName}`)

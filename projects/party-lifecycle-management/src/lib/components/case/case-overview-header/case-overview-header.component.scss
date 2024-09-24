@@ -2,9 +2,8 @@
     align-items: left;
     box-sizing: border-box;
     min-height: 64px;
-    max-width: 1250px;
-    width: 100%;
-    margin: 0 auto 80px;
+    width: 97%;
+    margin: auto 20px;
 }
 .case-overview-content{
 
@@ -33,4 +32,47 @@
         font-weight: 600;
         color: rgba(0, 0, 0, 0.87);
       }
+}
+.relationship-mng{
+    display: flex;
+  margin-top: 4px;
+  align-items: end;
+
+  .icon {
+    color: rgba(0, 0, 0, 0.54);
+    margin-right: 2px;
+  }
+}
+.work-item-status{
+    margin-top: 5px;
+    ::ng-deep mat-chip .mat-mdc-chip-action-label {
+      display: flex;
+      align-items: center;
+    }
+    .chip {
+      margin-left: 5px;
+      position: absolute;
+    }
+.green {
+    background: green;
+}
+.blue {
+    background-color: var(--palette-primary-500-rgb);
+}
+.red {
+    background-color: red;
+}
+}
+.date-wrapper {
+    display: flex;
+  
+    >div {
+      display: flex;
+      align-items: center;
+    }
+  
+    .icon {
+      color: rgba(0, 0, 0, 0.54);
+      margin-right: 2px;
+    }
 }

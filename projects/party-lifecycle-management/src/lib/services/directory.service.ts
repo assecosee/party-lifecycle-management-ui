@@ -25,5 +25,15 @@ export class DirectoryService extends AbstractHttpClient {
 
     return builder.build();
   }
+  public getUsersList(filter: any): Observable<any>{
+    const builder = this.getHttpClientBuilder<any[]>()
+      .setUrl(`${this.url}${encodeURIComponent(filter.directory)}/users`)
+      .setHttpMethod(HttpMethod.GET)
+      .mapResponseToCamelCase()
+      .addAuthentication();
+
+    return builder.build();
+
+  }
 
 }
