@@ -66,7 +66,7 @@ export class CustomValidatorsService {
       const stringValue = String(value);
 
       // Regex pattern to match only letters (both uppercase and lowercase), no spaces allowed
-      const onlyCharactersPattern = /^[A-Za-z]+$/;
+      const onlyCharactersPattern = /^[\p{L}]+$/u;
 
       // If the string does not match the pattern, return an error
       if (!onlyCharactersPattern.test(stringValue)) {
@@ -122,7 +122,7 @@ export class CustomValidatorsService {
       const stringValue = String(value);
 
       // Regex pattern to match only letters (both uppercase and lowercase) and hyphens, no spaces allowed
-      const onlyCharactersPattern = /^[A-Za-z-]+$/;
+      const onlyCharactersPattern = /^[\p{L}-]+$/u;
 
       // If the string does not match the pattern, return an error
       if (!onlyCharactersPattern.test(stringValue)) {
