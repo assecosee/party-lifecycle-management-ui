@@ -61,9 +61,9 @@ export class AdditionalDataComponent implements OnInit {
 
 
   constructor(protected injector: Injector,
-              protected configurationService: ConfigurationHttpClient,
-              private referenceService: ReferenceService,
-              private customService: CustomService) {
+    protected configurationService: ConfigurationHttpClient,
+    private referenceService: ReferenceService,
+    private customService: CustomService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -186,9 +186,8 @@ export class AdditionalDataComponent implements OnInit {
     if (this.isRegistrationProcess) {
       this.formGroup.controls['treatmentDateValidFrom'].setValue(new Date());
       this.formGroup.controls['tarrifDateValidFrom'].setValue(new Date());
+      this.setDefaultData();
     }
-
-    this.setDefaultData();
 
     console.log(this.formGroup);
     // this.formGroup.markAllAsTouched();
