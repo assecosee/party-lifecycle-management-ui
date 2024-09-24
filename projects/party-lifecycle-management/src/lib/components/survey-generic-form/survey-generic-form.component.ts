@@ -5,10 +5,11 @@ import { SurveyService } from '../../services/survey.service';
 import { SurveyQuestion, SurveySection, SurveyTemplate } from '../../model/survey-template';
 import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
-import { catchError, combineLatest, EMPTY, forkJoin, map, Subscription, switchMap } from 'rxjs';
+import { catchError, combineLatest, EMPTY, forkJoin, map, of, Subscription, switchMap, throwError } from 'rxjs';
 import { MaterialErrorDialogComponent } from '@asseco/components-ui';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NotificationListenerService } from '@asseco/task-inbox';
 
 interface RuleData {
   key?: string;
@@ -43,7 +44,8 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     protected route: ActivatedRoute,
     protected taskService: BpmTasksHttpClient,
     protected loaderService: LoaderService,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
+    protected notificationService: NotificationListenerService
   ) {
     this.locale = this.injector.get(L10N_LOCALE);
   }
@@ -68,17 +70,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
 
         if (!params['taskId']) {
           this.loaderService.stopLoader();
-
           this.uiService.setTitle('Error: No task');
-
-          this.dialog.open(MaterialErrorDialogComponent, {
-            data: {
-              status: 440,
-              error: { message: 'Task ID is required' }
-            },
-            disableClose: true
-          });
-
           return EMPTY;
         }
         return forkJoin([
@@ -88,14 +80,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
           catchError(
             (error: HttpErrorResponse) => {
               this.loaderService.stopLoader();
-
               this.uiService.setTitle('Error: No task');
-
-              this.dialog.open(MaterialErrorDialogComponent, {
-                data: error,
-                disableClose: true
-              });
-
               return EMPTY;
             }
           )
@@ -104,6 +89,10 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
       )).subscribe(
         ([task, surverField]: [Task, SurveyTemplate]) => {
           this.task = task;
+          if(this.task && this.task !== undefined) {
+            this.notificationService.lastBusinessKey = this.task.businessKey;
+            this.notificationService.lastDate = new Date();
+          }
           this.surveyTemplate = surverField;
           this.uiService.setTitle(this.surveyTemplate.info.title);
           this.transformSurveyTemplate(this.surveyTemplate);
@@ -126,25 +115,33 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     this.initForm(this.listFormFields);
   }
   public complate() {
-    console.log(this.formGroup.getRawValue());
+    if(this.task && this.task !== undefined && this.task.id) {
+      this.taskService.complete(this.task.id, this.formGroup).build()
+        .pipe(
+          catchError(
+        (err) => {
+          if (err?.status === 200) {
+            return of(err);
+          } else {
+            return throwError(err);
+          }
+        }
+          )
+        ).subscribe(
+          () => {
+            // this.actionInProgress = false;
+          },
+          (error: HttpErrorResponse) => {
+            this.loaderService.stopLoader();
+          }
+        );
+    }
   }
   private initSurveyForm(templateId: any) {
     if(templateId === null || templateId === undefined) {
       return EMPTY;
     }
     return this.surveyService.getTemplateDetails(templateId);
-    // .subscribe(
-    //   (res: SurveyTemplate) => {
-    //     this.surveyTemplate = res;
-    //     this.uiService.setTitle(this.surveyTemplate.info.title);
-    //     this.transformSurveyTemplate(this.surveyTemplate);
-    //     this.surveyTemplate.sections.forEach(
-    //       (s: SurveySection) => {
-    //         this.items.push(s.title);
-    //       }
-    //     );
-    //   }
-    // );
   }
 
   private initForm(listFormFields: FormField []) {
