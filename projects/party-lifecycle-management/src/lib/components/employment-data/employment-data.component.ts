@@ -92,14 +92,14 @@ export class EmploymentDataComponent implements OnInit {
         this.companyPositionCodeList = companyPositionCodes.items;
 
       })
-    ).subscribe();
-
-    // Handle ActivatedRoute data as before
-    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
-      .subscribe((params) => {
-        this.taskId = params[0]['taskId'];
-        this.getTask();
-      });
+    ).subscribe(response => {
+      // Handle ActivatedRoute data as before
+      combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
+        .subscribe((params) => {
+          this.taskId = params[0]['taskId'];
+          this.getTask();
+        });
+    });
   }
 
   public getTask() {
