@@ -8,8 +8,8 @@ import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from '
 import { combineLatest, forkJoin, tap } from 'rxjs';
 import { CustomService } from '../../services/custom.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
-import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
+import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 
 @Component({
   selector: 'lib-company-profile',
@@ -129,14 +129,14 @@ export class CompanyProfileComponent implements OnInit {
             formattedName: element.name ? `${element.name} - ${element.description}` : element.description
           }));
       })
-    ).subscribe();
-
-    // Handle ActivatedRoute data as before
-    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
-      .subscribe((params) => {
-        this.taskId = params[0]['taskId'];
-        this.getTask();
-      });
+    ).subscribe(response => {
+      // Handle ActivatedRoute data as before
+      combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
+        .subscribe((params) => {
+          this.taskId = params[0]['taskId'];
+          this.getTask();
+        });
+    });
   }
 
   public getTask() {

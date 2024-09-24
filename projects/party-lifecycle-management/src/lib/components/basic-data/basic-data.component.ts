@@ -172,14 +172,14 @@ export class BasicDataComponent implements OnInit, DoCheck {
         console.error('Error fetching data:', error);
         return of(null); // Handle the error and return a fallback value if needed
       })
-    ).subscribe();
-
-    // Handle ActivatedRoute data as before
-    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
-      .subscribe((params) => {
-        this.taskId = params[0]['taskId'];
-        this.getTask();
-      });
+    ).subscribe(response => {
+      // Handle ActivatedRoute data as before
+      combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
+        .subscribe((params) => {
+          this.taskId = params[0]['taskId'];
+          this.getTask();
+        });
+    });
   }
 
   public getTask() {
