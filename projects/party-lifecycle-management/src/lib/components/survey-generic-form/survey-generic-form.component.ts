@@ -53,6 +53,12 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     if(this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+    if(this.hashMapFormFields) {
+      this.hashMapFormFields = {};
+    }
+    if(this.listFormFields) {
+      this.listFormFields = [];
+    }
   }
   ngAfterViewInit(): void {
     // this.listenValue();
