@@ -111,14 +111,14 @@ export class AdditionalDataComponent implements OnInit {
         this.defaultData = JSON.parse(defaultData);
 
       })
-    ).subscribe();
-
-    // Handle ActivatedRoute data as before
-    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
-      .subscribe((params) => {
-        this.taskId = params[0]['taskId'];
-        this.getTask();
-      });
+    ).subscribe(response => {
+      // Handle ActivatedRoute data as before
+      combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
+        .subscribe((params) => {
+          this.taskId = params[0]['taskId'];
+          this.getTask();
+        });
+    });
   }
 
   public getTask() {
@@ -196,7 +196,7 @@ export class AdditionalDataComponent implements OnInit {
 
   private setDefaultData() {
     // Check if it's the registration process and if defaultData exists
-    if (this.isRegistrationProcess && this.defaultData) {
+    if (this.defaultData) {
 
       // Combine 'individual' and 'legal' data from defaultData, and filter only unique values
       const treatmentsToFind = [
