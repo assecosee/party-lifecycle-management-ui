@@ -236,7 +236,6 @@ export class AddressDataComponent implements OnInit, DoCheck {
     fg.controls['typeOfAddress'].valueChanges.subscribe((newValue: any) => {
       if (newValue?.literal === 'legal' && this.getFormFieldValue('countryOfficialAddress')) {
         const parsedValue = JSON.parse(this.getFormFieldValue('countryOfficialAddress'));
-        console.log(JSON.parse(this.getFormFieldValue('countryOfficialAddress')));
         this.prefillAutocompleteField(this.countryAutocomplete, 'country', parsedValue);
         this.countryControlDisabled = true;
       } else {
@@ -248,8 +247,11 @@ export class AddressDataComponent implements OnInit, DoCheck {
     fg.controls['placeName'].valueChanges.subscribe((newValue: any) => {
       this.locationService.getPlacesByPlaceQuery(newValue).subscribe(placesList => {
         placesList.items.filter((item: any) => item.name).map((element: any) =>
-          element.formattedName = element.administrativeDivision ?
-            `${element.name} - ${element.placeCode} - ${element.administrativeDivision}` : `${element.name} - ${element.placeCode}`);
+          element.formattedName = // Exclude the "translated-name" property and handle undefined values
+          Object.entries(element)
+            .filter(([key, value]) => key !== 'translated-name' && value !== undefined) // Exclude 'translated-name' and undefined
+            .map(([key, value]) => value) // Extract the values
+            .join('-')); // Join with hyphen
         this.placesList = placesList.items;
       });
 
@@ -297,8 +299,10 @@ export class AddressDataComponent implements OnInit, DoCheck {
     });
   }
 
-  public removeGroup() {
-    const removedAddress = this.groups.controls.pop();
+
+  public removeGroup(index: any) {
+    const removedAddress = this.groups.controls[index];
+    this.groups.removeAt(index)
 
     if (!removedAddress) { return; }
 

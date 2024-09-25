@@ -10,8 +10,8 @@
         @if(formGroupInitialized){
         <mat-card-content class="pt" [formGroup]="form">
             <div formArrayName="groups">
-                @for (group of groups.controls; track $index){
-                <mat-expansion-panel [expanded]="true">
+                @for (group of groups.controls; track group){
+                <mat-expansion-panel [expanded]="true" [formGroup]="group">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             <span>{{group.get('typeOfAddress')?.value?.description | translate : locale.language}}
@@ -20,22 +20,23 @@
                         <mat-panel-description>
                         </mat-panel-description>
                     </mat-expansion-panel-header>
-                    <div [formGroup]="group">
+                    <div>
                         <div class="flex-container">
                             <div class="flex-item">
-                                <asee-autocomplete appearance="outline" [control]="group.controls['typeOfAddress']"
+                                <asee-autocomplete appearance="outline" [control]="group.get('typeOfAddress')"
                                     [autocompleteList]="addressTypes"
                                     [label]="'lblTypeOfAddress' | translate : locale.language"
                                     filterBehaviour="includes" labelProperty="name" valueProperty="literal"
-                                    (click)="markAsTouched('typeOfAddress')"></asee-autocomplete>
+                                    (click)="markAsTouched('typeOfAddress')"
+                                    [resetOnBlurDisabled]="false"></asee-autocomplete>
                                 <error-handling [control]="group.get('typeOfAddress')"></error-handling>
                             </div>
                             <div [class]="!countryControlDisabled ? 'flex-item' : 'flex-item disable-div'">
                                 <asee-autocomplete #country appearance="outline" [readonly]="countryControlDisabled"
                                     [control]="group.get('country')" [autocompleteList]="countriesList"
                                     [label]="'lblCountry' | translate : locale.language" filterBehaviour="includes"
-                                    labelProperty="name" valueProperty="code"
-                                    (click)="markAsTouched('country')"></asee-autocomplete>
+                                    labelProperty="name" valueProperty="code" (click)="markAsTouched('country')"
+                                    [resetOnBlurDisabled]="false"></asee-autocomplete>
                                 <error-handling [control]="group.get('country')"></error-handling>
                             </div>
 
@@ -46,7 +47,8 @@
                                     [autocompleteList]="placesList"
                                     [label]="'lblPlaceName' | translate : locale.language" filterBehaviour="includes"
                                     labelProperty="formattedName" valueProperty="placeCode"
-                                    (click)="markAsTouched('placeName')"></asee-autocomplete>
+                                    (click)="markAsTouched('placeName')"
+                                    [resetOnBlurDisabled]="false"></asee-autocomplete>
                                 <error-handling [control]="group.get('placeName')"></error-handling>
                             </div>
                             <div class="flex-item">
@@ -89,6 +91,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="bottom-end-alignment btn-container">
+                            <button mat-button translate (click)="removeGroup($index)" class="btn">
+                                Remove address
+                            </button>
+                        </div>
                     </div>
                 </mat-expansion-panel>
                 }
@@ -96,10 +103,6 @@
             <div class="btn-container">
                 <button mat-button translate (click)="addGroup()" class="btn">
                     Add new address
-                </button>
-                <button mat-button translate (click)="removeGroup()" class="btn"
-                    [disabled]="groups?.controls?.length == 1">
-                    Remove address
                 </button>
             </div>
         </mat-card-content>
