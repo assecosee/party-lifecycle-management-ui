@@ -1,12 +1,54 @@
-<mat-card>
-    <mat-card-header>
-        <mat-card-title class="title">{{title}}</mat-card-title>
-    </mat-card-header>
+<mat-card appearance="outlined" *ngIf="case.partyReference" class="case-context">
     <mat-card-content>
-        
-        <div class="row no-content-placeholder">
-            <img src="assets/img/empty_set.png">
-            {{ "No information available" | translate: locale.language }}
+    <div #header class="header-wrapper">
+      <div #individualName class="party-name">
+        <h2>{{ this.case.partyReference.partyName }}</h2>
+      </div>
+      <div class="party-kind">
+        <div class="party-number">{{ this.case.partyReference.partyNumber }}</div>
+      </div>
+    </div>
+    <p></p>
+        <div class="list-item">
+          <div class="item-content">
+            <div class="label" [matTooltip]="'Identification Number'"> {{ 'Identification number' }}: </div>
+            <div class="label-value"
+            [ngClass]="{ 'no-data': !case.partyReference.partyIdentificationNumber}"
+            [matTooltip]="case.partyReference.partyIdentificationNumber || 'Unknown'">
+            {{ case.partyReference.partyIdentificationNumber || 'Unknown' }}
+            </div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="item-content">
+            <div class="label" [matTooltip]="'Identification Number Kind'"> {{ 'Identification Number Kind' }}: </div>
+            <div class="label-value"
+            [ngClass]="{ 'no-data': !case.partyReference.partyIdentificationKind }"
+            [matTooltip]="(case.partyReference.partyIdentificationKind | titlecase) || 'Unknown'">
+            {{ (case.partyReference.partyIdentificationKind | titlecase) || 'Unknown' }}
+            </div>
+          </div>
+        </div>  
+        <div class="list-item">
+            <div class="item-content">
+              <div class="label" [matTooltip]="'Registration Profile'">{{ 'Registration Profile' }}:</div>
+              <div class="label-value"
+              [ngClass]="{ 'no-data': !case.context?.party?.registrationProfile}"
+              [matTooltip]="case.context?.party?.registrationProfile|| 'Unknown'">
+              {{ (case.context?.party?.registrationProfile | titlecase) || 'Unknown' }}
+              </div>
+            </div>
+          </div>
+          <div class="list-item">
+            <div class="item-content">
+              <div class="label" [matTooltip]="'Party kind'">{{ 'Party kind' }}:</div>
+              <div class="label-value"
+              [ngClass]="{ 'no-data': !case.partyReference.partyKind}"
+              [matTooltip]="case.partyReference?.partyKind || 'Unknown'">
+              {{ (case.partyReference?.partyKind | titlecase) || 'Unknown' }}
+              </div>
+            </div>
           </div>
     </mat-card-content>
-</mat-card>
+  </mat-card>
+  

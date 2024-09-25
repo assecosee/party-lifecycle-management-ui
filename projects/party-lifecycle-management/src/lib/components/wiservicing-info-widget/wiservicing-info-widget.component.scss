@@ -1,24 +1,76 @@
-.title {
-    display: flex;
-    align-items: center;
-    font-size: 1.1rem;
-    color: #0000008a;
-    font-weight: 600;
-    line-height: 2rem;
-  }
-  .no-content-placeholder {
-    text-align: center;
+.container-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  .servicing-details-title {
+    font-size: 1.10rem;
     color: rgba(0, 0, 0, 0.54);
-    font-weight: bold;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 10px;
-    font-size: 16px;
+    font-weight: 600;
+  }
+}
+.title {
+  font-size: 1.1rem;
+  color: rgba(0, 0, 0, 0.54);
+  font-weight: 600;
+  line-height: 2rem;
+}
 
-    img {
-      max-width: 70px;
-      opacity: 0.16;
-      margin-bottom: 16px;
+.not-available {
+  color: rgba(0, 0, 0, 0.36);
+  font-style: italic;
+  font-weight: 600;
+}
+
+.content{
+  margin-top: 1rem;
+  display: flex;
+  padding: 0 16px;
+  flex-direction: row;
+  justify-content: left;
+
+  .item{
+    padding: 0.1rem 0;
+    display: flex;
+    flex-direction: row;
+    mat-icon{
+      margin-right: 0.5rem;
     }
   }
+}
+
+.servicing-info-list {
+  display:table;
+  list-style:none;
+  padding-left:0;
+  font-size: 14px;
+}
+
+.servicing-info-list > li
+ {
+  display:table-row;
+ }
+
+ .servicing-info-list > li > div
+ {
+  text-overflow: ellipsis;
+ }
+
+ .servicing-info-list > li > *
+ {
+  display:table-cell;
+  padding:5px;
+ }
+
+
+ .servicing-info-list label {
+  font-weight:normal;
+  text-align:right;
+  white-space: nowrap;
+  color: rgba(0, 0, 0, 0.54);
+ }
+
+ .servicing-info-list label:after {
+  content: ':';
+ }

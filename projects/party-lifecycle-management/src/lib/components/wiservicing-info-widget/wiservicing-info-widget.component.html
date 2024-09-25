@@ -1,13 +1,29 @@
-<mat-card>
+<mat-card appearance="outlined">
     <mat-card-header>
-        <mat-card-title class="title">{{title}}</mat-card-title>
-    </mat-card-header>
+          <mat-card-title class="title">Servicing Details</mat-card-title>
+      </mat-card-header>
     <mat-card-content>
-
-        <div class="row no-content-placeholder">
-            <img src="assets/img/empty_set.png">
-            {{ "No information available" | translate: locale.language }}
-        </div>
-
-    </mat-card-content>
-</mat-card>
+    <div class="content">
+      <ul class="servicing-info-list">
+        <li><label>CREATED DATE</label>
+          <div [ngClass]="{'not-available' : !case.entityInfo?.creationTime}" >{{((case.entityInfo?.creationTime | l10nDate: locale.language: {dateStyle: 'medium'} ) || 'Unknown')}}</div>
+        </li>
+        <li><label>CREATED BY</label>
+          <div [ngClass]="{'not-available' : !this.case.entityInfo?.createdBy}">{{ (this.case.entityInfo?.createdBy  || 'Uknown')}}</div>
+        </li>
+        <li><label>RELATIONSHIP AGENT</label>
+          <div [ngClass]="{'not-available' : !this.case.servicingInfo?.agent}">
+            {{ this.case.servicingInfo?.agent || 'Uknown'}}
+          </div>
+        </li>
+        <li><label>RELATIONSHIP OU</label>
+          <div [ngClass]="{'not-available' : !this.case.servicingInfo?.orgUnit}">{{this.case.servicingInfo?.orgUnit || 'Uknown'}}</div>
+        </li>
+        <li><label>CHANNEL</label>
+            <div [ngClass]="{'not-available': !this.case.servicingInfo?.channel}">{{this.case.servicingInfo?.channel || 'Uknown'}}</div>
+        </li>
+      </ul>
+    </div>
+  </mat-card-content>
+  </mat-card>
+  

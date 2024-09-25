@@ -1,24 +1,116 @@
-.title {
-    display: flex;
-    align-items: center;
-    font-size: 1.1rem;
-    color: #0000008a;
-    font-weight: 600;
-    line-height: 2rem;
-  }
-  .no-content-placeholder {
-    text-align: center;
-    color: rgba(0, 0, 0, 0.54);
-    font-weight: bold;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 10px;
-    font-size: 16px;
+.avatar-lg {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
 
-    img {
-      max-width: 70px;
-      opacity: 0.16;
-      margin-bottom: 16px;
-    }
+.header-wrapper {
+  padding-top: 10px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  h2 {
+    font-size: 20px;
   }
+  .accent {
+    color: #ff9800;
+    font-weight: 600;
+  }
+  .blue {
+    color: #03a9f4;
+    font-weight: 600;
+  }
+  .party-kind {
+    display: flex;
+    margin-top: 2px;
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-left: 2px;
+  }
+  .party-number {
+    margin-left: 4px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.57);
+  }
+}
+
+.no-content-placeholder {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.54);
+  font-weight: bold;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  img {
+    max-width: 70px;
+    opacity: 0.16;
+    margin-top: 16px;
+  }
+}
+.no-data {
+  color: rgba(0, 0, 0, 0.36);
+  font-style: italic;
+  font-weight: 600;
+}
+
+  .list-item {
+      height: 24px !important;
+    }
+    .label {
+      color: rgba(0, 0, 0, 0.54);
+      text-transform: uppercase;
+      font-size: 14px;
+      font-weight: 400;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden !important;
+      text-overflow: ellipsis;
+      width: 45%;
+      
+    }
+  
+    .label-value {
+      margin-left: 0px;
+      font-size: 14px;
+      width: 60%;
+      white-space: nowrap;
+      overflow: hidden!important;
+      text-overflow: ellipsis;
+    }
+  
+    .item-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+
+.no-content-placeholder {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.54);
+  font-weight: bold;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.party-name {
+  text-align: center;
+}
+
+.action {
+  display: flex;
+  justify-content: flex-end;
+  .mat-mdc-button {
+    margin-left: 0;
+    margin-right: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+
+.header-actions {
+  float: right;
+}

@@ -41,7 +41,7 @@ export class CaseOverviewComponent implements OnInit{
   }
   initCase(){
     const filter = {
-      include: 'entity-info,servicing-info'
+      include: 'entity-info,servicing-info,context'
     };
     this.partyLCMService.getCaseById(this.caseId,filter).subscribe(res =>{
       this.caseOverview = res;

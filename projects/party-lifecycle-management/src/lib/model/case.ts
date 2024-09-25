@@ -1,3 +1,5 @@
+import { CaseContext } from './caseContext';
+import { CaseTracking } from './caseTracking';
 import { EntityInfo } from './entityInfo';
 import { IdentificationKindsEnum } from './identificationKindsEnum';
 import { PartyReference } from './partyReference';
@@ -55,6 +57,8 @@ export interface Case {
   entityInfo?: EntityInfo;
   servicingInfo?: ServicingInfo;
   type?: string;
+  tracking?: CaseTracking;
+  context?: CaseContext;
 }
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Case {
