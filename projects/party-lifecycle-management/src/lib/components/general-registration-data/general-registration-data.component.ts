@@ -385,11 +385,11 @@ export class GeneralRegistrationDataComponent implements OnInit {
           if (
             formKey.key === 'gender' &&
             !this.notResidentClient &&
-            this.getFormFieldValue('registrationNumber')
+            this.getFormFieldValue('identificationNumber')
           ) {
             controlValue =
               this.genderOptions[
-                this.checkGender(this.getFormFieldValue('registrationNumber'))
+                this.checkGender(this.getFormFieldValue('identificationNumber'))
               ]?.value;
           }
         }
