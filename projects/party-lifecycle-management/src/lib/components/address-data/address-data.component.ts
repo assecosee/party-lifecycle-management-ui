@@ -302,7 +302,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
 
   public removeGroup(index: any) {
     const removedAddress = this.groups.controls[index];
-    this.groups.removeAt(index)
+    this.groups.removeAt(index);
 
     if (!removedAddress) { return; }
 
