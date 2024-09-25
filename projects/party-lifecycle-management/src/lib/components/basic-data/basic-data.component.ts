@@ -33,7 +33,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
   public isIndividualPerson = false;
   public formKeysIndividualPerson = [
     {
-      key: 'registrationNumber',
+      key: 'identificationNumber',
       validators: [
         Validators.required,
         CustomValidatorsService.validateRegNumIndividualPerson()]
@@ -89,7 +89,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
   ];
   public formKeysLegalEntity = [
     {
-      key: 'registrationNumber',
+      key: 'identificationNumber',
       validators:
         [
           Validators.required,
@@ -278,25 +278,25 @@ export class BasicDataComponent implements OnInit, DoCheck {
     });
 
     // On prefill mark control as touched
-    if (this.formGroup.controls['registrationNumber'].value && this.formGroup.controls['registrationNumber'].value != null) {
-      this.formGroup.controls['registrationNumber'].markAsTouched();
+    if (this.formGroup.controls['identificationNumber'].value && this.formGroup.controls['identificationNumber'].value != null) {
+      this.formGroup.controls['identificationNumber'].markAsTouched();
     }
 
-    if (this.formGroup.controls['registrationNumber'].value
+    if (this.formGroup.controls['identificationNumber'].value
       && this.formGroup.controls['typeOfClient'].value
       && this.formGroup.controls['typeOfClient'].value.value === '0'
       && !this.notResidentClient) {
       this.formGroup.controls['clientDateOfBirth']
-        .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value.toString()));
+        .setValue(this.extractDateFromIDNumber(this.formGroup.controls['identificationNumber'].value.toString()));
     }
 
-    this.formGroup.controls['registrationNumber'].valueChanges.subscribe(response => {
-      if (this.formGroup.controls['registrationNumber'].value
-        && this.formGroup.controls['registrationNumber'].valid
+    this.formGroup.controls['identificationNumber'].valueChanges.subscribe(response => {
+      if (this.formGroup.controls['identificationNumber'].value
+        && this.formGroup.controls['identificationNumber'].valid
         && this.formGroup.controls['typeOfClient'].value
         && this.formGroup.controls['typeOfClient'].value.value === '0') {
         this.formGroup.controls['clientDateOfBirth']
-          .setValue(this.extractDateFromIDNumber(this.formGroup.controls['registrationNumber'].value.toString()));
+          .setValue(this.extractDateFromIDNumber(this.formGroup.controls['identificationNumber'].value.toString()));
       }
     });
 

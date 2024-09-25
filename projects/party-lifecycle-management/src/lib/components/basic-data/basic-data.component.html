@@ -21,10 +21,10 @@
         @if(formGroup.controls['typeOfClient'] && formGroup.controls['typeOfClient'].value && formGroup.controls['typeOfClient'].value['value']){
           <div class="flex-item">
             <asee-text-input appUppercase appearance="outline" [readonly]="!isRegistration"
-              [control]="formGroup.controls['registrationNumber']"
-              [label]="'lblRegistrationNumber' | translate : locale.language">
+              [control]="formGroup.controls['identificationNumber']"
+              [label]="'lblIdentificationNumber' | translate : locale.language">
             </asee-text-input>
-            <error-handling [control]="formGroup.controls['registrationNumber']"></error-handling>
+            <error-handling [control]="formGroup.controls['identificationNumber']"></error-handling>
           </div>
         } @else {
           <div class="flex-item"></div>
