@@ -15,15 +15,18 @@
             #basisOfReg
             [autocompleteList]="basisOptions"
             [readonly]="readonly"
-            labelProperty="label"
-            valueProperty="literal"
+            labelProperty="description"
+            valueProperty="description"
             filterBehaviour="includes"
             appearance="outline"
-            [control]="acControl"
+            [control]="formGroup.controls['basisForClientRegistration']"
             [label]="'lblBasisForClientRegistration' | translate : locale.language"
-            (click)="markAsTouched('acControl')"
+            (click)="markAsTouched('basisForClientRegistration')"
           >
           </asee-autocomplete>
+          <error-handling
+            [control]="formGroup.controls['basisForClientRegistration']"
+          ></error-handling>
         </div>
       </div>
       <div class="flex-container pt">
@@ -32,12 +35,12 @@
             [readonly]="true"
             appUppercase
             appearance="outline"
-            [control]="formGroup.controls['swFilteringResult']"
+            [control]="swRes"
             [label]="'lblSwFilteringResult' | translate : locale.language"
           >
           </asee-text-input>
           <error-handling
-            [control]="formGroup.controls['swFilteringResult']"
+            [control]="swRes"
           ></error-handling>
         </div>
       </div>

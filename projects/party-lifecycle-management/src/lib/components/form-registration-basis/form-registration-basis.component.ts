@@ -13,11 +13,13 @@ import {
   L10nIntlModule,
   L10nLocale,
   L10nTranslationModule,
+  L10nTranslationService,
 } from 'angular-l10n';
-import { combineLatest } from 'rxjs';
+import { catchError, combineLatest, of } from 'rxjs';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { CustomService } from '../../services/custom.service';
 
 @Component({
   selector: 'lib-form-registration-basis',
@@ -46,29 +48,14 @@ export class FormRegistrationBasisComponent implements OnInit {
   public isIndividualPerson = false;
   public readonly = false;
   public basisOptions = [{}];
-  public acControl = new AseeFormControl(null, Validators.required);
-  public basis = [
-    {
-      literal: 'client',
-      label: 'Client',
-    },
-    {
-      literal: 'prospect',
-      label: 'Prospect',
-    },
-    {
-      literal: 'temporary-client',
-      label: 'Temporary client',
-    },
-    {
-      literal: 'related-party',
-      label: 'Related party',
-    },
-  ];
+  public swRes = new AseeFormControl(null, []);
+  public basis: any = [];
 
   constructor(
     protected injector: Injector,
-    protected configurationService: ConfigurationHttpClient
+    protected configurationService: ConfigurationHttpClient,
+    private customService: CustomService,
+    protected translationService: L10nTranslationService
   ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
@@ -76,13 +63,24 @@ export class FormRegistrationBasisComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    combineLatest([
-      this.activatedRoute.params,
-      this.activatedRoute.queryParams,
-    ]).subscribe((params) => {
-      this.taskId = params[0]['taskId'];
-      this.getTask();
-    });
+    this.customService
+      .getClassification('JK2OSNOV')
+      .pipe(
+        catchError((error) => {
+          console.error('Error fetching organizationUnits:', error);
+          return of({ items: [] });
+        })
+      )
+      .subscribe((res) => {
+        this.basis = res.items.filter((item: any) => item.name);
+        combineLatest([
+          this.activatedRoute.params,
+          this.activatedRoute.queryParams,
+        ]).subscribe((params) => {
+          this.taskId = params[0]['taskId'];
+          this.getTask();
+        });
+      });
   }
 
   public getTask() {
@@ -108,28 +106,21 @@ export class FormRegistrationBasisComponent implements OnInit {
     this.formGroupInitialized = false;
 
     let valueBasis = null;
+    const formFieldVal = this.getFormFieldValue(
+      'basisForClientRegistration'
+    )?.toLowerCase();
+
     valueBasis = this.basis.find(
-      (item) =>
-        item.literal.toLowerCase() ===
-        this.getFormFieldValue('basisForClientRegistration')?.toLowerCase()
+      (item: any) => item.description.toLowerCase() === formFieldVal
     );
     this.validateBasis(valueBasis);
-    this.acControl.setValue(valueBasis);
-    const controlBasis = new AseeFormControl(
-      valueBasis?.literal,
-      Validators.required
-    );
+    const controlBasis = new AseeFormControl(valueBasis, Validators.required);
     this.formGroup.addControl('basisForClientRegistration', controlBasis);
 
     const valueSwResult = this.getFormFieldValue('swFilteringResult');
     const controlSwResult = new AseeFormControl(valueSwResult, []);
     this.formGroup.addControl('swFilteringResult', controlSwResult);
-
-    this.acControl.valueChanges.subscribe((basis) =>
-      this.formGroup.controls['basisForClientRegistration'].setValue(
-        basis.literal
-      )
-    );
+    this.swRes.setValue(this.translationService.translate(valueSwResult));
 
     setTimeout(() => (this.formGroupInitialized = true));
   }
@@ -157,25 +148,21 @@ export class FormRegistrationBasisComponent implements OnInit {
   }
 
   private validateBasis(val: any) {
-    switch (val?.literal) {
-      case 'related-party':
-        this.basisOptions = this.basis.filter((obj) =>
-          ['client', 'related-party'].includes(obj.literal)
-        );
-        break;
-      case 'temporary-client':
-        this.basisOptions = this.basis.filter(
-          (obj) => obj.literal !== 'prospect'
-        );
-        break;
-      case 'prospect':
-        this.basisOptions = this.basis;
-        break;
-      case 'client':
+    switch (val?.name) {
+      case '1':
         this.readonly = true;
-        this.basisOptions = this.basis.filter(
-          (obj) => obj.literal === 'client'
+        this.basisOptions = this.basis.filter((obj: any) => obj.name === '1');
+        break;
+      case '2':
+        this.basisOptions = this.basis.filter((obj: any) => obj.name !== '4');
+        break;
+      case '3':
+        this.basisOptions = this.basis.filter((obj: any) =>
+          ['1', '3'].includes(obj.name)
         );
+        break;
+      case '4':
+        this.basisOptions = this.basis;
         break;
       default:
         this.basisOptions = this.basis;
