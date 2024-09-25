@@ -214,8 +214,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
   }
 
   private updateValueAndValidateControls(fg: FormGroup) {
-
-    if (!this.getFormFieldValue('isLegalEntity')) {
+    if (this.getFormFieldValue('isLegalEntity')) {
       this.addressTypes = this.addressTypes.filter((element: any) => element?.literal !== 'work');
     }
 
