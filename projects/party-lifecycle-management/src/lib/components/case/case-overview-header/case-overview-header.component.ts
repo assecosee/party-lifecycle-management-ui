@@ -69,6 +69,13 @@ export class CaseOverviewHeaderComponent implements OnInit{
           agent: this.user.userName,
           orgUnit: this.user.mainOrganizationUnit
         };
+        this.partyLCM.PatchServicingInfo(this._caseOverview.id,servicingInfoBody).subscribe(result => {
+          // handle event
+        }, (error) => {
+          this.dialog.open(MaterialErrorDialogComponent,{
+            data: error
+          });
+        });
       }
     });
   }
@@ -78,11 +85,7 @@ export class CaseOverviewHeaderComponent implements OnInit{
     changeDialog.afterClosed().subscribe(e => {
       if(e){
       this.partyLCM.patchCaseStatus(this._caseOverview.id, e).subscribe(result => {
-        if(result.statusCode !== 200){
-          this.dialog.open(MaterialErrorDialogComponent, {
-            data: result.value.details
-          });
-        }
+        // handle event
       }, (error) => {
         this.dialog.open(MaterialErrorDialogComponent,
           {
@@ -105,7 +108,11 @@ export class CaseOverviewHeaderComponent implements OnInit{
           orgUnit: e.orgUnit,
         };
         this.partyLCM.PatchServicingInfo(this._caseOverview.id,servicingInfoBody).subscribe(result => {
-          console.log(result);
+          // handle event
+        }, (error) => {
+          this.dialog.open(MaterialErrorDialogComponent,{
+            data: error
+          });
         });
       }
     }, (error) => {
