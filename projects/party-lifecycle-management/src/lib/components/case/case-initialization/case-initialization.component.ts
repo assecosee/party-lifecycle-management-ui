@@ -311,6 +311,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       'initiating-plan': null
     };
     this.partyLcmService.initiateCase(payload).subscribe(response => {
+      this.router.navigate(['/party-lifecycle-management/cases/' + response.id]);
     }, error => {
       if (error.error && error.error && error.error.message === 'already-exists') {
         const lastSpaceIndex = error.error.details.lastIndexOf(' ');
