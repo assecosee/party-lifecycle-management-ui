@@ -391,6 +391,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
               );
               rule = r.join('&&');
             }
+            if(rule && !rule.includes('&&') && !rule.includes('||')) {
+              rule = controlName + ' ' + rule;
+            }
             this.formGroup.controls[controlName].valueChanges.subscribe((_res) => {
 
               const listBool: boolean[] = [];
@@ -432,7 +435,19 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
                 );
                 this.listFormFields[index].properties.hidden = !listBool.includes(false);
               }
-              console.log(listBool);
+              if(rule && !rule.includes('&&') && !rule.includes('||')) {
+                rule = rule.trim().replaceAll('  ', ' ');
+                const parseCondition = rule.split(' ');
+                const clName = parseCondition[0];
+                const operator = parseCondition[1];
+                let value = parseCondition[2];
+                value = parseCondition[2] === 'true' ?
+                value = true : parseCondition[2] === 'false' ? value = false : value;
+                const res = this.compare(formGroup.controls[controlName].value
+                  , operator, value);
+                  this.listFormFields[index].properties.hidden = !res;
+              }
+              this.formGroup.controls[this.listFormFields[index].id].setValue(null);
               this.updateConditionalValidator(index, false);
             });
             this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true });
