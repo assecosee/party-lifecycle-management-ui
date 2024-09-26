@@ -462,9 +462,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
       case '<': return post < value;
       case '>=': return post >= value;
       case '<=': return post <= value;
-      case '==': return post === value;
+      case '==': return post === value || (Array.isArray(post) && post.includes(value));
       case '!=': return post !== value;
-      case '===': return post === value;
+      case '===': return post === value || (Array.isArray(post) && post.includes(value));
       case '!==': return post !== value;
     }
   }
