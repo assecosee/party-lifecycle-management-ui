@@ -22,11 +22,11 @@ import {
 import { catchError, combineLatest, forkJoin, of } from 'rxjs';
 import { CustomValidatorsService } from '../../services/custom-validators.service';
 import { CustomService } from '../../services/custom.service';
+import { DirectoryService } from '../../services/directory.service';
 import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
-import { DirectoryService } from '../../services/directory.service';
 
 @Component({
   selector: 'lib-basic-data',
@@ -406,6 +406,19 @@ export class GeneralRegistrationDataComponent implements OnInit {
       this.formGroup.controls['parentLastName'].updateValueAndValidity();
     });
 
+    this.isRegistration = this.getFormFieldValue('isRegistrationProcess');
+
+    // If it is not registration process do prefill
+    if (!this.isRegistration) {
+      // Prefill marital status
+      this.prefillAutocomplete(this.martialStatus, {
+        married: '1',
+        divorced: '4',
+        single: '3',
+        widowed: '2'
+      }, 'name', 'maritalStatus');
+    }
+
     if (!isInitial) {
       this.formGroup.markAllAsTouched();
     }
@@ -415,6 +428,16 @@ export class GeneralRegistrationDataComponent implements OnInit {
     }, 100);
     console.log('Form group: ', this.formGroup);
   }
+
+  private prefillAutocomplete(classification: any, map: any, comparisonKey: any, controlName: any) {
+    const literal = map[this.getFormFieldValue(controlName) as keyof typeof map];
+    const control = classification.find(
+      (item: any) => item[comparisonKey].toLowerCase() === literal
+    );
+
+    this.formGroup.controls[controlName].setValue(control);
+  }
+
 
   private getFormFieldValue(formField: string) {
     if (!formField) {

@@ -1,15 +1,15 @@
-import { Component, Injector, OnInit } from '@angular/core';
-import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
-import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
-import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { HttpClient } from '@angular/common/http';
+import { Component, Injector, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BpmTasksHttpClient, LoaderService, AseeFormControl, FormField, ErrorEmitterService } from '@asseco/common-ui';
-import { forkJoin, tap, combineLatest } from 'rxjs';
+import { AseeFormControl, BpmTasksHttpClient, ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
+import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
+import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
+import { combineLatest, forkJoin, tap } from 'rxjs';
 import { ReferenceService } from '../../services/reference.service';
+import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
+import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 
 @Component({
   selector: 'lib-identification-document',
@@ -149,6 +149,12 @@ export class IdentificationDocumentComponent implements OnInit {
       this.originalDocumentTypes = this.idDocumentTypes;
     };
 
+
+    // Prefill data for non registration process
+    if (!this.registrationProcess) {
+      this.prefillData(fg);
+    }
+
     if (fg.controls['typeOfClient'].value.name === '1') {
       fg.controls['countryOfIssuing'].setValue(this.findItemByProperty(this.countriesList, 'name', 'REPUBLIKA SRBIJA'));
       fg.controls['countryOfIssuing'].updateValueAndValidity();
@@ -180,6 +186,22 @@ export class IdentificationDocumentComponent implements OnInit {
     });
 
     this.groups.push(fg);
+  }
+
+  private prefillData(fg: any) {
+    const typeOfIDLiteral = fg.controls['typeOfID'].value;
+    const typeOfID = JSON.parse(this.getFormFieldValue('identificationTypes')).find(
+      (item: any) => item['literal'].toLowerCase() === typeOfIDLiteral
+    );
+    const typeOfClient = this.getFormFieldValue('typeOfClient');
+
+    if (typeOfID) {
+      fg.controls['typeOfID'].setValue(typeOfID);
+    }
+
+    if (typeOfClient) {
+      fg.controls['typeOfClient'].setValue(JSON.parse(typeOfClient));
+    }
   }
 
   private initEmptyFormGroup() {

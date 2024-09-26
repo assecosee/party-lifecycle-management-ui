@@ -16,10 +16,10 @@ import {
   L10nTranslationService,
 } from 'angular-l10n';
 import { catchError, combineLatest, of } from 'rxjs';
+import { CustomService } from '../../services/custom.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
-import { CustomService } from '../../services/custom.service';
 
 @Component({
   selector: 'lib-form-registration-basis',
@@ -111,8 +111,9 @@ export class FormRegistrationBasisComponent implements OnInit {
     )?.toLowerCase();
 
     valueBasis = this.basis.find(
-      (item: any) => item.description.toLowerCase() === formFieldVal
+      (item: any) => item.name.toLowerCase() === this.mapBasisForReg(formFieldVal)
     );
+
     this.validateBasis(valueBasis);
     const controlBasis = new AseeFormControl(valueBasis, Validators.required);
     this.formGroup.addControl('basisForClientRegistration', controlBasis);
@@ -123,6 +124,17 @@ export class FormRegistrationBasisComponent implements OnInit {
     this.swRes.setValue(this.translationService.translate(valueSwResult));
 
     setTimeout(() => (this.formGroupInitialized = true));
+  }
+
+  private mapBasisForReg(val: any) {
+    const map = {
+      customer: '1',
+      'counter-party': '2',
+      'related-party': '3',
+      prospect: '4',
+    };
+
+    return map[val as keyof typeof map] ? map[val as keyof typeof map] : '';
   }
 
   private getFormFieldValue(formField: string) {
