@@ -233,7 +233,6 @@ export class ContactDataComponent implements OnInit {
       console.log(newValue);
       if (fg.controls['typeOfContact'].value.literal === 'other-mobile-phone-numbers') {
         if (!newValue.startsWith('+381')) {
-          console.log("starts");
           fg.controls['phoneNumber'].clearValidators();
           fg.controls['phoneNumber'].addValidators([Validators.required, Validators.pattern(/^\+[0-9]{9,10}$/)]);
         }
