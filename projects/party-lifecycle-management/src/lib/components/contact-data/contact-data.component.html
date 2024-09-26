@@ -1,0 +1,83 @@
+<div class="card-wrapper">
+    <mat-card appearance="outlined" class="task-card">
+        <mat-card-header class="task-header">
+            <mat-card-title class="task-title flex-row-wrap">
+                <span class="title-text">
+                    {{ task?.name | translate : locale.language }}
+                </span>
+            </mat-card-title>
+        </mat-card-header>
+        @if(formGroupInitialized){
+        <mat-card-content class="pt" [formGroup]="form">
+            <div formArrayName="groups">
+                @for (group of groups.controls; track $index){
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <span>{{group.get('typeOfContact')?.value?.description | translate : locale.language}}
+                            </span>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div [formGroup]="group">
+                        <div class="flex-container">
+                            <div class="flex-item">
+                                <asee-autocomplete appearance="outline" [control]="group.controls['typeOfContact']"
+                                    [autocompleteList]="contactTypes"
+                                    [label]="'lblTypeOfContact' | translate : locale.language"
+                                    filterBehaviour="includes" labelProperty="name" valueProperty="literal"
+                                    (click)="markAsTouched('typeOfContact')"
+                                    [resetOnBlurDisabled]="false"></asee-autocomplete>
+                                <error-handling [control]="group.get('typeOfContact')"></error-handling>
+                            </div>
+                        </div>
+                        <div class="flex-container pt">
+                            @if(group.get('showPhoneNumberField')?.value){
+                            <div class="flex-item">
+                                <asee-text-input appUppercase appearance="outline" [control]="group.get('phoneNumber')"
+                                    [label]="'lblPhoneNumber' | translate : locale.language">
+                                </asee-text-input>
+                                <error-handling [control]="group.get('phoneNumber')"></error-handling>
+                            </div>
+                            }
+                            @if(group.get('showSwiftField')?.value){
+                            <div class="flex-item">
+                                <asee-text-input appUppercase appearance="outline" [control]="group.get('swiftContact')"
+                                    [label]="'lblSwiftContact' | translate : locale.language">
+                                </asee-text-input>
+                                <error-handling [control]="group.get('swiftContact')"></error-handling>
+                            </div>
+                            }
+                            @if(group.get('showMailField')?.value){
+                            <div class="flex-item">
+                                <asee-text-input appearance="outline" [control]="group.get('email')"
+                                    [label]="'lblEmail' | translate : locale.language">
+                                </asee-text-input>
+                                <error-handling [control]="group.get('email')"></error-handling>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="bottom-end-alignment btn-container">
+                        <button mat-button translate (click)="removeGroup($index)" class="btn">
+                            Remove address
+                        </button>
+                    </div>
+                </mat-expansion-panel>
+                }
+            </div>
+            <div class="btn-container">
+                <button mat-button translate (click)="addGroup()" class="btn">
+                    Add new contact
+                </button>
+            </div>
+        </mat-card-content>
+        }
+        <div class="bottom-end-alignment">
+            <customer-actions [currentTask]="task" (onSubmit)="onSubmit()" submitButtonName="Complete"
+                [submitDisabled]="submitDisable" [formGroup]="groups">
+            </customer-actions>
+        </div>
+    </mat-card>
+</div>
