@@ -5,7 +5,7 @@
         <h2>{{ this.case.partyReference.partyName }}</h2>
       </div>
       <div class="party-kind">
-        <div class="party-number">{{ this.case.partyReference.partyNumber }}</div>
+        <div class="party-number">{{ this.case.partyReference.partyNumber || 'Uknown' }}</div>
       </div>
     </div>
     <p></p>

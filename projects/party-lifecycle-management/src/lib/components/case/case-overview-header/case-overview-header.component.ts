@@ -105,7 +105,7 @@ export class CaseOverviewHeaderComponent implements OnInit{
         console.log(e);
         const servicingInfoBody = {
           agent: e.username,
-          orgUnit: e.orgUnit,
+          orgUnit: e.ouCode,
         };
         this.partyLCM.PatchServicingInfo(this._caseOverview.id,servicingInfoBody).subscribe(result => {
           // handle event
