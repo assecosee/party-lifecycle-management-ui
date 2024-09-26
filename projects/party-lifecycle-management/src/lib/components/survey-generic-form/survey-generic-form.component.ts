@@ -27,7 +27,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
   public task: Task;
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   public surveyTemplate: SurveyTemplate | undefined;
-  public templateId = 'kyc-fl';
+  public templateId: string;
   public items: string [] = [];
   public listFormFields: FormField [] = [];
   public hashMapFormFields: { [key: string]: FormField [] } = {};
@@ -259,7 +259,12 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
             if(!listFormField[l].properties.conditions || listFormField[l].properties.conditions === undefined) {
               listFormField[l].properties.conditions = [];
             }
-            listFormField[l].properties.conditions.push(v + ' ' + this.readValueFromHashMap(q.conditionVisibility, v));
+            listFormField[l].properties.conditions.push(
+              {
+                questionId: v,
+                rule: this.readValueFromHashMap(q.conditionVisibility, v)
+              }
+            );
           });
         }
       });
@@ -280,7 +285,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
       options.push(
         {
           label: possibleOptions[k],
-          value: possibleOptions[k]
+          value: k
         }
       );
     });
@@ -361,19 +366,74 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
       const element = this.listFormFields[index];
       if (element.properties && element.properties.conditions) {
         element.properties.conditions.forEach((c: any) => {
-          const parseCondition = c.split(' ');
-          if (this.formGroup.controls[parseCondition[0]]) {
-            const controlName = parseCondition[0];
-            const operator = parseCondition[1];
-            let value = parseCondition[2];
-            value = parseCondition[2] === 'true' ?
-              value = true : parseCondition[2] === 'false' ? value = false : value;
+          if (this.formGroup.controls[c.questionId]) {
+            const controlName = c.questionId;
+            let rule = c.rule;
+            // let value = parseCondition[2];
+            // value = parseCondition[2] === 'true' ?
+            //   value = true : parseCondition[2] === 'false' ? value = false : value;
             const formGroup = this.formGroup;
+            const r = [] as any;
+            if(rule.includes('||')) {
+              rule.split('||').forEach(
+                (e: any) => {
+                  r.push(controlName + ' ' + e);
+                }
+              );
+              rule = r.join('||');
+            }
+
+            if(rule.includes('&&')) {
+              rule.split('&&').forEach(
+                (e: any) => {
+                  r.push(controlName + ' ' + e);
+                }
+              );
+              rule = r.join('&&');
+            }
             this.formGroup.controls[controlName].valueChanges.subscribe((_res) => {
-              const res = this.compare(formGroup.controls[controlName].value
-                , operator, value);
-              this.updateConditionalValidator(index, res);
-              this.listFormFields[index].properties.hidden = !res;
+
+              const listBool: boolean[] = [];
+              if(rule.includes('||')) {
+                rule.split('||').forEach(
+                  (e: any) => {
+                    if(e) {
+                      e = e.trim().replaceAll('  ', ' ');
+                      const parseCondition = e.split(' ');
+                      const clName = parseCondition[0];
+                      const operator = parseCondition[1];
+                      let value = parseCondition[2];
+                      value = parseCondition[2] === 'true' ?
+                      value = true : parseCondition[2] === 'false' ? value = false : value;
+                      const res = this.compare(formGroup.controls[controlName].value
+                        , operator, value);
+                      listBool.push(res);
+                    }
+                  }
+                );
+                this.listFormFields[index].properties.hidden = !listBool.includes(true);
+              }
+              if(rule.includes('&&')) {
+                rule.split('&&').forEach(
+                  (e: any) => {
+                    if(e) {
+                      e = e.trim().replaceAll('  ', ' ');
+                      const parseCondition = e.split(' ');
+                      const clName = parseCondition[0];
+                      const operator = parseCondition[1];
+                      let value = parseCondition[2];
+                      value = parseCondition[2] === 'true' ?
+                      value = true : parseCondition[2] === 'false' ? value = false : value;
+                      const res = this.compare(formGroup.controls[controlName].value
+                        , operator, value);
+                      listBool.push(res);
+                    }
+                  }
+                );
+                this.listFormFields[index].properties.hidden = !listBool.includes(false);
+              }
+              console.log(listBool);
+              this.updateConditionalValidator(index, false);
             });
             this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true });
           }
