@@ -198,7 +198,6 @@ export class GeneralRegistrationDataComponent implements OnInit {
   public isRegistration = false;
   public notResidentClient = false;
   public showClientDateOfBirthPicker = true;
-  public ouControl = new AseeFormControl(null, Validators.required);
 
   private filters = {
     page: 1,
@@ -329,13 +328,9 @@ export class GeneralRegistrationDataComponent implements OnInit {
 
   // Method to mark control as touched
   markAsTouched(controlName: string) {
-    if (controlName === 'organizationUnit') {
-      this.ouControl.markAllAsTouched();
-    } else {
-      const control = this.formGroup.get(controlName);
-      if (control) {
-        control.markAsTouched();
-      }
+    const control = this.formGroup.get(controlName);
+    if (control) {
+      control.markAsTouched();
     }
   }
 
@@ -411,12 +406,17 @@ export class GeneralRegistrationDataComponent implements OnInit {
     // If it is not registration process do prefill
     if (!this.isRegistration) {
       // Prefill marital status
-      this.prefillAutocomplete(this.martialStatus, {
-        married: '1',
-        divorced: '4',
-        single: '3',
-        widowed: '2'
-      }, 'name', 'maritalStatus');
+      this.prefillAutocomplete(
+        this.martialStatus,
+        {
+          married: '1',
+          divorced: '4',
+          single: '3',
+          widowed: '2',
+        },
+        'name',
+        'maritalStatus'
+      );
     }
 
     if (!isInitial) {
@@ -429,15 +429,20 @@ export class GeneralRegistrationDataComponent implements OnInit {
     console.log('Form group: ', this.formGroup);
   }
 
-  private prefillAutocomplete(classification: any, map: any, comparisonKey: any, controlName: any) {
-    const literal = map[this.getFormFieldValue(controlName) as keyof typeof map];
+  private prefillAutocomplete(
+    classification: any,
+    map: any,
+    comparisonKey: any,
+    controlName: any
+  ) {
+    const literal =
+      map[this.getFormFieldValue(controlName) as keyof typeof map];
     const control = classification.find(
       (item: any) => item[comparisonKey].toLowerCase() === literal
     );
 
     this.formGroup.controls[controlName].setValue(control);
   }
-
 
   private getFormFieldValue(formField: string) {
     if (!formField) {
@@ -448,10 +453,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
       const code = this.formFields.find((item) => item.id === 'agentOuCode')
         ?.data?.value;
       if (code) {
-        const value = this.organizationUnits.find(
-          (item: any) => item.code === code
-        );
-        this.ouControl.setValue(value);
+        return this.organizationUnits.find((item: any) => item.code === code);
       }
     }
 

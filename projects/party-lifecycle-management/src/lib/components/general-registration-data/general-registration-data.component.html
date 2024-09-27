@@ -47,12 +47,12 @@
             labelProperty="name"
             valueProperty="name"
             filterBehaviour="includes"
-            [control]="ouControl"
+            [control]="formGroup.controls['agentOuCode']"
             [label]="'lblOrganizationUnit' | translate : locale.language"
             (click)="markAsTouched('organizationUnit')"
           >
           </asee-autocomplete>
-          <error-handling [control]="ouControl"></error-handling>
+          <error-handling [control]="formGroup.controls['agentOuCode']"></error-handling>
         </div>
         <div class="flex-item">
           <asee-autocomplete
