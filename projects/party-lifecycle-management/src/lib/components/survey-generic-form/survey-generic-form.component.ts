@@ -213,6 +213,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
               key: constraint.kind,
               value: constraint.value
             });
+            if(constraint.kind === 'ruleOut') {
+              this.ruleOutValues(field, constraint);
+            }
           }
         }
       }
@@ -360,6 +363,20 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
       }
     }
     return validators;
+  }
+  ruleOutValues(field: FormField, constraint: any) {
+    if(this.formGroup.controls[field.id]) {
+      this.formGroup.controls[field.id].valueChanges.subscribe(
+        (res: string[]) => {
+          if(res && Array.isArray(res)) {
+            if(res.includes(constraint.value)) {
+              res = [constraint.value];
+              this.formGroup.controls[field.id].setValue(res, { emitEvent: false });
+            }
+          }
+        }
+      );
+    }
   }
   private resolveCondition() {
     for (let index = 0; index < this.listFormFields.length; index++) {
