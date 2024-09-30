@@ -43,8 +43,8 @@
                         </div>
                         <div class="flex-container pt">
                             <div class="flex-item">
-                                <asee-autocomplete appearance="outline" [control]="group.get('placeName')"
-                                    [autocompleteList]="placesList"
+                                <asee-autocomplete #placeNameAutocomplete appearance="outline" [control]="group.get('placeName')"
+                                    [autocompleteList]="allPlaces"
                                     [label]="'lblPlaceName' | translate : locale.language" filterBehaviour="includes"
                                     labelProperty="formattedName" valueProperty="placeCode"
                                     (click)="markAsTouched('placeName')"

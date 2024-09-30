@@ -189,18 +189,18 @@ export class IdentificationDocumentComponent implements OnInit {
   }
 
   private prefillData(fg: any) {
-    const typeOfIDLiteral = fg.controls['typeOfID'].value;
+    const typeOfIDLiteral = fg.controls.typeOfID.value;
     const typeOfID = JSON.parse(this.getFormFieldValue('identificationTypes')).find(
-      (item: any) => item['literal'].toLowerCase() === typeOfIDLiteral
+      (item: any) => item.literal.toLowerCase() === typeOfIDLiteral
     );
     const typeOfClient = this.getFormFieldValue('typeOfClient');
 
     if (typeOfID) {
-      fg.controls['typeOfID'].setValue(typeOfID);
+      fg.controls.typeOfID.setValue(typeOfID);
     }
 
     if (typeOfClient) {
-      fg.controls['typeOfClient'].setValue(JSON.parse(typeOfClient));
+      fg.controls.typeOfClient.setValue(JSON.parse(typeOfClient));
     }
   }
 
