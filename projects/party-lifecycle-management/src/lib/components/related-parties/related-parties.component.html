@@ -1,0 +1,52 @@
+<div class='refinancing-wrapper'>
+    <mat-card appearance="outlined" class='refinancing-card'>
+        <mat-card-title class='card-title' translate> Refinancing Items
+        </mat-card-title>
+        <mat-card-content class='card-content'>
+            @if (relatedPartyList?.length) {
+            <div #tableContainer class="container applications-table">
+                <mat-table [dataSource]="relatedPartyList">
+                    <ng-container matColumnDef="id">
+                        <mat-header-cell *matHeaderCellDef translate> Party id </mat-header-cell>
+                        <mat-cell *matCellDef="let row"> {{row.id}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="relationshipKind">
+                        <mat-header-cell *matHeaderCellDef translate> Relationship kind </mat-header-cell>
+                        <mat-cell *matCellDef="let row"> {{row.kind}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="role">
+                        <mat-header-cell *matHeaderCellDef translate> Role</mat-header-cell>
+                        <mat-cell *matCellDef="let row"> {{row.role}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="name">
+                        <mat-header-cell *matHeaderCellDef translate> Name </mat-header-cell>
+                        <mat-cell *matCellDef="let row"> {{row.toParty?.name}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="partyKind">
+                        <mat-header-cell *matHeaderCellDef translate> Party kind </mat-header-cell>
+                        <mat-cell *matCellDef="let row"> {{row.toParty?.kind}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="type">
+                        <mat-header-cell *matHeaderCellDef translate> Type </mat-header-cell>
+                        <mat-cell *matCellDef="let row"> {{row.type}}</mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;" color="primary"></mat-row>
+                </mat-table>
+            </div>
+            }
+            @if (!relatedPartyList?.length) {
+            <div class="row no-content-placeholder">
+                <img src="assets/img/empty_set.png">
+                {{'No refinancing entries' | translate:locale.language}}
+                <span translate> lblNoRelatedParties</span>
+            </div>
+            }
+        </mat-card-content>
+        <mat-card-actions class='card-actions'>
+            <button mat-button color="primary" (click)="openDialog()" >btnAddRelatedParty</button>
+            <customer-actions (onSubmit)="onSubmit()" [submitDisabled]="submitDisable" [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
+            </customer-actions>
+        </mat-card-actions>
+    </mat-card>
+</div>

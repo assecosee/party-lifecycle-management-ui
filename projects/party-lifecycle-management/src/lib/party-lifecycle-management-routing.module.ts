@@ -16,6 +16,7 @@ import { SurveyGenericFormComponent } from './components/survey-generic-form/sur
 import { AddressDataComponent } from './components/address-data/address-data.component';
 import { CaseInitializationComponent } from './components/case/case-initialization/case-initialization.component';
 import { ContactDataComponent } from './components/contact-data/contact-data.component';
+import { RelatedPartiesComponent } from './components/related-parties/related-parties.component';
 
 const routes: Routes = [
   {
@@ -73,6 +74,10 @@ const routes: Routes = [
   {
     path: 'tasks/contact-data/:taskId',
     component: ContactDataComponent
+  },
+  {
+    path: 'tasks/related-parties/:taskId',
+    component: RelatedPartiesComponent
   },
 ];
 

@@ -1,0 +1,49 @@
+<div *ngIf="this.formGroup">
+    <h2 mat-dialog-title>{{ 'lblAddRealtedPartyDialog' | translate : locale.language }}</h2>
+    <mat-dialog-content>
+        <div class="flex-container">
+            <div class="flex-item">
+                <asee-autocomplete #typeOfRelatedPartiesList
+                    [control]="formGroup.controls['relatedPartyConnectionType']"
+                    [autocompleteList]="relatedPartyConnectionTypeList"
+                    [label]="'lblRelatedPartyConnectionTypeList' | translate : locale.language"
+                    filterBehaviour="includes" labelProperty="formattedName" valueProperty="name"
+                    appearance="outline"></asee-autocomplete>
+            </div>
+            <div class="flex-item">
+                <asee-lookup [control]="formGroup.controls['JMBG']" service="party"
+                    endPoint="parties/search?kind=individual&q=" responseProperty="parties" labelProperty="contactName"
+                    valueProperty="contactName" [label]="'lblSearchParties' | translate : locale.language" auto="true"
+                    [sublabels]="['partyNumber']" appearance="outline"></asee-lookup>
+            </div>
+            <div class="flex-item">
+                <asee-text-input [control]="formGroup.controls['organizationalPart']" appearance="outline" [label]="
+            'lblOrganizationalPart' | translate : locale.language"></asee-text-input>
+            </div>
+            @if(formGroup.controls['relatedPartyConnectionType']?.value == 'P'){
+            <div class="flex-item">
+                <asee-checkbox [control]="formGroup.controls['signatureRight']" appearance="outline" [label]="
+                'lblSignatureRight' | translate : locale.language"></asee-checkbox>
+            </div>
+            }
+            @if(formGroup.controls['relatedPartyConnectionType']?.value == 'OV' && isOrganization){
+            <div class="flex-item">
+                <asee-decimal-input [required]="true" direction="ltr"
+                    [control]="formGroup.controls['percentageOfOwnership']" appearance="outline" [label]="
+            'lblPercentageOfOwnership' | translate : locale.language" precision="2" suffix="%"></asee-decimal-input>
+                <asee-error *ngIf="formGroup.controls['percentageOfOwnership'].errors.customValidate === false">Error
+                    custom to be displayed</asee-error>
+            </div>
+            }
+            <div class="flex-item">
+                <asee-checkbox [control]="formGroup.controls['connectionActivity']" appearance="outline" [label]="
+            'lblConnectionActivity' | translate : locale.language"></asee-checkbox>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button (click)="closeDialog()">{{'Close' | translate : locale.language}}</button>
+        <button mat-button [mat-dialog-close]="formD()" cdkFocusInitial>{{'btnAddRelatedParty' | translate :
+            locale.language}}</button>
+    </mat-dialog-actions>
+</div>
