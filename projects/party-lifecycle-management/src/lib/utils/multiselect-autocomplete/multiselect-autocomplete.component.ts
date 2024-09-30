@@ -37,7 +37,7 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
     this.data.forEach((item: string) => {
       this.rawData.push({ item, selected: false });
     });
-    this.filteredData = this.control.valueChanges.pipe(
+    this.filteredData = this.selectControl.valueChanges.pipe(
       startWith<string>(''),
       map(value => typeof value === 'string' ? value : this.filterString),
       map(filter => this.filter(filter))
