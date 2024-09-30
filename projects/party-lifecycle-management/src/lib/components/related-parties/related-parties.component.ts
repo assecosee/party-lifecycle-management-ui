@@ -100,7 +100,7 @@ export class RelatedPartiesComponent implements OnInit {
                 field.data.value) {
                 this.relatedPartyList = JSON.parse(field.data.value);
               }
-              else if (field.id === 'isOrganization' &&
+              else if (field.id === 'isLegalEntity' &&
                 field.data &&
                 field.data.value) {
                 this.isOrganization = JSON.parse(field.data.value);
