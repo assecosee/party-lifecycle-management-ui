@@ -1,18 +1,18 @@
-import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
-import { Form, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AseeFormControl, BpmTasksHttpClient, ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
-import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
+import { Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReferenceService } from '../../services/reference.service';
-import { CustomService } from '../../services/custom.service';
-import { catchError, combineLatest, forkJoin, of, tap } from 'rxjs';
+import { AseeFormControl, BpmTasksHttpClient, ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
+import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
+import { catchError, combineLatest, forkJoin, of, tap } from 'rxjs';
+import { CustomService } from '../../services/custom.service';
+import { LocationService } from '../../services/location.service';
+import { OfferService } from '../../services/offer.service';
+import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
-import { LocationService } from '../../services/location.service';
-import { OfferService } from '../../services/offer.service';
-import { MatOption } from '@angular/material/core';
 
 @Component({
   selector: 'lib-address-data',
@@ -35,6 +35,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
   public typeOfClientList: any = [];
   public countriesList: any = [];
   public placesList: any = [];
+  public allPlaces: any = [];
   public notResidentClient = false;
   public addressTypes: any = [];
   public submitDisable = true;
@@ -110,14 +111,23 @@ export class AddressDataComponent implements OnInit, DoCheck {
       typeOfClientList: this.customService.getClassification('JK2TIPKM'),
       addressTypes: this.offerService.getClassification('address-types'),
       countriesList: this.referenceService.getCountries(),
+      allPlaces: this.locationService.getPlacesByPlaceQuery('')
     }).pipe(
-      tap(({ typeOfClientList, addressTypes, countriesList }) => {
+      tap(({ typeOfClientList, addressTypes, countriesList, allPlaces }) => {
         typeOfClientList.items.filter((item: any) => item.name).map((element: any) =>
           element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
         this.typeOfClientList = typeOfClientList.items;
         addressTypes.values.filter((item: any) => item.name);
         this.addressTypes = addressTypes.values;
         this.countriesList = countriesList.items.filter((item: any) => item.name);
+        this.allPlaces = allPlaces.items.filter((item: any) => item.name).map((element: any) => {
+          element.formattedName = // Exclude the "translated-name" property and handle undefined values
+            Object.entries(element)
+              .filter(([key, value]) => key !== 'translated-name' && value !== undefined) // Exclude 'translated-name' and undefined
+              .map(([key, value]) => value) // Extract the values
+              .join('-'); // Join with hyphen;
+          return element;
+        });
       }),
       catchError(error => {
         console.error('Error fetching data:', error);
@@ -176,6 +186,13 @@ export class AddressDataComponent implements OnInit, DoCheck {
         }
       });
       this.updateValueAndValidateControls(fg);
+      const place = this.allPlaces.find((p: any) => {
+        if (id.placeName == null) {
+          id.placeName = '';
+        }
+        return p.name.toLowerCase() === id.placeName.toLowerCase();
+      });
+      fg.controls['placeName'].setValue(place);
     });
 
     this.filterAddressTypes();
@@ -241,20 +258,6 @@ export class AddressDataComponent implements OnInit, DoCheck {
       } else {
         this.countryControlDisabled = false;
       }
-    });
-
-
-    fg.controls['placeName'].valueChanges.subscribe((newValue: any) => {
-      this.locationService.getPlacesByPlaceQuery(newValue).subscribe(placesList => {
-        placesList.items.filter((item: any) => item.name).map((element: any) =>
-          element.formattedName = // Exclude the "translated-name" property and handle undefined values
-          Object.entries(element)
-            .filter(([key, value]) => key !== 'translated-name' && value !== undefined) // Exclude 'translated-name' and undefined
-            .map(([key, value]) => value) // Extract the values
-            .join('-')); // Join with hyphen
-        this.placesList = placesList.items;
-      });
-
     });
 
     fg.markAllAsTouched();
