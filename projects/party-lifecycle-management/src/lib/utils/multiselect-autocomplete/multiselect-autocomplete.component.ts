@@ -65,7 +65,7 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
     );
     this.selectControl.statusChanges.subscribe(
       (res) => {
-        if(this.selectData) {
+        if(res === 'INVALID' && this.selectData) {
           this.selectControl.setValue(this.selectData, {emitEvent: false});
         }
       }
