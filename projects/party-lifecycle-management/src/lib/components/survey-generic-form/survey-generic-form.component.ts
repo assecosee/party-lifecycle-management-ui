@@ -1,15 +1,15 @@
-import { AfterViewInit, Component, Injector, OnDestroy, OnInit } from '@angular/core';
-import { AseeFormGroup, BpmTasksHttpClient, FormField, LoaderService, Task, UIService } from '@asseco/common-ui';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { BpmTasksHttpClient, FormField, LoaderService, Task, UIService } from '@asseco/common-ui';
 import { L10N_LOCALE, L10nLocale } from 'angular-l10n';
 import { SurveyService } from '../../services/survey.service';
 import { SurveyQuestion, SurveySection, SurveyTemplate } from '../../model/survey-template';
 import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { catchError, combineLatest, EMPTY, forkJoin, map, of, Subscription, switchMap, throwError } from 'rxjs';
-import { MaterialErrorDialogComponent } from '@asseco/components-ui';
+import { catchError, EMPTY, forkJoin, map, of, Subscription, switchMap, throwError } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationListenerService } from '@asseco/task-inbox';
+import { ReferenceService } from '../../services/reference.service';
 
 interface RuleData {
   key?: string;
@@ -34,6 +34,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
   public submitDisabled = false;
   public submitButtonName = 'Continue';
   public listComplexValidators: { [key: string]: RuleData [] } = {};
+  public countries = [];
   private routeSubscription: Subscription = new Subscription();
   private taskSubscription: Subscription  = new Subscription();
 
@@ -46,7 +47,8 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     protected taskService: BpmTasksHttpClient,
     protected loaderService: LoaderService,
     protected dialog: MatDialog,
-    protected notificationService: NotificationListenerService
+    protected notificationService: NotificationListenerService,
+    protected referenceService: ReferenceService
   ) {
     this.locale = this.injector.get(L10N_LOCALE);
   }
@@ -91,7 +93,8 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
         }
         return forkJoin([
           this.taskService.getTask(params['taskId']).build(),
-          this.initSurveyForm(this.templateId)
+          this.initSurveyForm(this.templateId),
+          this.referenceService.getCountries()
         ]).pipe(
           catchError(
             (error: HttpErrorResponse) => {
@@ -103,11 +106,14 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
         );
       }
       )).subscribe(
-        ([task, surverField]: [Task, SurveyTemplate]) => {
+        ([task, surverField, countries]: [Task, SurveyTemplate, any]) => {
           this.task = task;
           if(this.task && this.task !== undefined) {
             this.notificationService.lastBusinessKey = this.task.businessKey;
             this.notificationService.lastDate = new Date();
+          }
+          if(countries && countries.items) {
+            this.countries = countries.items.filter((e: any) => e.name && e.alpha2);
           }
           this.surveyTemplate = surverField;
           this.uiService.setTitle(this.surveyTemplate.info.title);
@@ -226,12 +232,12 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     surveyTemplate.sections.forEach((s: SurveySection, i) => {
       const listFormField: FormField [] = [];
       s.questions.forEach((q: SurveyQuestion, l) => {
-        listFormField.push(
+        const ff: FormField =
           {
             id: q.questionId,
             label: q.title,
             data: {
-              type: this.getType(q.kind),
+              type: this.getType(q.kind, q.isCollection),
               value: null
             },
             properties: {
@@ -243,8 +249,11 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
               }
             ],
             enumProps: q.possibleOptions ? this.getEnumProps(q.possibleOptions) : null
-          }
-        );
+          };
+        if(ff.data.type === 'multi-select-country') {
+          ff.enumProps = this.countries;
+        }
+        listFormField.push(ff);
         if(q.validationRules && q.validationRules !== undefined) {
           const validationRuleKey = Object.keys(q.validationRules);
           validationRuleKey.forEach((k: string) => {
@@ -294,7 +303,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     });
     return options;
   }
-  private getType(kind: string): string {
+  private getType(kind: string, isCollection: boolean = false): string {
     switch(kind) {
       case'text':
         return 'string';
@@ -319,6 +328,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
         break;
       case'unit-of-measure':
         return 'string';
+        break;
+      case'country':
+        return  isCollection ? 'multi-select-country' : 'select-country';
         break;
       case'complex':
         return 'string';

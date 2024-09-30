@@ -1,0 +1,54 @@
+<mat-form-field class="full-width" [appearance]="appearance">
+    <input matInput type="text"
+    [placeholder]="placeholder"
+    [matAutocomplete]="auto"
+    [formControl]="control"
+    [required]="required"
+    >
+    <mat-label>{{label | translate:locale.language}}</mat-label>
+  </mat-form-field>
+  <div class="chip-list-wrapper">
+    <mat-chip-listbox #chipList>
+      <ng-container *ngFor="let select of selectData">
+        <mat-chip-option class="cardinal-colors" (click)="removeChip(select)">
+          <div class="mat-chip-option-value">
+            {{ select.item[labelProperty] }}
+          <mat-icon class="mat-chip-remove">cancel</mat-icon>
+          </div> 
+        </mat-chip-option>
+      </ng-container>
+    </mat-chip-listbox>
+  </div>
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCustomFunction" multiple>
+    <mat-option *ngFor="let data of filteredData | async">
+      <div (click)="optionClicked($event, data)">
+        <mat-checkbox [checked]="data.selected" 
+          (change)="toggleSelection(data)" 
+          (click)="$event.stopPropagation()">
+          {{ data.item[labelProperty] }}
+        </mat-checkbox>
+      </div>
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error>
+    @if (!errorMessage) {
+      <span>
+        @if (hasError('required')) {
+          <asee-error>
+            <span translate>Field is required</span>
+          </asee-error>
+        }
+        @if (hasError('error')) {
+          <asee-error>
+            {{control?.errors['error'] }}
+          </asee-error>
+        }
+      </span>
+    }
+    @if (errorMessage && !control.valid && (control.dirty || control.touched)) {
+      <asee-error>
+        {{ errorMessage }}
+      </asee-error>
+    }
+  </mat-error>
+

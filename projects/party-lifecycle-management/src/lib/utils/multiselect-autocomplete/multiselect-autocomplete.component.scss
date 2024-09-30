@@ -1,0 +1,67 @@
+.full-width {
+  width: 100%;
+}
+
+:host {
+  display: block;
+}
+
+.errors {
+  position: absolute;
+  top: 30px;
+}
+
+.form-hidden {
+  visibility: hidden;
+}
+
+asee-error.mat-mdc-form-field-bottom-align::before {
+  display: none;
+}
+
+mat-error.mat-mdc-form-field-bottom-align::before {
+  display: none;
+}
+
+.control-hidden {
+  display: none;
+}
+
+.control-parent-hidden {
+  display: none !important;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.readonly ::ng-deep .mat-mdc-form-field-underline {
+  background-position: 0;
+  background-color: transparent;
+  background-image: linear-gradient(to right,
+      rgba(0, 0, 0, 0.42) 0,
+      rgba(0, 0, 0, 0.42) 33%,
+      transparent 0);
+  background-size: 4px 100%;
+  background-repeat: repeat-x;
+}
+
+.readonly ::ng-deep .mat-input-element {
+  opacity: 0.7;
+}
+
+.readonly ::ng-deep .mat-mdc-select-value {
+  opacity: 0.7;
+}
+​
+.msac-colors {
+  background-color: var(--primary-color);
+  color: white;
+}
+.mat-chip-option-value {
+   display: flex;
+   align-items: center;
+   .mat-chip-remove {
+    margin-left: 5px;
+   }
+}

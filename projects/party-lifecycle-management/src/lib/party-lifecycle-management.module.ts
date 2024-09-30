@@ -24,6 +24,7 @@ import { TrackingWidgetComponent } from './components/tracking-widget/tracking-w
 import { ChangeCaseStatusDialogComponent } from './components/change-case-status-dialog/change-case-status-dialog.component';
 import { AssigneWorkItemDialogComponent } from './components/assigne-work-item-dialog/assigne-work-item-dialog.component';
 import { AgentSearchComponent } from './components/agent-search/agent-search.component';
+import { MultiselectAutocompleteComponent } from './utils/multiselect-autocomplete/multiselect-autocomplete.component';
 
 
 
@@ -42,7 +43,8 @@ import { AgentSearchComponent } from './components/agent-search/agent-search.com
     CheckUpWidgetComponent,
     ChangeCaseStatusDialogComponent,
     AssigneWorkItemDialogComponent,
-    AgentSearchComponent
+    AgentSearchComponent,
+    MultiselectAutocompleteComponent
   ],
   imports: [
     PartyLifecycleManagementRoutingModule,

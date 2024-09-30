@@ -32,186 +32,194 @@
               [attr.id]="'accordion-body-' + index" [attr.aria-labelledby]="'accordion-header-' + index">
               <!-- <generic-form *ngIf="hashMapFormFields" #genericForm (formFieldsLoaded)="loadedFormGroup($event)"
                 [formGroup]="formGroup" [formFields]="hashMapFormFields[index]"></generic-form> -->
-                @if (formGroup && hashMapFormFields[index]) {
-                  <div id="fieldsWrapper">
-                    @for (field of hashMapFormFields[index]; track field) {
-                      <div id="fields"
-                        [ngClass]="((field.data.type === 'string' && field.isTextArea) || (field.properties.wide) || (field.data.type === 'string' && field?.properties?.componentType)) ? 'flex100' : 'flex50'"
-                        [class.hidden]="(field?.properties?.condition && !field.properties.conditionResult) || field?.properties?.hidden">
-                        @if (field.data.type  == 'validationErrors') {
-                          <asee-validation-errors [validationErrors]="field.data.value">
-                          </asee-validation-errors>
-                        }
-                        @if (field.data.type == 'boolean') {
-                          <div class="slide-toggle">
-                            <asee-slide-toggle [readonly]="field.readonly" [id]="field.id" [controlName]="field.id"
-                              [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label"
-                              [isHtml]="field?.properties?.isHtml">
-                            </asee-slide-toggle>
-                          </div>
-                        }
-                        @if (field.data.type == 'checkbox') {
-                          <asee-checkbox [attr.id]="field.id" [readonly]="field.readonly" [id]="field.id" [controlName]="field.id"
-                            [formGroup]="formGroup" [isHtml]="field?.properties?.isHtml" [control]="formGroup.controls[field.id]"
-                            [label]="field.label">
-                          </asee-checkbox>
-                        }
-                        @if (field.data.type == 'double') {
-                          <asee-decimal-input appearance="outline" [id]="field.id" [readonly]="field.readonly" [controlName]="field.id"
-                            [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label"
-                          ></asee-decimal-input>
-                        }
-                        @if (field.data.type === 'radio-group') {
-                          <asee-radio-button-group [attr.id]="field.id" [id]="field.id" [controlName]="field.id"
-                            [disabled]="field.readonly" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
-                            [options]="field.enumProps" [label]="field.label">
-                          </asee-radio-button-group>
-                        }
-                        @if (field.data.type == 'string' && !field.isTextArea) {
-                          <asee-text-input appearance="outline" [maxLength]="field.maxLength" [id]="field.id" [readonly]="field.readonly"
-                            [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
-                            [label]="field.label" [mask]="field?.properties?.mask"
-                            [patternErrorMessage]="field?.properties?.patternErrorMessage"
-                            [spellcheck]="field.properties?.spellcheck === 'true'">
-                          </asee-text-input>
-                        }
-                        @if (field.data.type == 'password') {
-                          <asee-text-input appearance="outline" type="password" [maxLength]="field.maxLength" [id]="field.id"
-                            [readonly]="field.readonly" [controlName]="field.id" [formGroup]="formGroup"
-                            [control]="formGroup.controls[field.id]" [label]="field.label">
-                          </asee-text-input>
-                        }
-                        @if (field.data.type == 'phone-number') {
-                          <asee-phone-number [id]="field.id" [readonly]="field.readonly" [controlName]="field.id" [formGroup]="formGroup"
-                            [control]="formGroup.controls[field.id]" [label]="field.label" [optionsKey]="field?.properties?.optionsKey"
-                            >
-                          </asee-phone-number>
-                        }
-                        @if (field.data.type == 'string' && field.isTextArea) {
-                          <asee-textarea appearance="outline" [maxLength]="field.maxLength" [readonly]="field.readonly"
-                            [rows]="field.rows" [id]="field.id" [controlName]="field.id" [formGroup]="formGroup"
-                            [control]="formGroup.controls[field.id]" [label]="field.label"
-                            [patternErrorMessage]="field?.properties?.patternErrorMessage"
-                            [spellcheck]="field.spellcheck">
-                          </asee-textarea>
-                        }
-                        @if (field.data.type == 'long') {
-                          <asee-integer-input appearance="outline" [id]="field.id" [readonly]="field.readonly" [controlName]="field.id"
-                            [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label"
-                          ></asee-integer-input>
-                        }
-                        @if (field.data.type == 'date') {
-                          <asee-datepicker appearance="outline" [id]="field.id" [readonly]="field.readonly" [controlName]="field.id"
-                            [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label"
-                          ></asee-datepicker>
-                        }
-                        @if (field.data.type == 'iso-date') {
-                          <asee-date-select appearance="outline" [id]="field.id" [readonly]="field.readonly" date-order="dmy"
-                            [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
-                            [label]="field.label">
-                          </asee-date-select>
-                        }
-                        @if (field.data.type == 'currency') {
-                          <asee-currency-input appearance="outline" [id]="field.id" [readonly]="field.readonly" precision="2"
-                            [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
-                          [label]="field.label"></asee-currency-input>
-                        }
-                        @if (field.data.type == 'iso-duration') {
-                          <asee-time-period-complex appearance="outline" [id]="field.id" [readonly]="field.readonly"
-                            [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
-                          [label]="field.label"></asee-time-period-complex>
-                        }
-                        @if (field.data.type == 'enum' || field.data.type=='custom-enum' ) {
-                          <asee-select appearance="outline" [id]="field.id" [controlName]="field.id" [disabled]="field.readonly"
-                            [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [options]="field.enumProps"
-                            [multiple]="field?.properties?.multiple" [label]="field.label"
-                            >
-                          </asee-select>
-                        }
-                        @if (field.data.type == 'multi-select') {
-                          <asee-select appearance="outline" [id]="field.id" [controlName]="field.id" [disabled]="field.readonly"
-                            [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [options]="field.enumProps"
-                            [multiple]="true" [label]="field.label">
-                          </asee-select>
-                        }
-                        @if (field.data.type == 'classification' && !field.properties.autocomplete) {
-                          <asee-classification-select appearance="outline" [id]="field.id" [schemaUrl]="field.properties.schemaUrl"
-                            [baseUrl]="field.properties.baseUrl" [service]="field.properties.service"
-                            [schemaId]="field.properties.schemaId" [controlName]="field.id" [disabled]="field.readonly"
-                            [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label"
-                            [multiple]="field?.properties?.multiple"
-                            >
-                          </asee-classification-select>
-                        }
-                        @if (field.data.type == 'classification' && field.properties.autocomplete) {
-                          <asee-classification-autocomplete appearance="outline" [id]="field.id" [schemaUrl]="field.properties.schemaUrl"
-                            [baseUrl]="field.properties.baseUrl" [service]="field.properties.service"
-                            [schemaId]="field.properties.schemaId" [controlName]="field.id" [formGroup]="formGroup"
-                            [control]="formGroup.controls[field.id]" [label]="field.label"
-                            >
-                          </asee-classification-autocomplete>
-                        }
-                        @if (field.data.type == 'divider') {
-                          <asee-divider [containerStyle]="field.properties.containerStyle"
-                            [componentStyle]="field.properties.componentStyle">
-                          </asee-divider>
-                        }
-                        @if (field.data.type == 'image') {
-                          <asee-image [containerStyle]="field.properties.containerStyle"
-                            [componentStyle]="field.properties.componentStyle" [src]="field.properties.src"
-                            >
-                          </asee-image>
-                        }
-                        @if (field.data.type == 'link') {
-                          <asee-link [text]="field?.data?.value" [containerStyle]="field.properties.containerStyle"
-                            [componentStyle]="field.properties.componentStyle" [href]="field.properties.href"
-                            [target]="field.properties.target">
-                          </asee-link>
-                        }
-                        @if (field.data.type == 'paragraph') {
-                          <asee-paragraph [text]="field?.data?.value" [containerStyle]="field.properties.containerStyle"
-                            [componentStyle]="field.properties.componentStyle">
-                          </asee-paragraph>
-                        }
-                        @if (field.data.type == 'section') {
-                          <asee-section [text]="field?.data?.value" [containerStyle]="field.properties.containerStyle"
-                            [componentStyle]="field.properties.componentStyle">
-                          </asee-section>
-                        }
-                        @if (field.data.type == 'subtitle') {
-                          <asee-subtitle [text]="field?.data?.value" [containerStyle]="field.properties.containerStyle"
-                            [componentStyle]="field.properties.componentStyle">
-                          </asee-subtitle>
-                        }
-                        @if (field.data.type  == 'dateInput') {
-                          <asee-date-input [id]="field.id" [readonly]="field.readonly" [separator]="field.properties.separator"
-                            [dateOrder]="field.properties.dateOrder" [controlName]="field.id" [formGroup]="formGroup"
-                            [patternErrorMessage]="field?.properties?.patternErrorMessage" [control]="formGroup.controls[field.id]"
-                            [label]="field.label">
-                          </asee-date-input>
-                        }
-                        @if (field.data.type  == 'lookup') {
-                          <asee-lookup [id]="field.id" [readonly]="field.readonly" [labelProperty]="field.properties.label"
-                            [service]="field.properties.service" appearance="outline" [valueProperty]="field.properties.value"
-                            [responseProperty]="field.properties.response" [path]="field.properties.path" [controlName]="field.id"
-                            [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label"
-                            [endPoint]="field.endPoint">
-                          </asee-lookup>
-                        }
-                        @if (field.data.type  == 'customer-lookup') {
-                          <asee-customer-lookup [id]="field.id" [readonly]="field.readonly" [labelProperty]="field.properties.label"
-                            [sublabelProperty]="field.properties.sublabel" [service]="field.properties.service"
-                            [serviceVersion]="field.properties.version" [endPoint]="field.properties.endpoint"
-                            [path]="field.properties.path" appearance="outline" [valueProperty]="field.properties.value"
-                            [responseProperty]="field.properties.response" [controlName]="field.id" [formGroup]="formGroup"
-                            [control]="formGroup.controls[field.id]" [label]="field.label"
-                            >
-                          </asee-customer-lookup>
-                        }
-                      </div>
-                    }
+              @if (formGroup && hashMapFormFields[index]) {
+              <div id="fieldsWrapper">
+                @for (field of hashMapFormFields[index]; track field) {
+                <div id="fields"
+                  [ngClass]="((field.data.type === 'string' && field.isTextArea) || (field.properties.wide) || (field.data.type === 'string' && field?.properties?.componentType)) ? 'flex100' : 'flex50'"
+                  [class.hidden]="(field?.properties?.condition && !field.properties.conditionResult) || field?.properties?.hidden">
+                  @if (field.data.type == 'validationErrors') {
+                  <asee-validation-errors [validationErrors]="field.data.value">
+                  </asee-validation-errors>
+                  }
+                  @if (field.data.type == 'boolean') {
+                  <div class="slide-toggle">
+                    <asee-slide-toggle [readonly]="field.readonly" [id]="field.id" [controlName]="field.id"
+                      [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label"
+                      [isHtml]="field?.properties?.isHtml">
+                    </asee-slide-toggle>
                   </div>
+                  }
+                  @if (field.data.type == 'checkbox') {
+                  <asee-checkbox [attr.id]="field.id" [readonly]="field.readonly" [id]="field.id"
+                    [controlName]="field.id" [formGroup]="formGroup" [isHtml]="field?.properties?.isHtml"
+                    [control]="formGroup.controls[field.id]" [label]="field.label">
+                  </asee-checkbox>
+                  }
+                  @if (field.data.type == 'double') {
+                  <asee-decimal-input appearance="outline" [id]="field.id" [readonly]="field.readonly"
+                    [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label"></asee-decimal-input>
+                  }
+                  @if (field.data.type === 'radio-group') {
+                  <asee-radio-button-group [attr.id]="field.id" [id]="field.id" [controlName]="field.id"
+                    [disabled]="field.readonly" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [options]="field.enumProps" [label]="field.label">
+                  </asee-radio-button-group>
+                  }
+                  @if (field.data.type == 'string' && !field.isTextArea) {
+                  <asee-text-input appearance="outline" [maxLength]="field.maxLength" [id]="field.id"
+                    [readonly]="field.readonly" [controlName]="field.id" [formGroup]="formGroup"
+                    [control]="formGroup.controls[field.id]" [label]="field.label" [mask]="field?.properties?.mask"
+                    [patternErrorMessage]="field?.properties?.patternErrorMessage"
+                    [spellcheck]="field.properties?.spellcheck === 'true'">
+                  </asee-text-input>
+                  }
+                  @if (field.data.type == 'password') {
+                  <asee-text-input appearance="outline" type="password" [maxLength]="field.maxLength" [id]="field.id"
+                    [readonly]="field.readonly" [controlName]="field.id" [formGroup]="formGroup"
+                    [control]="formGroup.controls[field.id]" [label]="field.label">
+                  </asee-text-input>
+                  }
+                  @if (field.data.type == 'phone-number') {
+                  <asee-phone-number [id]="field.id" [readonly]="field.readonly" [controlName]="field.id"
+                    [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label"
+                    [optionsKey]="field?.properties?.optionsKey">
+                  </asee-phone-number>
+                  }
+                  @if (field.data.type == 'string' && field.isTextArea) {
+                  <asee-textarea appearance="outline" [maxLength]="field.maxLength" [readonly]="field.readonly"
+                    [rows]="field.rows" [id]="field.id" [controlName]="field.id" [formGroup]="formGroup"
+                    [control]="formGroup.controls[field.id]" [label]="field.label"
+                    [patternErrorMessage]="field?.properties?.patternErrorMessage" [spellcheck]="field.spellcheck">
+                  </asee-textarea>
+                  }
+                  @if (field.data.type == 'long') {
+                  <asee-integer-input appearance="outline" [id]="field.id" [readonly]="field.readonly"
+                    [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label"></asee-integer-input>
+                  }
+                  @if (field.data.type == 'date') {
+                  <asee-datepicker appearance="outline" [id]="field.id" [readonly]="field.readonly"
+                    [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label"></asee-datepicker>
+                  }
+                  @if (field.data.type == 'iso-date') {
+                  <asee-date-select appearance="outline" [id]="field.id" [readonly]="field.readonly" date-order="dmy"
+                    [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label">
+                  </asee-date-select>
+                  }
+                  @if (field.data.type == 'currency') {
+                  <asee-currency-input appearance="outline" [id]="field.id" [readonly]="field.readonly" precision="2"
+                    [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label"></asee-currency-input>
+                  }
+                  @if (field.data.type == 'iso-duration') {
+                  <asee-time-period-complex appearance="outline" [id]="field.id" [readonly]="field.readonly"
+                    [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label"></asee-time-period-complex>
+                  }
+                  @if (field.data.type == 'enum' || field.data.type=='custom-enum' ) {
+                  <asee-select appearance="outline" [id]="field.id" [controlName]="field.id" [disabled]="field.readonly"
+                    [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [options]="field.enumProps"
+                    [multiple]="field?.properties?.multiple" [label]="field.label">
+                  </asee-select>
+                  }
+                  @if (field.data.type == 'multi-select') {
+                  <asee-select appearance="outline" [id]="field.id" [controlName]="field.id" [disabled]="field.readonly"
+                    [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [options]="field.enumProps"
+                    [multiple]="true" [label]="field.label">
+                  </asee-select>
+                  }
+                  @if (field.data.type == 'multi-select-country' && countries.length > 0) {
+                  <party-lcm-multiselect-autocomplete appearance="outline" [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [placeholder]="field.label" [data]="countries"
+                    [key]="field.id" [label]="field.label" [valueProperty]="'alpha2'" [labelProperty]="'name'">
+                  </party-lcm-multiselect-autocomplete>
+                  }
+                  @if (field.data.type == 'select-country') {
+                    <asee-autocomplete appearance="outline" [id]="field.id" [controlName]="field.id"
+                    [readonly]="field.readonly" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label" [emitValueOnly]="true" [filterValue]="true" [showClear]="true"
+                    [autocompleteList]="field.enumProps" [valueProperty]="'alpha2'" [labelProperty]="'name'"
+                    [resetOnBlurDisabled]="true">
+                  </asee-autocomplete>
+                  }
+                  @if (field.data.type == 'classification' && !field.properties.autocomplete) {
+                  <asee-classification-select appearance="outline" [id]="field.id"
+                    [schemaUrl]="field.properties.schemaUrl" [baseUrl]="field.properties.baseUrl"
+                    [service]="field.properties.service" [schemaId]="field.properties.schemaId" [controlName]="field.id"
+                    [disabled]="field.readonly" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label" [multiple]="field?.properties?.multiple">
+                  </asee-classification-select>
+                  }
+                  @if (field.data.type == 'classification' && field.properties.autocomplete) {
+                  <asee-classification-autocomplete appearance="outline" [id]="field.id"
+                    [schemaUrl]="field.properties.schemaUrl" [baseUrl]="field.properties.baseUrl"
+                    [service]="field.properties.service" [schemaId]="field.properties.schemaId" [controlName]="field.id"
+                    [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [label]="field.label">
+                  </asee-classification-autocomplete>
+                  }
+                  @if (field.data.type == 'divider') {
+                  <asee-divider [containerStyle]="field.properties.containerStyle"
+                    [componentStyle]="field.properties.componentStyle">
+                  </asee-divider>
+                  }
+                  @if (field.data.type == 'image') {
+                  <asee-image [containerStyle]="field.properties.containerStyle"
+                    [componentStyle]="field.properties.componentStyle" [src]="field.properties.src">
+                  </asee-image>
+                  }
+                  @if (field.data.type == 'link') {
+                  <asee-link [text]="field?.data?.value" [containerStyle]="field.properties.containerStyle"
+                    [componentStyle]="field.properties.componentStyle" [href]="field.properties.href"
+                    [target]="field.properties.target">
+                  </asee-link>
+                  }
+                  @if (field.data.type == 'paragraph') {
+                  <asee-paragraph [text]="field?.data?.value" [containerStyle]="field.properties.containerStyle"
+                    [componentStyle]="field.properties.componentStyle">
+                  </asee-paragraph>
+                  }
+                  @if (field.data.type == 'section') {
+                  <asee-section [text]="field?.data?.value" [containerStyle]="field.properties.containerStyle"
+                    [componentStyle]="field.properties.componentStyle">
+                  </asee-section>
+                  }
+                  @if (field.data.type == 'subtitle') {
+                  <asee-subtitle [text]="field?.data?.value" [containerStyle]="field.properties.containerStyle"
+                    [componentStyle]="field.properties.componentStyle">
+                  </asee-subtitle>
+                  }
+                  @if (field.data.type == 'dateInput') {
+                  <asee-date-input [id]="field.id" [readonly]="field.readonly" [separator]="field.properties.separator"
+                    [dateOrder]="field.properties.dateOrder" [controlName]="field.id" [formGroup]="formGroup"
+                    [patternErrorMessage]="field?.properties?.patternErrorMessage"
+                    [control]="formGroup.controls[field.id]" [label]="field.label">
+                  </asee-date-input>
+                  }
+                  @if (field.data.type == 'lookup') {
+                  <asee-lookup [id]="field.id" [readonly]="field.readonly" [labelProperty]="field.properties.label"
+                    [service]="field.properties.service" appearance="outline" [valueProperty]="field.properties.value"
+                    [responseProperty]="field.properties.response" [path]="field.properties.path"
+                    [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label" [endPoint]="field.endPoint">
+                  </asee-lookup>
+                  }
+                  @if (field.data.type == 'customer-lookup') {
+                  <asee-customer-lookup [id]="field.id" [readonly]="field.readonly"
+                    [labelProperty]="field.properties.label" [sublabelProperty]="field.properties.sublabel"
+                    [service]="field.properties.service" [serviceVersion]="field.properties.version"
+                    [endPoint]="field.properties.endpoint" [path]="field.properties.path" appearance="outline"
+                    [valueProperty]="field.properties.value" [responseProperty]="field.properties.response"
+                    [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
+                    [label]="field.label">
+                  </asee-customer-lookup>
+                  }
+                </div>
                 }
+              </div>
+              }
             </div>
           </cdk-accordion-item>
           }
@@ -223,15 +231,11 @@
     <mat-card-actions class="customer-actions">
       <div class="process-actions-container">
         <div class="button-group">
-          <button mat-button
-            [disabled]="!formGroup.valid || submitDisabled"
-            color="primary"
-            (click)="complate()"
-            >
+          <button mat-button [disabled]="!formGroup.valid || submitDisabled" color="primary" (click)="complate()">
             <span translate>{{submitButtonName}}</span>
           </button>
         </div>
-      </div>      
+      </div>
     </mat-card-actions>
     }
   </mat-card>
