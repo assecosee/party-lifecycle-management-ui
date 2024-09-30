@@ -63,6 +63,13 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
         }
       }
     );
+    this.selectControl.statusChanges.subscribe(
+      (res) => {
+        if(this.selectData) {
+          this.selectControl.setValue(this.selectData, {emitEvent: false});
+        }
+      }
+    );
     super.ngOnInit();
   }
   filter = (filter: string): Array<ItemData> => {
