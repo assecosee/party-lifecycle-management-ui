@@ -18,7 +18,7 @@
       </ng-container>
     </mat-chip-listbox>
   </div>
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCustomFunction" multiple>
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCustomFunction.bind(this)">
     <mat-option *ngFor="let data of filteredData | async">
       <div style="margin-left: 5px;" (click)="optionClicked($event, data)">
         <mat-checkbox [checked]="data.selected" 
