@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { AseeFormControl } from '@asseco/common-ui';
 import { AbstractUIInputComponent } from '@asseco/components-ui';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 export interface ItemData {
   item: any;
@@ -12,7 +13,7 @@ export interface ItemData {
   templateUrl: './multiselect-autocomplete.component.html',
   styleUrl: './multiselect-autocomplete.component.scss'
 })
-export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<any> implements OnInit{
+export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<any> implements OnInit {
   @Output() result = new EventEmitter<{ key: string; data: Array<string> }>();
 
   @Input() data: Array<any> = [];
@@ -20,6 +21,7 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
   @Input() appearance  = '';
   @Input() public valueProperty = 'value';
   @Input() public labelProperty = 'value';
+  public errorMessages: any;
   selectControl = new FormControl();
 
   rawData: Array<ItemData> = [];
@@ -42,12 +44,32 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
       map(value => typeof value === 'string' ? value : this.filterString),
       map(filter => this.filter(filter))
     );
+    const errors: any = this.control.validator && this.control.validator(new AseeFormControl(null));
+    const required = errors !== null && errors.required;
+    this.required = required;
+    if(this.required) {
+      if(!this.errorMessages) {
+        this.errorMessages = {};
+      }
+      this.errorMessages.required = true;
+    }
+    this.control.statusChanges.subscribe(
+      (res) => {
+        const listErrors: any = this.control.errors;
+        if(res === 'INVALID') {
+          this.errorMessages  = listErrors;
+        } else {
+          this.errorMessages  = listErrors;
+        }
+      }
+    );
     super.ngOnInit();
   }
   filter = (filter: string): Array<ItemData> => {
     this.filterString = filter;
     if(this.selectData) {
       this.control.setValue(this.selectData, {emitEvent: false});
+      // this.selectControl.setValue(this.selectData, {emitEvent: false});
     }
     if (filter.length > 0) {
       return this.rawData.filter(option => option.item[this.labelProperty].toLowerCase().indexOf(filter.toLowerCase()) >= 0);
@@ -79,6 +101,7 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
     }
 
     this.control.setValue(this.selectData);
+    this.selectControl.setValue(this.selectData, {emitEvent: false});
     this.emitAdjustedData();
   };
 

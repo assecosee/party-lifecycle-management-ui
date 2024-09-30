@@ -6,7 +6,6 @@
     [required]="required"
     >
     <mat-label>{{label | translate:locale.language}}</mat-label>
-  </mat-form-field>
   <div class="chip-list-wrapper">
     <mat-chip-listbox #chipList>
       <ng-container *ngFor="let select of selectData">
@@ -31,14 +30,14 @@
     </mat-option>
   </mat-autocomplete>
   <mat-error>
-    @if (!errorMessage) {
+    @if (errorMessages) {
       <span>
-        @if (hasError('required')) {
+        @if (errorMessages['required']) {
           <asee-error>
             <span translate>Field is required</span>
           </asee-error>
         }
-        @if (hasError('error')) {
+        @if (errorMessages['error']) {
           <asee-error>
             {{control?.errors['error'] }}
           </asee-error>
@@ -51,4 +50,5 @@
       </asee-error>
     }
   </mat-error>
+</mat-form-field>
 
