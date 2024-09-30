@@ -21,7 +21,7 @@
   </div>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCustomFunction" multiple>
     <mat-option *ngFor="let data of filteredData | async">
-      <div (click)="optionClicked($event, data)">
+      <div style="margin-left: 5px;" (click)="optionClicked($event, data)">
         <mat-checkbox [checked]="data.selected" 
           (change)="toggleSelection(data)" 
           (click)="$event.stopPropagation()">
