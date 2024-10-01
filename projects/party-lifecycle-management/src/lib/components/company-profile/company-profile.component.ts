@@ -45,7 +45,7 @@ export class CompanyProfileComponent implements OnInit {
     { key: 'dateOfRegistration', validators: [Validators.required] },
     { key: 'activityCode', validators: [] },
     { key: 'alignmentWithApr', validators: [] },
-    { key: 'registrationNumber', validators: [] },
+    { key: 'identificationNumber', validators: [] },
     { key: 'codeOfBranchPredominantActivity', validators: [] },
     { key: 'statusOfLegalEntity', validators: [Validators.required] },
     { key: 'sizeOfLegalEntity', validators: [] },
@@ -189,10 +189,31 @@ export class CompanyProfileComponent implements OnInit {
       this.formGroup.controls['statusOfLegalEntity']
         .setValue(this.findItemByProperty(this.statusOfLegalEntityList, 'description', 'Redovan/aktivan'));
       this.formGroup.controls['statusOfLegalEntity'].disable();
+    } else {
+      this.prefillData();
     }
 
     this.formGroupInitialized = true;
     console.log('Form group: ', this.formGroup);
+  }
+
+  private prefillData() {
+    const codeOfBranchPredominantActivityValue = this.getFormFieldValue('codeOfBranchPredominantActivity');
+    const sizeOfLegalEntityValue = this.getFormFieldValue('sizeOfLegalEntity');
+    const statusOfLegalEntityValue = this.getFormFieldValue('statusOfLegalEntity');
+
+    const codeOfBranchPredominantActivity = this.codeOfBranchPredominantActivityList.find((code: any) =>
+      code.value === codeOfBranchPredominantActivityValue);
+
+    const sizeOfLegalEntity = this.sizeOfLegalEntityList.find((size: any) =>
+      size.value === sizeOfLegalEntityValue);
+
+    const statusOfLegalEntity = this.statusOfLegalEntityList.find((status: any) =>
+      status.name === statusOfLegalEntityValue);
+
+    this.formGroup.controls['codeOfBranchPredominantActivity'].setValue(codeOfBranchPredominantActivity);
+    this.formGroup.controls['sizeOfLegalEntity'].setValue(sizeOfLegalEntity);
+    this.formGroup.controls['statusOfLegalEntity'].setValue(statusOfLegalEntity);
   }
 
   private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {

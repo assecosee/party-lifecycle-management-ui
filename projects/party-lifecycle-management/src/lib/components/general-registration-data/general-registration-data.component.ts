@@ -441,7 +441,9 @@ export class GeneralRegistrationDataComponent implements OnInit {
       (item: any) => item[comparisonKey].toLowerCase() === literal
     );
 
-    this.formGroup.controls[controlName].setValue(control);
+    if (this.formGroup.controls[controlName]) {
+      this.formGroup.controls[controlName].setValue(control);
+    }
   }
 
   private getFormFieldValue(formField: string) {
