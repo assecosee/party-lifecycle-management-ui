@@ -13,6 +13,7 @@ import { CustomService } from '../../services/custom.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { PartyService } from '../../services/party.service';
 
 @Component({
   selector: 'employment-data',
@@ -56,6 +57,7 @@ export class EmploymentDataComponent implements OnInit {
 
   constructor(
     private customService: CustomService,
+    private partyService: PartyService,
     protected injector: Injector,
   ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
@@ -67,15 +69,14 @@ export class EmploymentDataComponent implements OnInit {
   ngOnInit(): void {
     // Combine multiple HTTP requests using forkJoin
     forkJoin({
-      employmentStatuses: this.customService.getClassification('STATLIC1'),
+      employmentStatuses: this.partyService.getEmploymentStatuses(),
       legalStatuses: this.customService.getClassification('JK2PRSTF'),
       levelsOfEducation: this.customService.getClassification('STRUCNOS'),
       companyPositionCodes: this.customService.getClassification('POZZAPOS'),
     }).pipe(
       tap(({ employmentStatuses, legalStatuses, levelsOfEducation, companyPositionCodes }) => {
 
-        employmentStatuses.items.filter((item: any) => item.name).map((element: any) =>
-          element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
+        employmentStatuses.values.filter((item: any) => item.literal);
 
         legalStatuses.items.filter((item: any) => item.name).map((element: any) =>
           element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
@@ -86,7 +87,7 @@ export class EmploymentDataComponent implements OnInit {
         companyPositionCodes.items.filter((item: any) => item.name).map((element: any) =>
           element.formattedName = element.description ? `${element.name} - ${element.description}` : element.name);
 
-        this.employmentStatusList = employmentStatuses.items;
+        this.employmentStatusList = employmentStatuses.values;
         this.legalStatusList = legalStatuses.items;
         this.levelOfEducationList = levelsOfEducation.items;
         this.companyPositionCodeList = companyPositionCodes.items;

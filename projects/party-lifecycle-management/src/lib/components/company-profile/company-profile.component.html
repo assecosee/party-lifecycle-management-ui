@@ -103,8 +103,8 @@
             [control]="formGroup.controls['sizeOfLegalEntity']"
             [autocompleteList]="sizeOfLegalEntityList"
             [label]="'lblSizeOfLegalEntity' | translate : locale.language"
-            labelProperty="formattedName"
-            valueProperty="name"
+            labelProperty="description"
+            valueProperty="literal"
             appearance="outline"
             (click)="markAsTouched('sizeOfLegalEntity')"
           ></asee-autocomplete>

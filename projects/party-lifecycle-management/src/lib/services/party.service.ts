@@ -23,4 +23,44 @@ export class PartyService extends AbstractHttpClient {
 
     return builder.build();
   }
+
+  public getMaritalStatus(): Observable<any> {
+    const builder = this.getHttpClientBuilder<any[]>()
+      .setUrl(`${this.url}classifications/marital-statuses`)
+      .setHttpMethod(HttpMethod.GET)
+      .mapResponseToCamelCase()
+      .addAuthentication();
+
+    return builder.build();
+  }
+
+  public getRegistrationProfiles(): Observable<any> {
+    const builder = this.getHttpClientBuilder<any[]>()
+      .setUrl(`${this.url}classifications/registration-profiles`)
+      .setHttpMethod(HttpMethod.GET)
+      .mapResponseToCamelCase()
+      .addAuthentication();
+
+    return builder.build();
+  }
+
+  public getEmploymentStatuses(): Observable<any> {
+    const builder = this.getHttpClientBuilder<any[]>()
+      .setUrl(`${this.url}classifications/employment-statuses`)
+      .setHttpMethod(HttpMethod.GET)
+      .mapResponseToCamelCase()
+      .addAuthentication();
+
+    return builder.build();
+  }
+
+  public getOrganizationSize(): Observable<any> {
+    const builder = this.getHttpClientBuilder<any[]>()
+      .setUrl(`${this.url}classifications/organization-size`)
+      .setHttpMethod(HttpMethod.GET)
+      .mapResponseToCamelCase()
+      .addAuthentication();
+
+    return builder.build();
+  }
 }

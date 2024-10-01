@@ -19,13 +19,13 @@
             valueProperty="description"
             filterBehaviour="includes"
             appearance="outline"
-            [control]="formGroup.controls['basisForClientRegistration']"
-            [label]="'lblBasisForClientRegistration' | translate : locale.language"
-            (click)="markAsTouched('basisForClientRegistration')"
+            [control]="formGroup.controls['registrationProfile']"
+            [label]="'lblRegistrationProfile' | translate : locale.language"
+            (click)="markAsTouched('registrationProfile')"
           >
           </asee-autocomplete>
           <error-handling
-            [control]="formGroup.controls['basisForClientRegistration']"
+            [control]="formGroup.controls['registrationProfile']"
           ></error-handling>
         </div>
       </div>

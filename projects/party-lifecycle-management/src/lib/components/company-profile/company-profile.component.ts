@@ -10,6 +10,7 @@ import { CustomService } from '../../services/custom.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { PartyService } from '../../services/party.service';
 
 @Component({
   selector: 'lib-company-profile',
@@ -64,7 +65,9 @@ export class CompanyProfileComponent implements OnInit {
     protected injector: Injector,
     protected http: HttpClient,
     protected authConfig: AuthService,
-    private customService: CustomService) {
+    private customService: CustomService,
+    private partyService: PartyService
+  ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -77,7 +80,7 @@ export class CompanyProfileComponent implements OnInit {
       activityCodeList: this.customService.getClassification('DELATNOS'),
       codeOfBranchPredominantActivityList: this.customService.getClassification('DELATNOS'),
       statusOfLegalEntityList: this.customService.getClassification('JK2PRSTS'),
-      sizeOfLegalEntityList: this.customService.getClassification('JK2VMS'),
+      sizeOfLegalEntityList: this.partyService.getOrganizationSize(),
       typeOfPropertyList: this.customService.getClassification('SVOJINA'),
       naceCodeList: this.customService.getClassification('JK2NACE'),
       crmIndCodeList: this.customService.getClassification('JK2CRMIC')
@@ -104,12 +107,8 @@ export class CompanyProfileComponent implements OnInit {
             ...element,
             formattedName: element.name ? `${element.name} - ${element.description}` : element.description
           }));
-        this.sizeOfLegalEntityList = response.sizeOfLegalEntityList.items
-          .filter((item: any) => item.description)
-          .map((element: any) => ({
-            ...element,
-            formattedName: element.name ? `${element.name} - ${element.description}` : element.description
-          }));
+        this.sizeOfLegalEntityList = response.sizeOfLegalEntityList.values
+          .filter((item: any) => item.literal);
         this.typeOfPropertyList = response.typeOfPropertyList.items
           .filter((item: any) => item.description)
           .map((element: any) => ({

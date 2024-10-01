@@ -16,8 +16,8 @@
             [autocompleteList]="employmentStatusList"
             [label]="'lblEmploymentStatus' | translate : locale.language"
             filterBehaviour="includes"
-            labelProperty="formattedName"
-            valueProperty="name"
+            labelProperty="description"
+            valueProperty="literal"
             appearance="outline"
             (click)="markAsTouched('employmentStatus')"
           ></asee-autocomplete>

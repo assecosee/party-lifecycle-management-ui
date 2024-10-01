@@ -94,10 +94,10 @@ export class CustomValidatorsService {
 
       // Check if both controls have the specific required values
       if (
-        genderControl &&
+        genderControl?.value &&
         genderControl.value === 'female' &&
         maritalStatusControl &&
-        maritalStatusControl.value.value === '1' &&
+        maritalStatusControl.value?.literal === 'married' &&
         parentLastNameControl &&
         !parentLastNameControl.value
       ) {

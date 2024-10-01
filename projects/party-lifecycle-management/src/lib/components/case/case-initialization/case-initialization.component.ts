@@ -34,6 +34,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   private bapoClientKind: any = null;
   private agentHasRegistrationRole = false;
   private agentHasDataUpdateRole = false;
+  public basisOptions = [{}];
   public selectedUser: any;
   public formGroupInitialized = false;
   public locale: L10nLocale;
@@ -69,6 +70,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       key: 'clientId',
       validators: []
     },
+    {
+      key: 'registrationProfile',
+      validators: []
+    }
   ];
   public formKeysLegalEntity = [
     {
@@ -91,6 +96,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       key: 'clientId',
       validators: []
     },
+    {
+      key: 'registrationProfile',
+      validators: []
+    }
   ];
   public isIndividualPerson = false;
 
@@ -122,11 +131,13 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     // Combine multiple HTTP requests using forkJoin
     forkJoin({
       individualPersonOptions: this.offerService.getClassification('individual-person-options'),
-      legalPersonOptions: this.offerService.getClassification('legal-person-options')
+      legalPersonOptions: this.offerService.getClassification('legal-person-options'),
+      basis: this.partyService.getRegistrationProfiles()
     }).pipe(
-      tap(({ individualPersonOptions, legalPersonOptions }) => {
+      tap(({ individualPersonOptions, legalPersonOptions, basis }) => {
         this.individualPersonOptionsList = individualPersonOptions.values;
         this.legalPersonOptionsList = legalPersonOptions.values;
+        this.basisOptions = basis.values.filter((item: any) => item.literal);
         this.initFormGroup(true);
       }),
       catchError(error => {
@@ -306,6 +317,9 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
           && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.kind : null
       },
       priority: 'high',
+      'extension-data': {
+        'registration-profile': this.formGroup.controls['registrationProfile'].value?.literal
+      },
       channel: 'DO',
       'creator-id': this.agent.userName,
       'initiating-plan': null

@@ -27,6 +27,7 @@ import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { PartyService } from '../../services/party.service';
 
 @Component({
   selector: 'lib-basic-data',
@@ -213,7 +214,8 @@ export class GeneralRegistrationDataComponent implements OnInit {
     protected configurationService: ConfigurationHttpClient,
     private referenceService: ReferenceService,
     private customService: CustomService,
-    private directoryService: DirectoryService
+    private directoryService: DirectoryService,
+    private partyService: PartyService
   ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
@@ -235,12 +237,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
           return of({ items: [] });
         })
       ),
-      this.customService.getClassification('BRACNOST').pipe(
-        catchError((error) => {
-          console.error('Error fetching martialStatus:', error);
-          return of({ items: [] });
-        })
-      ),
+      this.partyService.getMaritalStatus(),
       this.customService.getClassification('JK2VLSTN').pipe(
         catchError((error) => {
           console.error('Error fetching ownership:', error);
@@ -278,7 +275,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
         this.languages = languages.items.filter(
           (item: any) => item.description
         );
-        this.martialStatus = martialStatus.items.filter(
+        this.martialStatus = martialStatus.values.filter(
           (item: any) => item.description
         );
         this.ownership = ownership.items.filter(
@@ -403,22 +400,6 @@ export class GeneralRegistrationDataComponent implements OnInit {
 
     this.isRegistration = this.getFormFieldValue('isRegistrationProcess');
 
-    // If it is not registration process do prefill
-    if (!this.isRegistration) {
-      // Prefill marital status
-      this.prefillAutocomplete(
-        this.martialStatus,
-        {
-          married: '1',
-          divorced: '4',
-          single: '3',
-          widowed: '2',
-        },
-        'name',
-        'maritalStatus'
-      );
-    }
-
     if (!isInitial) {
       this.formGroup.markAllAsTouched();
     }
@@ -427,23 +408,6 @@ export class GeneralRegistrationDataComponent implements OnInit {
       this.formGroup.updateValueAndValidity();
     }, 100);
     console.log('Form group: ', this.formGroup);
-  }
-
-  private prefillAutocomplete(
-    classification: any,
-    map: any,
-    comparisonKey: any,
-    controlName: any
-  ) {
-    const literal =
-      map[this.getFormFieldValue(controlName) as keyof typeof map];
-    const control = classification.find(
-      (item: any) => item[comparisonKey].toLowerCase() === literal
-    );
-
-    if (this.formGroup.controls[controlName]) {
-      this.formGroup.controls[controlName].setValue(control);
-    }
   }
 
   private getFormFieldValue(formField: string) {
@@ -478,16 +442,11 @@ export class GeneralRegistrationDataComponent implements OnInit {
   }
 
   private refillField(key: string, value: any) {
-    const controlsMap: { [key: string]: any } = {
-      language: this.lang,
-      agentOuCode: this.orgUnits,
-      clientCountryOfBirth: this.clientCountryOfBirth,
-      maritalStatus: this.maritalStatusAC,
-      propertyOwnership: this.ownershipAC,
-    };
-    const val = controlsMap[key] || null;
-    if (val) {
-      val.controlInternal.setValue(value);
+    if (key === 'maritalStatus') {
+      const status = this.martialStatus.find(
+        (item: any) => item.literal === value
+      );
+      return status;
     }
     if (key === 'gender') {
       return this.genderOptions.find(
