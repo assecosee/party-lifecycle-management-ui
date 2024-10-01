@@ -77,7 +77,17 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
   filter = (filter: string): Array<ItemData> => {
     this.filterString = filter;
     if(this.selectData) {
-      this.control.setValue(this.selectData, {emitEvent: false});
+      if(this.selectData.length) {
+        const listValues: string [] = [];
+        this.selectData.forEach(
+          (el: ItemData) => {
+            if(el.item[this.valueProperty]) {
+              listValues.push(el.item[this.valueProperty]);
+            }
+          }
+        );
+        this.control.setValue(listValues);
+      }
       // this.selectControl.setValue(this.selectData, {emitEvent: false});
     }
     if (filter.length > 0) {
@@ -108,8 +118,17 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
       const i = this.selectData.findIndex(value => value.item === data.item);
       this.selectData.splice(i, 1);
     }
-
-    this.control.setValue(this.selectData);
+    if(this.selectData.length) {
+      const listValues: string [] = [];
+      this.selectData.forEach(
+        (el: ItemData) => {
+          if(el.item[this.valueProperty]) {
+            listValues.push(el.item[this.valueProperty]);
+          }
+        }
+      );
+      this.control.setValue(listValues);
+    }
     this.selectControl.setValue(this.selectData, {emitEvent: false});
     this.emitAdjustedData();
   };
