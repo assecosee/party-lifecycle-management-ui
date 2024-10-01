@@ -1,4 +1,4 @@
-<mat-form-field class="full-width" [appearance]="appearance">
+<mat-form-field class="full-width" [subscriptSizing]="subscriptSizing" [appearance]="appearance">
     <input matInput type="text"
     [placeholder]="placeholder"
     [matAutocomplete]="auto"
@@ -29,26 +29,21 @@
       </div>
     </mat-option>
   </mat-autocomplete>
-  <mat-error>
-    @if (errorMessages) {
-      <span>
-        @if (errorMessages['required']) {
-          <asee-error>
-            <span translate>Field is required</span>
-          </asee-error>
-        }
-        @if (errorMessages['error']) {
-          <asee-error>
-            {{control?.errors['error'] }}
-          </asee-error>
-        }
-      </span>
-    }
-    @if (errorMessage && !control.valid && (control.dirty || control.touched)) {
-      <asee-error>
-        {{ errorMessage }}
-      </asee-error>
-    }
-  </mat-error>
 </mat-form-field>
+<mat-error class="form-error">
+  @if (errorMessages && selectControl.touched) {
+    <span>
+      @if (errorMessages['required']) {
+        <asee-error>
+          <span translate>Field is required</span>
+        </asee-error>
+      }
+      @if (errorMessages['error']) {
+        <asee-error>
+          {{control?.errors?.error }}
+        </asee-error>
+      }
+    </span>
+  }
+</mat-error>
 

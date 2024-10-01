@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { SubscriptSizing } from '@angular/material/form-field';
 import { AseeFormControl } from '@asseco/common-ui';
 import { AbstractUIInputComponent } from '@asseco/components-ui';
 import { Observable } from 'rxjs';
@@ -21,6 +22,7 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
   @Input() appearance  = '';
   @Input() public valueProperty = 'value';
   @Input() public labelProperty = 'value';
+  @Input() public subscriptSizing: SubscriptSizing = 'fixed';
   public errorMessages: any;
   selectControl = new FormControl();
 

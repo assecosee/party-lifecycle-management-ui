@@ -1,5 +1,5 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
-import { BpmTasksHttpClient, FormField, LoaderService, Task, UIService } from '@asseco/common-ui';
+import { BpmTasksHttpClient, FormField, LoaderService, Task, UIService, ValidationConstraint } from '@asseco/common-ui';
 import { L10N_LOCALE, L10nLocale } from 'angular-l10n';
 import { SurveyService } from '../../services/survey.service';
 import { SurveyQuestion, SurveySection, SurveyTemplate } from '../../model/survey-template';
@@ -222,9 +222,49 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
             if(constraint.kind === 'ruleOut') {
               this.ruleOutValues(field, constraint);
             }
+            if(constraint.kind === 'maxElement') {
+              this.maxElements(field, constraint);
+            }
+            if(constraint.kind === 'minElement') {
+              this.minElements(field, constraint);
+            }
           }
         }
       }
+    }
+  }
+  minElements(field: FormField, constraint: ValidationConstraint) {
+    if(this.formGroup.controls[field.id]) {
+      this.formGroup.controls[field.id].valueChanges.subscribe(
+        (res: any[]) => {
+          if(res && Array.isArray(res)) {
+            if(res.length < constraint.value) {
+              this.formGroup.controls[field.id].setErrors(
+                {
+                   error: `Min elements is ${constraint.value}`
+                }
+              );
+            }
+          }
+        }
+      );
+    }
+  }
+  maxElements(field: FormField, constraint: ValidationConstraint) {
+    if(this.formGroup.controls[field.id]) {
+      this.formGroup.controls[field.id].valueChanges.subscribe(
+        (res: any[]) => {
+          if(res && Array.isArray(res)) {
+            if(res.length > constraint.value) {
+              this.formGroup.controls[field.id].setErrors(
+                {
+                   error: `Max elements is ${constraint.value}`
+                }
+              );
+            }
+          }
+        }
+      );
     }
   }
 
