@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Injector, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AseeFormControl, BpmTasksHttpClient, ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
@@ -62,6 +62,7 @@ export class IdentificationDocumentComponent implements OnInit {
     private referenceService: ReferenceService,
     protected errorEmitterService: ErrorEmitterService,
     private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
@@ -186,6 +187,11 @@ export class IdentificationDocumentComponent implements OnInit {
     });
 
     this.groups.push(fg);
+  }
+
+
+  ngAfterContentChecked() {
+    this.cdr.detectChanges();
   }
 
   private prefillData(fg: any) {

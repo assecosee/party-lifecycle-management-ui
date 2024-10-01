@@ -187,11 +187,26 @@ export class AdditionalDataComponent implements OnInit {
       this.formGroup.controls['treatmentDateValidFrom'].setValue(new Date());
       this.formGroup.controls['tarrifDateValidFrom'].setValue(new Date());
       this.setDefaultData();
+    } else {
+      this.prefillData();
     }
 
     console.log(this.formGroup);
     // this.formGroup.markAllAsTouched();
     this.formGroupInitialized = true;
+  }
+
+  private prefillData() {
+    const accountManagerValue = this.getFormFieldValue('accountManager');
+    let accountManager = null;
+
+    if (accountManagerValue) {
+      accountManager = this.accountManagerList.find((am: any) => am.value === accountManagerValue);
+
+      if (accountManager) {
+        this.formGroup.controls['accountManager'].setValue(accountManager);
+      }
+    }
   }
 
   private setDefaultData() {

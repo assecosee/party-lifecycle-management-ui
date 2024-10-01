@@ -1,4 +1,4 @@
-import { Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -94,6 +94,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
     private referenceService: ReferenceService,
     private fb: FormBuilder,
     private customService: CustomService,
+    private cdr: ChangeDetectorRef
   ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
@@ -186,19 +187,27 @@ export class AddressDataComponent implements OnInit, DoCheck {
         }
       });
       this.updateValueAndValidateControls(fg);
-      const place = this.allPlaces.find((p: any) => {
-        if (id.placeName == null) {
-          id.placeName = '';
-        }
-        return p.name.toLowerCase() === id.placeName.toLowerCase();
-      });
-      fg.controls['placeName'].setValue(place);
+      this.prefillData(fg, id);
     });
 
     this.filterAddressTypes();
 
     this.formGroupInitialized = true;
 
+  }
+
+  ngAfterContentChecked() {
+    this.cdr.detectChanges();
+  }
+
+  private prefillData(fg: any, addressData: any) {
+    const place = this.allPlaces.find((p: any) => {
+      if (addressData.placeName == null) {
+        addressData.placeName = '';
+      }
+      return p.name.toLowerCase() === addressData.placeName.toLowerCase();
+    });
+    fg.controls.placeName.setValue(place);
   }
 
   private initEmptyFormGroup() {

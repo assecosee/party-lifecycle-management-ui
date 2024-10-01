@@ -1,12 +1,12 @@
-import { Component, DoCheck, Injector, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, FormArray, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormField, BpmTasksHttpClient, LoaderService, ErrorEmitterService, AseeFormControl, ConfigurationHttpClient }
+import { Component, Injector, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient, ErrorEmitterService, FormField, LoaderService }
   from '@asseco/common-ui';
-import { L10nLocale, L10N_LOCALE, L10nIntlModule, L10nTranslationModule } from 'angular-l10n';
-import { forkJoin, tap, catchError, of, combineLatest } from 'rxjs';
-import { OfferService } from '../../services/offer.service';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
+import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
+import { catchError, combineLatest, forkJoin, of, tap } from 'rxjs';
+import { OfferService } from '../../services/offer.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
@@ -45,7 +45,7 @@ export class ContactDataComponent implements OnInit {
     {
       key: 'typeOfContact',
       validators: [Validators.required]
-    }
+    },
   ];
 
   // Store references and prefilled flags
@@ -135,7 +135,7 @@ export class ContactDataComponent implements OnInit {
           fg.controls[formKey.key].updateValueAndValidity();
         }
       });
-      this.updateValueAndValidateControls(fg);
+      this.updateValueAndValidateControls(fg, id);
     });
 
     this.filterContactTypes();
@@ -171,14 +171,15 @@ export class ContactDataComponent implements OnInit {
     });
 
 
-    this.updateValueAndValidateControls(this.formGroup);
+    this.updateValueAndValidateControls(this.formGroup, null);
     this.formGroupInitialized = true;
 
   }
 
-  private updateValueAndValidateControls(fg: FormGroup) {
+  private updateValueAndValidateControls(fg: FormGroup, contactPoint: any) {
 
     this.isLegalEntity = this.getFormFieldValue('isLegalEntity');
+    this.isRegistrationProcess = this.getFormFieldValue('isRegistrationProcess');
 
     fg.statusChanges.subscribe(status => {
       if (status === 'VALID') {
@@ -191,13 +192,20 @@ export class ContactDataComponent implements OnInit {
     fg.addControl('showMailField', new AseeFormControl(false));
     fg.addControl('phoneNumber', new AseeFormControl(null));
 
+    // Prefill data if it is not registration process
+    if (contactPoint != null && !this.isRegistrationProcess) {
+      this.prefillData(fg, contactPoint);
+    }
+
     fg.controls['typeOfContact'].valueChanges.subscribe((newValue: any) => {
       fg.controls['showPhoneNumberField'].setValue(newValue?.additionalFields.kind === 'telecommunication-number');
 
       if (fg.controls['showPhoneNumberField'].value) {
 
         if (newValue.literal === 'legal-mobile-phone-number' || newValue.literal === 'other-mobile-phone-numbers') {
-          fg.controls['phoneNumber'].setValue('+381');
+          if (!fg.controls['phoneNumber'].value) {
+            fg.controls['phoneNumber'].setValue('+381');
+          }
           fg.controls['phoneNumber'].clearValidators();
           const regex = new RegExp(`^\\+381(${this.operatorNumbers.join('|')})\\d{6,7}$`);
           fg.controls['phoneNumber'].addValidators([Validators.required, Validators.pattern(regex)]);
@@ -225,12 +233,9 @@ export class ContactDataComponent implements OnInit {
         fg.addControl('email', new AseeFormControl(null, [Validators.required, Validators.email]));
         fg.controls['phoneNumber'].updateValueAndValidity();
       }
-
-
     });
 
     fg.controls['phoneNumber']?.valueChanges.subscribe((newValue: any) => {
-      console.log(newValue);
       if (fg.controls['typeOfContact'].value.literal === 'other-mobile-phone-numbers') {
         if (!newValue.startsWith('+381')) {
           fg.controls['phoneNumber'].clearValidators();
@@ -270,6 +275,32 @@ export class ContactDataComponent implements OnInit {
       );
     }
 
+  }
+
+  private prefillData(fg: any, contactPoint: any) {
+    const typeOfContactLiteral = contactPoint.typeOfContact;
+    const typeOfContact = this.contactTypes.find((type: any) => type.literal === typeOfContactLiteral);
+
+    if (typeOfContact) {
+      fg.controls.typeOfContact.setValue(typeOfContact);
+    }
+
+    if (contactPoint.showPhoneNumberField) {
+      fg.addControl('phoneNumber', new AseeFormControl(null));
+      fg.controls.phoneNumber.setValue(contactPoint.phoneNumber);
+    }
+
+    if (contactPoint.showMailField) {
+      fg.addControl('email', new AseeFormControl(null));
+      fg.controls.email.setValue(contactPoint.email);
+
+    }
+
+    if (contactPoint.showSwiftField) {
+      fg.addControl('swiftContact', new AseeFormControl(null));
+      fg.controls.swiftContact.setValue(contactPoint.swiftContact);
+
+    }
   }
 
   private getFormFieldValue(formField: string) {
