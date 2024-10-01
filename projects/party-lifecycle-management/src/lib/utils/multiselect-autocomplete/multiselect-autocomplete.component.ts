@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SubscriptSizing } from '@angular/material/form-field';
 import { AseeFormControl } from '@asseco/common-ui';
 import { AbstractUIInputComponent } from '@asseco/components-ui';
@@ -15,8 +16,8 @@ export interface ItemData {
   styleUrl: './multiselect-autocomplete.component.scss'
 })
 export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<any> implements OnInit {
-  @Output() result = new EventEmitter<{ key: string; data: Array<string> }>();
 
+  @Output() result = new EventEmitter<{ key: string; data: Array<string> }>();
   @Input() data: Array<any> = [];
   @Input() key = '';
   @Input() appearance  = '';
@@ -25,6 +26,8 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
   @Input() public subscriptSizing: SubscriptSizing = 'fixed';
   public errorMessages: any;
   selectControl = new FormControl();
+  @ViewChild('auto', { static: false }) public autocomplete: MatAutocomplete;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) private autoTrigger: MatAutocompleteTrigger;
 
   rawData: Array<ItemData> = [];
   selectData: Array<ItemData> = [];
@@ -144,4 +147,16 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
   removeChip = (data: ItemData): void => {
     this.toggleSelection(data);
   };
+  resetOnBlur(event: any) {
+    if (event && event.relatedTarget && event.relatedTarget.classList) {
+      const isOption = event.relatedTarget.classList.value.indexOf('mat-mdc-option') > -1;
+      if (isOption) {
+        return;
+      }
+    }
+  }
+  onSelectionChange(event: Event, data: ItemData) {
+    this.autoTrigger.openPanel();
+    this.toggleSelection(data);
+  }
 }

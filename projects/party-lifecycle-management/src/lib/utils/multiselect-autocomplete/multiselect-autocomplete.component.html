@@ -1,4 +1,4 @@
-<mat-form-field class="full-width" [subscriptSizing]="subscriptSizing" [appearance]="appearance">
+<mat-form-field class="full-width" [subscriptSizing]="subscriptSizing" [appearance]="appearance" (focusout)="resetOnBlur($event)">
     <input matInput type="text"
     [placeholder]="placeholder"
     [matAutocomplete]="auto"
@@ -19,15 +19,17 @@
     </mat-chip-listbox>
   </div>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCustomFunction.bind(this)">
-    <mat-option *ngFor="let data of filteredData | async">
-      <div style="margin-left: 5px;" (click)="optionClicked($event, data)">
-        <mat-checkbox [checked]="data.selected" 
-          (change)="toggleSelection(data)" 
-          (click)="$event.stopPropagation()">
-          {{ data.item[labelProperty] }}
-        </mat-checkbox>
-      </div>
-    </mat-option>
+    @for (data of filteredData | async; track data) {
+      <mat-option (onSelectionChange)="onSelectionChange($event,data)">
+        <div style="margin-left: 5px;" (click)="optionClicked($event, data)">
+          <mat-checkbox [checked]="data.selected" 
+            (change)="toggleSelection(data)" 
+            (click)="$event.stopPropagation()">
+            {{ data.item[labelProperty] }}
+          </mat-checkbox>
+        </div>
+      </mat-option>
+    }
   </mat-autocomplete>
 </mat-form-field>
 <mat-error class="form-error">
