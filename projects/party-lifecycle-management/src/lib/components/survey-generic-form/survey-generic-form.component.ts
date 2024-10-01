@@ -464,7 +464,6 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
               rule = controlName + ' ' + rule;
             }
             this.formGroup.controls[controlName].valueChanges.subscribe((_res) => {
-
               const listBool: boolean[] = [];
               if(rule.includes('||')) {
                 rule.split('||').forEach(
@@ -475,6 +474,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
                       const clName = parseCondition[0];
                       const operator = parseCondition[1];
                       let value = parseCondition[2];
+                      if(this.checkIsNumeric(clName)) {
+                        value = Number(value);
+                      }
                       value = parseCondition[2] === 'true' ?
                       value = true : parseCondition[2] === 'false' ? value = false : value;
                       const res = this.compare(formGroup.controls[controlName].value
@@ -494,6 +496,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
                       const clName = parseCondition[0];
                       const operator = parseCondition[1];
                       let value = parseCondition[2];
+                      if(this.checkIsNumeric(clName)) {
+                        value = Number(value);
+                      }
                       value = parseCondition[2] === 'true' ?
                       value = true : parseCondition[2] === 'false' ? value = false : value;
                       const res = this.compare(formGroup.controls[controlName].value
@@ -510,6 +515,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
                 const clName = parseCondition[0];
                 const operator = parseCondition[1];
                 let value = parseCondition[2];
+                if(this.checkIsNumeric(clName)) {
+                  value = Number(value);
+                }
                 value = parseCondition[2] === 'true' ?
                 value = true : parseCondition[2] === 'false' ? value = false : value;
                 const res = this.compare(formGroup.controls[controlName].value
@@ -548,5 +556,12 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
       }
       this.formGroup.controls[this.listFormFields[index].id].updateValueAndValidity();
     }
+  }
+  checkIsNumeric(controlName: string) {
+    const field = this.listFormFields.find(e => e.id === controlName);
+    if(field && field?.data.type === 'long') {
+      return true;
+    }
+    return false;
   }
 }
