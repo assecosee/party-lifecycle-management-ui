@@ -1,0 +1,15 @@
+h1 {
+    margin-bottom: 5%;
+}
+
+.mat-mdc-button {
+	color: white !important;
+    background-color: var(--palette-accent-500);
+	//background-color: rgb(255, 152, 0);
+}
+button:disabled {
+    background-color: gray;
+}
+asee-decimal-input{
+    margin-bottom: 6%;
+}

@@ -1,35 +1,42 @@
-<div class='refinancing-wrapper'>
-    <mat-card appearance="outlined" class='refinancing-card'>
-        <mat-card-title class='card-title' translate> Refinancing Items
-        </mat-card-title>
+<div class='card-wrapper'>
+    <mat-card appearance="outlined" class='task-card'>
+        <mat-card-header class="task-header">
+            <mat-card-title class='card-title' translate> tblPartyRelationship
+            </mat-card-title>
+        </mat-card-header>
         <mat-card-content class='card-content'>
             @if (relatedPartyList?.length) {
             <div #tableContainer class="container applications-table">
                 <mat-table [dataSource]="relatedPartyList">
-                    <ng-container matColumnDef="id">
-                        <mat-header-cell *matHeaderCellDef translate> Party id </mat-header-cell>
-                        <mat-cell *matCellDef="let row"> {{row.id}}</mat-cell>
-                    </ng-container>
                     <ng-container matColumnDef="relationshipKind">
                         <mat-header-cell *matHeaderCellDef translate> Relationship kind </mat-header-cell>
-                        <mat-cell *matCellDef="let row"> {{row.kind}}</mat-cell>
+                        <mat-cell *matCellDef="let row"> {{row?.kind}}</mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="role">
                         <mat-header-cell *matHeaderCellDef translate> Role</mat-header-cell>
-                        <mat-cell *matCellDef="let row"> {{row.role}}</mat-cell>
+                        <mat-cell *matCellDef="let row"> {{row?.role}}</mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="name">
                         <mat-header-cell *matHeaderCellDef translate> Name </mat-header-cell>
-                        <mat-cell *matCellDef="let row"> {{row.toParty?.name}}</mat-cell>
+                        <mat-cell *matCellDef="let row"> {{row?.toParty?.name}}</mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="partyKind">
                         <mat-header-cell *matHeaderCellDef translate> Party kind </mat-header-cell>
-                        <mat-cell *matCellDef="let row"> {{row.toParty?.kind}}</mat-cell>
+                        <mat-cell *matCellDef="let row"> {{row?.toParty?.kind}}</mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="type">
                         <mat-header-cell *matHeaderCellDef translate> Type </mat-header-cell>
-                        <mat-cell *matCellDef="let row"> {{row.type}}</mat-cell>
+                        <mat-cell *matCellDef="let row"> {{row?.type}}</mat-cell>
                     </ng-container>
+                    <ng-container matColumnDef="actions">
+                        <mat-header-cell class='actions' *matHeaderCellDef translate> Actions
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let row; let i = index;">
+                          <button class="delete-btn" mat-icon-button (click)="removeParty(i)">
+                            <mat-icon color="primary" aria-label="Delete conf">delete</mat-icon>
+                          </button>
+                        </mat-cell>
+                      </ng-container>
                     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                     <mat-row *matRowDef="let row; columns: displayedColumns;" color="primary"></mat-row>
                 </mat-table>
@@ -42,9 +49,20 @@
                 <span translate> lblNoRelatedParties</span>
             </div>
             }
+            @if(relationshipExist){
+                <asee-validation-errors [validationErrors]="validationErrors1"></asee-validation-errors>
+            }
+            @if(PLZTPartyNotExist){
+                <asee-validation-errors [validationErrors]="validationErrors2"></asee-validation-errors>
+            }
+            @if(!totalPercentageValid){
+                <asee-validation-errors [validationErrors]="validationErrors3"></asee-validation-errors>
+            }
         </mat-card-content>
         <mat-card-actions class='card-actions'>
-            <button mat-button color="primary" (click)="openDialog()" >btnAddRelatedParty</button>
+            <div class="bottom-end-alignment btn-container">
+                <button mat-button (click)="openDialog()" class="btn-add-related-party" translate>btnAddRelatedParty</button>
+            </div>
             <customer-actions (onSubmit)="onSubmit()" [submitDisabled]="submitDisable" [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
             </customer-actions>
         </mat-card-actions>

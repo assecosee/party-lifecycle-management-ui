@@ -1,18 +1,19 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/prefer-for-of */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { Component, ElementRef, inject, Injector, model, OnInit, signal, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { ChangeDetectorRef, Component, ElementRef, inject, Injector, model, OnInit, signal, ViewChild } from '@angular/core';
+import { FormGroup, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BpmTasksHttpClient, ConfigurationHttpClient, FormField, LoaderService } from '@asseco/common-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
+import { AssecoMaterialModule, MaterialConfirmDialogComponent, MaterialModule } from '@asseco/components-ui';
 import { combineLatest } from 'rxjs';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { RelatedPartiesDialogComponent } from './related-parties-dialog/related-parties-dialog.component';
+import { MatTable } from '@angular/material/table';
 @Component({
   selector: 'lib-related-parties',
   standalone: true,
@@ -29,57 +30,83 @@ export class RelatedPartiesComponent implements OnInit {
   public submitDisable = false;
   public formFields: FormField[] = [];
   public formGroup: FormGroup = new FormGroup({});
-  public relatedPartyList: any[] = [
+  public relatedPartyList: any[] = [];
+  // public relatedPartyList: any[] = [
+  //   {
+  //     id: '1',
+  //     kind: 'employment',
+  //     role: 'employer',
+  //     toParty: {
+  //       number: 123,
+  //       name: 'Tea Test',
+  //       kind: 'organization'
+  //     },
+  //     subrole: 'sas'
+  //   },
+  //   {
+  //     id: '2',
+  //     kind: 'employment',
+  //     role: 'employer',
+  //     toParty: {
+  //       number: 123,
+  //       name: 'Tea Test',
+  //       kind: 'organization'
+  //     },
+  //     subrole: 'sas'
+  //   },
+  //   {
+  //     id: '3',
+  //     kind: 'employment',
+  //     role: 'employer',
+  //     toParty: {
+  //       number: 123,
+  //       name: 'Tea Test',
+  //       kind: 'organization'
+  //     },
+  //     subrole: 'sas'
+  //   }
+  // ];
+  public validationErrors1: ValidationErrors[] = [
     {
-      id: '1',
-      kind: 'employment',
-      role: 'employer',
-      toParty: {
-        number: 123,
-        name: 'Tea Test',
-        kind: 'organization'
-      },
-      aubrole: 'sas'
-    },
+      errorCode: 'relatedPartyExist',
+      severity: 'error',
+      errorMessage: 'lblForRelatedPartiyExistError.',
+      fieldName: 'relatedPartyExist'
+    }];
+  public validationErrors2: ValidationErrors[] = [
     {
-      id: '2',
-      kind: 'employment',
-      role: 'employer',
-      toParty: {
-        number: 123,
-        name: 'Tea Test',
-        kind: 'organization'
-      },
-      aubrole: 'sas'
-    },
+      errorCode: 'relatedPartyZTNotExist',
+      severity: 'error',
+      errorMessage: 'lblForPLZTNotExist.',
+      fieldName: 'relatedPartyZTNotExist'
+    }];
+  public validationErrors3: ValidationErrors[] = [
     {
-      id: '3',
-      kind: 'employment',
-      role: 'employer',
-      toParty: {
-        number: 123,
-        name: 'Tea Test',
-        kind: 'organization'
-      },
-      aubrole: 'sas'
-    }
-  ];
+      errorCode: 'invalidTotalPercentage',
+      severity: 'error',
+      errorMessage: 'lblForInvalideTotalPercentage.',
+      fieldName: 'invalidTotalPercentage'
+    }];
+  public newRelatedPartyList: any[] = [];
   public isOrganization = false;
-  public displayedColumns = ['id', 'relationshipKind', 'role', 'name',
-    'clientKind'];
+  public displayedColumns = ['relationshipKind', 'role', 'name',
+    'partyKind','type','actions'];
 
+  public relationshipExist = false;
+  public PLZTPartyNotExist = false;
+  public totalPercentageValid = true;
   @ViewChild('tableContainer', { static: false }) private tableContainer: ElementRef;
+  @ViewChild(MatTable) table: MatTable<any>;
 
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
   protected loaderService: LoaderService;
   readonly dialog = inject(MatDialog);
-  readonly animal = signal('');
-  readonly name = model('');
+  private confirmDialog: MatDialogRef<MaterialConfirmDialogComponent>;
 
   constructor(
     protected injector: Injector,
-    protected configurationService: ConfigurationHttpClient,) {
+    protected configurationService: ConfigurationHttpClient,private cdr: ChangeDetectorRef) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -104,30 +131,85 @@ export class RelatedPartiesComponent implements OnInit {
                 field.data &&
                 field.data.value) {
                 this.isOrganization = JSON.parse(field.data.value);
+                if(this.isOrganization){
+                  this.submitDisable = true;
+                }
               }
             });
-
-            console.log('Form data: ', this.formFields);
           });
         });
       });
   }
-  public formInit() {
-
-  }
   public onSubmit(){
-
     console.log(this.formGroup);
   }
   public openDialog() {
-    const dialogRef = this.dialog.open(RelatedPartiesDialogComponent);
+    const dialogRef = this.dialog.open(RelatedPartiesDialogComponent,{
+      data:{isOrganization:this.isOrganization}
+    });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      if (result !== undefined) {
-        console.log('Rezultat dodavanja: ',result);
+      if (result !== undefined && result !== null) {
+        const oldRelationshipExist = this.relatedPartyList.find(o => o.toParty.number === result.toParty.number);
+        const newRelatedPartyListExist = this.newRelatedPartyList.find(o => o.toParty.number === result.toParty.number);
+        if(oldRelationshipExist !== undefined || newRelatedPartyListExist !== undefined){
+          this.relationshipExist =true;
+        }
+        else{
+          this.newRelatedPartyList.push(result);
+          this.relatedPartyList.push(result);
+          this.table.renderRows();
+          this.submitDisable = false;
+          this.checkTotalPercentage();
+        }
       }
+      this.chcekIfExistsPZ();
     });
   }
-
+  public removeParty(i: any){
+    this.confirmDialog = this.dialog.open(MaterialConfirmDialogComponent,
+      { data: 'Do you really want to remove this related party?' });
+    this.confirmDialog.afterClosed().subscribe((res) => {
+        if (res) {
+          this.relatedPartyList.splice(i, 1);
+          this.checkTotalPercentage();
+          this.table.renderRows();
+        }
+      });
+  }
+  public checkTotalPercentage(){
+    const totalPercentage = this.relatedPartyList.reduce((sum, currentItem) => {
+      if(currentItem.subrole ==='OV'){
+        sum = sum + currentItem.ownershipPercentage;
+      }
+      return sum;
+    }, 0);
+    if(totalPercentage> 100){
+      this.submitDisable = true;
+      this.totalPercentageValid = false;
+      this.cdr.detectChanges();
+    }
+    else{
+      this.submitDisable = false;
+      this.totalPercentageValid = true;
+      this.cdr.detectChanges();
+    }
+  }
+  public chcekIfExistsPZ(){
+    if(this.isOrganization){
+      const relationshipTypeZTNew = this.newRelatedPartyList.find(o => o.subrole === 'PZ');
+      const relationshipTypeZTOld = this.relatedPartyList.find(o => o.subrole === 'PZ');
+      if(relationshipTypeZTNew === undefined){
+        if(relationshipTypeZTOld === undefined){
+          this.submitDisable = true;
+        }
+        else{
+          this.submitDisable = false;
+        }
+      }
+      else{
+        this.submitDisable = false;
+      }
+    }
+  }
 }
