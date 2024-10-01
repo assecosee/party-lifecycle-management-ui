@@ -486,6 +486,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
                   }
                 );
                 this.listFormFields[index].properties.hidden = !listBool.includes(true);
+                this.updateConditionalValidator(index, listBool.includes(true));
               }
               if(rule.includes('&&')) {
                 rule.split('&&').forEach(
@@ -508,6 +509,8 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
                   }
                 );
                 this.listFormFields[index].properties.hidden = !listBool.includes(false);
+                this.updateConditionalValidator(index, listBool.includes(false));
+
               }
               if(rule && !rule.includes('&&') && !rule.includes('||')) {
                 rule = rule.trim().replaceAll('  ', ' ');
@@ -523,9 +526,10 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
                 const res = this.compare(formGroup.controls[controlName].value
                   , operator, value);
                   this.listFormFields[index].properties.hidden = !res;
+                  this.updateConditionalValidator(index, res);
               }
               this.formGroup.controls[this.listFormFields[index].id].setValue(null);
-              this.updateConditionalValidator(index, false);
+              // this.updateConditionalValidator(index, false);
             });
             this.formGroup.controls[controlName].updateValueAndValidity({ emitEvent: true });
           }
