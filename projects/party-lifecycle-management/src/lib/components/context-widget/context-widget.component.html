@@ -29,6 +29,16 @@
             </div>
           </div>
         </div>  
+        <div class="list-item" *ngIf="case.context?.party?.registrationProfile">
+          <div class="item-content">
+            <div class="label" [matTooltip]="'Registration Profile'">{{ 'Registration Profile' }}:</div>
+            <div class="label-value"
+            [ngClass]="{ 'no-data': !case.context?.party?.registrationProfile}"
+            [matTooltip]="case.context?.party?.registrationProfile|| 'Unknown'">
+            {{ (case.context?.party?.registrationProfile | titlecase) || 'Unknown' }}
+            </div>
+          </div>
+        </div>
           <div class="list-item">
             <div class="item-content">
               <div class="label" translate [matTooltip]="'Party kind'">{{ 'Party kind' }}:</div>
