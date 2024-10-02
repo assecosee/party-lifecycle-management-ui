@@ -103,7 +103,7 @@
         }
         <div class="bottom-end-alignment">
             <customer-actions [currentTask]="task" (onSubmit)="onSubmit()" submitButtonName="Complete"
-                [formGroup]="groups">
+                [submitDisabled]="submitDisable" [formGroup]="groups">
             </customer-actions>
         </div>
     </mat-card>

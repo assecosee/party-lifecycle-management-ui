@@ -38,6 +38,7 @@ export class IdentificationDocumentComponent implements OnInit {
   public limitDate = new Date();
   public idExpirationDateDisabled = false;
   public form: FormGroup;
+  public submitDisable = false;
   protected router: Router;
 
   public formKeys = [
@@ -121,7 +122,6 @@ export class IdentificationDocumentComponent implements OnInit {
     this.formGroupInitialized = false;
 
     const identificationList = JSON.parse(this.getFormFieldValue('identificationList'));
-    // if (identificationList && identificationList.length > 0) {
     if (!identificationList) {
       this.initEmptyFormGroup();
       return;
@@ -164,6 +164,19 @@ export class IdentificationDocumentComponent implements OnInit {
 
     fg.controls['typeOfID'].valueChanges.subscribe((newValue: any) => {
       this.setValidatorsConditionally(newValue, fg);
+
+    });
+
+    fg.statusChanges.subscribe(status => {
+      if (status === 'VALID') {
+        // Update the submitDisable flag based on the presence of a duplicated types of ID in form array
+        const hasDuplicateByProperty = (array: any[]): boolean => {
+          const values = array.map(item => item.controls['typeOfID'].value.literal);
+          return values.filter((value, index) => values.indexOf(value) !== index).length > 0;
+        };
+
+        this.submitDisable = hasDuplicateByProperty(this.groups.controls);
+      }
     });
 
 
@@ -241,7 +254,6 @@ export class IdentificationDocumentComponent implements OnInit {
 
   public addGroup() {
     this.initEmptyFormGroup();
-    this.filterIdentificationTypesLeftToAdd();
   }
 
   public removeGroup() {
@@ -295,14 +307,6 @@ export class IdentificationDocumentComponent implements OnInit {
     return null;
   }
 
-  private filterIdentificationTypesLeftToAdd() {
-    this.groups.controls.forEach(element => {
-      const matchingAddress = this.idDocumentTypes.find((a: any) => element.controls['typeOfID'].value?.literal === a.literal);
-      if (matchingAddress) {
-        this.idDocumentTypes = this.idDocumentTypes.filter((item: any) => item.literal !== matchingAddress.literal);
-      }
-    });
-  }
 
   private addYearsToDate(date: Date, yearsToAdd: number): Date {
     // Create a new Date object to avoid mutating the original date
