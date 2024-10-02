@@ -133,7 +133,7 @@
                   </asee-select>
                   }
                   @if (field.data.type == 'multi-select-country' && countries.length > 0) {
-                  <party-lcm-multiselect-autocomplete appearance="outline" [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [placeholder]="field.label" [data]="countries"
+                  <party-lcm-multiselect-autocomplete appearance="outline" [setValue]="theCallback.bind(this)" [controlName]="field.id" [formGroup]="formGroup" [control]="formGroup.controls[field.id]" [placeholder]="field.label" [data]="countries"
                     [key]="field.id" [label]="field.label" [valueProperty]="'alpha2'" [labelProperty]="'name'">
                   </party-lcm-multiselect-autocomplete>
                   }

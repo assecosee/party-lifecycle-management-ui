@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { BpmTasksHttpClient, FormField, LoaderService, Task, UIService, ValidationConstraint } from '@asseco/common-ui';
 import { L10N_LOCALE, L10nLocale } from 'angular-l10n';
 import { SurveyService } from '../../services/survey.service';
@@ -48,7 +48,8 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     protected loaderService: LoaderService,
     protected dialog: MatDialog,
     protected notificationService: NotificationListenerService,
-    protected referenceService: ReferenceService
+    protected referenceService: ReferenceService,
+    private cdr: ChangeDetectorRef
   ) {
     this.locale = this.injector.get(L10N_LOCALE);
   }
@@ -123,6 +124,8 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
             this.items.push(s.title);
           }
           );
+          // fill form fields
+          this.cdr.detectChanges();
         });
   }
   public loadedFormGroup() {
@@ -137,7 +140,6 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     this.initForm(this.listFormFields);
   }
   public complate() {
-    // this.router.navigate(['/tasks/survey/kyc-pep/499c9609-7673-11ef-92cd-7233c520c38f']);
     if(this.task && this.task !== undefined && this.task.id) {
       this.taskService.complete(this.task.id, this.formGroup).build()
         .pipe(
@@ -567,5 +569,8 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
       return true;
     }
     return false;
+  }
+  public theCallback(controlName: string){
+    return this.formGroup.controls[controlName].value;
   }
 }

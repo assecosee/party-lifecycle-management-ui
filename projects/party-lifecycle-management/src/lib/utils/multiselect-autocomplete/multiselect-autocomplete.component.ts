@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SubscriptSizing } from '@angular/material/form-field';
@@ -15,7 +15,7 @@ export interface ItemData {
   templateUrl: './multiselect-autocomplete.component.html',
   styleUrl: './multiselect-autocomplete.component.scss'
 })
-export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<any> implements OnInit {
+export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<any> implements OnInit, AfterViewInit {
 
   @Output() result = new EventEmitter<{ key: string; data: Array<string> }>();
   @Input() data: Array<any> = [];
@@ -24,6 +24,7 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
   @Input() public valueProperty = 'value';
   @Input() public labelProperty = 'value';
   @Input() public subscriptSizing: SubscriptSizing = 'fixed';
+  @Input() public setValue: Function;
   public errorMessages: any;
   selectControl = new FormControl();
   @ViewChild('auto', { static: false }) public autocomplete: MatAutocomplete;
@@ -38,6 +39,20 @@ export class MultiselectAutocompleteComponent extends AbstractUIInputComponent<a
   constructor(public override injector: Injector) {
     super(injector);
     this.loadElementRef();
+  }
+  ngAfterViewInit(): void {
+    const controlValues = this.setValue(this.controlName);
+    if(controlValues && controlValues.length) {
+      controlValues.forEach(
+        (e: any) => {
+          const item = this.data.find((d: any) => d[this.valueProperty] === e);
+          this.toggleSelection({
+            item,
+            selected: false
+          });
+        }
+      );
+    }
   }
 
   override ngOnInit(): void {
