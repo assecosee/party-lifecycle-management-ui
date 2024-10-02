@@ -350,6 +350,14 @@ export class BasicDataComponent implements OnInit, DoCheck {
       this.formGroup.markAllAsTouched();
     }
 
+    if (this.notResidentClient) {
+      this.formGroup.controls['identificationNumber'].clearValidators();
+    } else {
+      this.formGroup.controls['identificationNumber'].setValidators(
+        Validators.required
+      );
+    }
+
     this.formGroupInitialized = true;
     console.log('Form group: ', this.formGroup);
   }
@@ -386,8 +394,8 @@ export class BasicDataComponent implements OnInit, DoCheck {
   ngDoCheck() {
     if (this.formGroup.controls['typeOfClient']
       && this.formGroup.controls['typeOfClient'].value
-      && this.previousValue !== this.formGroup.controls['typeOfClient'].value.value) {
-      this.previousValue = this.formGroup.controls['typeOfClient'].value.value;
+      && this.previousValue !== this.formGroup.controls['typeOfClient'].value.name) {
+      this.previousValue = this.formGroup.controls['typeOfClient'].value.name;
       this.initFormGroup(false);
     }
   }
