@@ -352,10 +352,6 @@ export class BasicDataComponent implements OnInit, DoCheck {
 
     if (this.notResidentClient) {
       this.formGroup.controls['identificationNumber'].clearValidators();
-    } else {
-      this.formGroup.controls['identificationNumber'].setValidators(
-        Validators.required
-      );
     }
 
     this.formGroupInitialized = true;

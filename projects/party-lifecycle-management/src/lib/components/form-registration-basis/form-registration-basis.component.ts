@@ -50,6 +50,7 @@ export class FormRegistrationBasisComponent implements OnInit {
   public basisOptions = [{}];
   public swRes = new AseeFormControl(null, []);
   public basis: any = [];
+  private isRegistration: boolean;
 
   constructor(
     protected injector: Injector,
@@ -96,15 +97,15 @@ export class FormRegistrationBasisComponent implements OnInit {
 
   private initFormGroup() {
     this.formGroupInitialized = false;
-
     let valueBasis = null;
+
     const formFieldVal = this.getFormFieldValue('registrationProfile');
 
-    valueBasis = this.basis.find(
-      (item: any) => item.literal === formFieldVal
+    valueBasis = this.basis.find((item: any) => item.literal === formFieldVal);
+    this.validateBasis(
+      valueBasis,
+      this.getFormFieldValue('isRegistrationProcess')
     );
-
-    this.validateBasis(valueBasis);
     const controlBasis = new AseeFormControl(valueBasis, Validators.required);
     this.formGroup.addControl('registrationProfile', controlBasis);
 
@@ -138,26 +139,34 @@ export class FormRegistrationBasisComponent implements OnInit {
     }
   }
 
-  private validateBasis(val: any) {
-    switch (val?.literal) {
-      case 'customer':
-        this.readonly = true;
-        this.basisOptions = this.basis.filter((obj: any) => obj.literal === 'customer');
-        break;
-      case 'prospect':
-        this.basisOptions = this.basis;
-        break;
-      case 'related-party':
-        this.basisOptions = this.basis.filter((obj: any) =>
-          ['related-party', 'customer'].includes(obj.literal)
-        );
-        break;
-      case 'counter-party':
-        this.basisOptions = this.basis.filter((obj: any) => obj.literal !== 'prospect');
-        break;
-      default:
-        this.basisOptions = this.basis;
-        break;
+  private validateBasis(val: any, isReg: boolean) {
+    if (isReg) {
+      this.basisOptions = this.basis;
+    } else {
+      switch (val?.literal) {
+        case 'customer':
+          this.readonly = true;
+          this.basisOptions = this.basis.filter(
+            (obj: any) => obj.literal === 'customer'
+          );
+          break;
+        case 'prospect':
+          this.basisOptions = this.basis;
+          break;
+        case 'related-party':
+          this.basisOptions = this.basis.filter((obj: any) =>
+            ['related-party', 'customer'].includes(obj.literal)
+          );
+          break;
+        case 'counter-party':
+          this.basisOptions = this.basis.filter(
+            (obj: any) => obj.literal !== 'prospect'
+          );
+          break;
+        default:
+          this.basisOptions = this.basis;
+          break;
+      }
     }
   }
 }

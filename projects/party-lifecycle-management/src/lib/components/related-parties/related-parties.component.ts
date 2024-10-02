@@ -241,6 +241,7 @@ export class RelatedPartiesComponent implements OnInit {
     this.bpmTaskService.complete(this.task.id, this.formGroup)
       .build().subscribe((res) => {
         this.router.navigateByUrl('tasks');
+        console.log('Related party list: ',this.formGroup);
       },
         (err) => {
           this.errorEmitterService.setError(err);
