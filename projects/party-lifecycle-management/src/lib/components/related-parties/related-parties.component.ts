@@ -1,19 +1,19 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/prefer-for-of */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { ChangeDetectorRef, Component, ElementRef, inject, Injector, model, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, ValidationErrors } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { BpmTasksHttpClient, ConfigurationHttpClient, FormField, LoaderService } from '@asseco/common-ui';
-import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { AssecoMaterialModule, MaterialConfirmDialogComponent, MaterialModule } from '@asseco/components-ui';
+import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { combineLatest } from 'rxjs';
-import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { RelatedPartiesDialogComponent } from './related-parties-dialog/related-parties-dialog.component';
-import { MatTable } from '@angular/material/table';
 @Component({
   selector: 'lib-related-parties',
   standalone: true,
@@ -90,7 +90,7 @@ export class RelatedPartiesComponent implements OnInit {
   public newRelatedPartyList: any[] = [];
   public isOrganization = false;
   public displayedColumns = ['relationshipKind', 'name',
-    'partyKind','actions'];
+    'partyKind', 'actions'];
 
   public relationshipExist = false;
   public PLZTPartyNotExist = false;
@@ -106,7 +106,7 @@ export class RelatedPartiesComponent implements OnInit {
 
   constructor(
     protected injector: Injector,
-    protected configurationService: ConfigurationHttpClient,private cdr: ChangeDetectorRef) {
+    protected configurationService: ConfigurationHttpClient, private cdr: ChangeDetectorRef) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
@@ -125,13 +125,13 @@ export class RelatedPartiesComponent implements OnInit {
               if (field.id === 'relatedPartyList' &&
                 field.data &&
                 field.data.value) {
-                this.relatedPartyList = JSON.parse(field.data.value);
+                this.relatedPartyList = JSON.parse(this.toCamelCase(field.data.value));
               }
               else if (field.id === 'isLegalEntity' &&
                 field.data &&
                 field.data.value) {
                 this.isOrganization = JSON.parse(field.data.value);
-                if(this.isOrganization){
+                if (this.isOrganization) {
                   this.submitDisable = true;
                 }
               }
@@ -141,8 +141,8 @@ export class RelatedPartiesComponent implements OnInit {
       });
   }
   public openDialog() {
-    const dialogRef = this.dialog.open(RelatedPartiesDialogComponent,{
-      data:{isOrganization:this.isOrganization},
+    const dialogRef = this.dialog.open(RelatedPartiesDialogComponent, {
+      data: { isOrganization: this.isOrganization },
       height: '70%',
       width: '40%'
     });
@@ -151,10 +151,10 @@ export class RelatedPartiesComponent implements OnInit {
       if (result !== undefined && result !== null) {
         const oldRelationshipExist = this.relatedPartyList.find(o => o.toParty.number === result.toParty.number);
         const newRelatedPartyListExist = this.newRelatedPartyList.find(o => o.toParty.number === result.toParty.number);
-        if(oldRelationshipExist !== undefined || newRelatedPartyListExist !== undefined){
-          this.relationshipExist =true;
+        if (oldRelationshipExist !== undefined || newRelatedPartyListExist !== undefined) {
+          this.relationshipExist = true;
         }
-        else{
+        else {
           this.newRelatedPartyList.push(result);
           this.relatedPartyList.push(result);
           this.submitDisable = false;
@@ -166,53 +166,69 @@ export class RelatedPartiesComponent implements OnInit {
       this.formGroup.controls['relatedPartyList'].setValue(this.relatedPartyList);
     });
   }
-  public removeParty(i: any){
+  public removeParty(i: any) {
     this.confirmDialog = this.dialog.open(MaterialConfirmDialogComponent,
       { data: 'Do you really want to remove this related party?' });
     this.confirmDialog.afterClosed().subscribe((res) => {
-        if (res) {
-          this.relatedPartyList.splice(i, 1);
-          this.checkTotalPercentage();
-          this.table.renderRows();
-        }
-      });
+      if (res) {
+        this.relatedPartyList.splice(i, 1);
+        this.checkTotalPercentage();
+        this.table.renderRows();
+      }
+    });
   }
-  public checkTotalPercentage(){
+  public checkTotalPercentage() {
     const totalPercentage = this.relatedPartyList.reduce((sum, currentItem) => {
-      if(currentItem.subrole ==='OV'){
+      if (currentItem.subrole === 'OV') {
         sum = sum + currentItem.ownershipPercentage;
       }
       return sum;
     }, 0);
-    if(totalPercentage> 100){
+    if (totalPercentage > 100) {
       this.submitDisable = true;
       this.totalPercentageValid = false;
       this.cdr.detectChanges();
     }
-    else{
+    else {
       this.submitDisable = false;
       this.totalPercentageValid = true;
       this.cdr.detectChanges();
     }
   }
-  public chcekIfExistsPZ(){
-    if(this.isOrganization){
+  public chcekIfExistsPZ() {
+    if (this.isOrganization) {
       const relationshipTypeZTNew = this.newRelatedPartyList.find(o => o.subrole === 'ZT');
       const relationshipTypeZTOld = this.relatedPartyList.find(o => o.subrole === 'ZT');
-      if(relationshipTypeZTNew === undefined){
-        if(relationshipTypeZTOld === undefined){
+      if (relationshipTypeZTNew === undefined) {
+        if (relationshipTypeZTOld === undefined) {
           this.submitDisable = true;
         }
-        else{
+        else {
           this.submitDisable = false;
         }
       }
-      else{
+      else {
         this.submitDisable = false;
       }
     }
     else {
       this.submitDisable = false;
     }
+  }
+
+  private toCamelCase(str: any) {
+    return str
+      .split(/[-_]/)
+      .map((word: any, index: any) => {
+        if (index === 0) {
+          return word;
+        }
+
+        return (
+          word.charAt(0).toUpperCase() +
+          word.slice(1)
+        );
+      })
+      .join('');
   }
 }
