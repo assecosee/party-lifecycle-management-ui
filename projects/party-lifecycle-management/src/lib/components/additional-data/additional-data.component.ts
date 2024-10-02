@@ -34,6 +34,7 @@ export class AdditionalDataComponent implements OnInit {
   public formGroup: FormGroup = new FormGroup({});
   public formFields: FormField[] = [];
   public treatmentOfClientInterestList: any = [];
+  public classificationAccordingToNBSList: any = [];
   public accountManagerList: any = [];
   public sectoralDivisionUSSPOList: any = [];
   public marketingConsentList: any = [];
@@ -75,15 +76,16 @@ export class AdditionalDataComponent implements OnInit {
     forkJoin({
       treatmentOfClientInterestCategories: this.customService.getClassification('TRETMANK'),
       accountManagerCategories: this.customService.getClassification('ACC_MNG'),
+      classificationAccordingToNBS: this.customService.getClassification('NBS_KLS'),
       sectoralDivisionUSSPOCategories: this.customService.getClassification('KS3USEK'),
       marketingConsentListCategories: this.customService.getClassification('SAGMARK'),
       currencies: this.referenceService.getCurrencies(),
       defaultData: this.configurationService.getEffective('party-lcm/treatment-and-additional-attributes-default-data').build()
-
     }).pipe(
       tap(({
         treatmentOfClientInterestCategories,
         accountManagerCategories,
+        classificationAccordingToNBS,
         sectoralDivisionUSSPOCategories,
         marketingConsentListCategories,
         defaultData }) => {
@@ -93,6 +95,9 @@ export class AdditionalDataComponent implements OnInit {
         );
 
         accountManagerCategories.items.map((element: any) =>
+          element.formattedName = `${element.description} - ${element.name}`
+        );
+        classificationAccordingToNBS.items.map((element: any) =>
           element.formattedName = `${element.description} - ${element.name}`
         );
 
@@ -106,6 +111,7 @@ export class AdditionalDataComponent implements OnInit {
 
         this.treatmentOfClientInterestList = treatmentOfClientInterestCategories.items;
         this.accountManagerList = accountManagerCategories.items;
+        this.classificationAccordingToNBSList = classificationAccordingToNBS.items;
         this.sectoralDivisionUSSPOList = sectoralDivisionUSSPOCategories.items;
         this.marketingConsentList = marketingConsentListCategories.items;
         this.defaultData = JSON.parse(defaultData);

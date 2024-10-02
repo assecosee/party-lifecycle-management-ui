@@ -74,7 +74,7 @@
                 <div class="flex-item">
                     <asee-autocomplete #classificationAccordingToNBSAutocomplete
                         [control]="formGroup.controls['classificationAccordingToNBS']"
-                        [autocompleteList]="accountManagerList"
+                        [autocompleteList]="classificationAccordingToNBSList"
                         [label]="'lblClassificationAccordingToNBS' | translate : locale.language"
                         filterBehaviour="includes" labelProperty="formattedName" valueProperty="name"
                         appearance="outline"

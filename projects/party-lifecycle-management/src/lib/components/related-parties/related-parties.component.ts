@@ -163,6 +163,7 @@ export class RelatedPartiesComponent implements OnInit {
         }
       }
       this.chcekIfExistsPZ();
+      this.formGroup.controls['relatedPartyList'].setValue(this.relatedPartyList);
     });
   }
   public removeParty(i: any){
