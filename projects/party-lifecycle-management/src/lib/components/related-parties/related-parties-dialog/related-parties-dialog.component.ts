@@ -94,13 +94,13 @@ export class RelatedPartiesDialogComponent implements OnInit {
   }
   public saveData(){
     let partyData = this.formGroup.controls['party'].value;
-    if(this.data.isOrganization){
+    if(this.formGroup.controls['party'].value.kind !== 'individual'){
       let orgParty = {
         kind: 'representation',
         subrole: this.formGroup.controls['relatedPartyConnectionType'].value?.name,
         toParty: {
           number: partyData['partyNumber'],
-          name: partyData['registeredName'],
+          name: partyData['commercialName'],
           kind: partyData['kind']
         },
         ownershipPercentage:this.formGroup.controls['percentageOfOwnership']?.value,

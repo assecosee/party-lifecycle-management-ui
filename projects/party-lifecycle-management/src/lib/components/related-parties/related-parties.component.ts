@@ -158,9 +158,9 @@ export class RelatedPartiesComponent implements OnInit {
         else{
           this.newRelatedPartyList.push(result);
           this.relatedPartyList.push(result);
-          this.table.renderRows();
           this.submitDisable = false;
           this.checkTotalPercentage();
+          this.table.renderRows();
         }
       }
       this.chcekIfExistsPZ();
