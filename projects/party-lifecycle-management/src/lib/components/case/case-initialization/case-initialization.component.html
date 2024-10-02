@@ -275,9 +275,10 @@
         <div class="flex-item">
           <asee-autocomplete
             #basisOfReg
+            [readonly]="readonlyRP"
             [autocompleteList]="basisOptions"
             labelProperty="description"
-            valueProperty="description"
+            valueProperty="literal"
             filterBehaviour="includes"
             appearance="outline"
             [control]="formGroup.controls['registrationProfile']"
@@ -310,6 +311,7 @@
       </button>
       <button
         mat-button
+        [disabled]="!formGroup.valid"
         (click)="createRequest()"
         class="pt"
         color="primary"

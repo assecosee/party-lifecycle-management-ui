@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, inject } from '@angular/core';
-import { AssecoMaterialModule, MaterialErrorDialogComponent, MaterialModule } from '@asseco/components-ui';
+import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild, inject } from '@angular/core';
+import { AssecoMaterialModule, MaterialAutocompleteComponent, MaterialErrorDialogComponent, MaterialModule } from '@asseco/components-ui';
 import { L10nTranslationModule, L10nIntlModule, L10nLocale, L10N_LOCALE, L10nTranslationService } from 'angular-l10n';
 import { MaterialCustomerActionsComponent } from '../../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../../utils/directives/uppercase-directive';
@@ -34,6 +34,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   private bapoClientKind: any = null;
   private agentHasRegistrationRole = false;
   private agentHasDataUpdateRole = false;
+  public readonlyRP = false;
   public basisOptions = [{}];
   public selectedUser: any;
   public formGroupInitialized = false;
@@ -45,6 +46,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   public formFields: FormField[] = [];
   public formGroup: FormGroup = new FormGroup({});
   public maxDate = new Date();
+  @ViewChild('basisOfReg', { static: false })
+  public basisOfReg: MaterialAutocompleteComponent | undefined;
   public formKeysIndividualPerson = [
     {
       key: 'jmbg',
@@ -72,7 +75,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     },
     {
       key: 'registrationProfile',
-      validators: []
+      validators: [Validators.required]
     }
   ];
   public formKeysLegalEntity = [
@@ -98,7 +101,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     },
     {
       key: 'registrationProfile',
-      validators: []
+      validators: [Validators.required]
     }
   ];
   public isIndividualPerson = false;
@@ -237,7 +240,9 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       }
     }
 
-
+    if (this.bapoRegistrationProfile) {
+      this.setRegistrationProfile(this.bapoRegistrationProfile);
+    }
 
     if (!isInitial) {
       this.formGroup.markAllAsTouched();
@@ -286,12 +291,15 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.selectedUser = result;
+        const val = result.registrationProfile;
+        this.setRegistrationProfile(val);
       }
     });
   }
 
   removeSelectedUser() {
     this.selectedUser = null;
+    this.setRegistrationProfile();
   }
 
   createRequest() {
@@ -403,10 +411,13 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
             this.openDialog(response.parties);
           } else {
             this.selectedUser = response?.parties?.[0] || response;
+            const val = response?.parties?.[0].registrationProfile || response.registrationProfile;
+            this.setRegistrationProfile(val);
           }
         } else {
           this.openSnackBar('Nije pronadjen nijedan klijent', 'OK');
           this.selectedUser = null;
+          this.setRegistrationProfile();
         }
       });
     } else {
@@ -432,6 +443,19 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     const control = this.formGroup.get(controlName);
     if (control) {
       control.markAsTouched();
+    }
+  }
+
+  setRegistrationProfile(value: any = null){
+    if(value) {
+      const val = this.basisOptions.find((item: any) => item.literal === value);
+      this.formGroup.controls['registrationProfile'].setValue(val);
+      this.basisOfReg?.controlInternal.setValue(val);
+      this.readonlyRP = true;
+    } else {
+      this.formGroup.controls['registrationProfile'].setValue(null);
+      this.basisOfReg?.controlInternal.setValue(null);
+      this.readonlyRP = false;
     }
   }
 
