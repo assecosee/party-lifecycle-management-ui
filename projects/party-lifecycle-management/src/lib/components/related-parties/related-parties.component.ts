@@ -145,7 +145,6 @@ export class RelatedPartiesComponent implements OnInit {
         });
       });
     this.formGroup.addControl('relatedPartyList',new AseeFormControl(null));
-    this.formGroup.addControl('newRelatedPartyList', new AseeFormControl(null));
   }
   public openDialog() {
     const dialogRef = this.dialog.open(RelatedPartiesDialogComponent, {
@@ -170,6 +169,7 @@ export class RelatedPartiesComponent implements OnInit {
         }
       }
       this.chcekIfExistsPZ();
+      this.formGroup.controls['relatedPartyList'].setValue(this.relatedPartyList);
     });
   }
   public removeParty(i: any) {
