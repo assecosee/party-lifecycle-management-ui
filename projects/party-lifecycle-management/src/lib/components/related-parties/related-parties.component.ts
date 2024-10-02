@@ -89,8 +89,8 @@ export class RelatedPartiesComponent implements OnInit {
     }];
   public newRelatedPartyList: any[] = [];
   public isOrganization = false;
-  public displayedColumns = ['relationshipKind', 'role', 'name',
-    'partyKind','type','actions'];
+  public displayedColumns = ['relationshipKind', 'name',
+    'partyKind','actions'];
 
   public relationshipExist = false;
   public PLZTPartyNotExist = false;
