@@ -50,11 +50,11 @@
             @if(!totalPercentageValid){
                 <asee-validation-errors [validationErrors]="validationErrors3"></asee-validation-errors>
             }
-        </mat-card-content>
-        <mat-card-actions class='card-actions'>
             <div class="bottom-end-alignment btn-container">
                 <button mat-button (click)="openDialog()" class="btn-add-related-party" translate>btnAddRelatedParty</button>
             </div>
+        </mat-card-content>
+        <mat-card-actions class='card-actions bottom-end-alignment'>
             <customer-actions (onSubmit)="onSubmit()" [submitDisabled]="submitDisable" [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
             </customer-actions>
         </mat-card-actions>

@@ -73,7 +73,10 @@ export class RelatedPartiesDialogComponent implements OnInit {
         this.submitDisable = true;
       }
       else{
-        this.submitDisable = false;
+        let partyData = this.formGroup.controls['party'].value;
+        if(partyData !== null && typeof partyData == 'object' && Object.keys(partyData).length > 0){
+          this.submitDisable = false;
+        }
       }
     });
     this.formGroup.controls['party'].valueChanges.subscribe(value => {

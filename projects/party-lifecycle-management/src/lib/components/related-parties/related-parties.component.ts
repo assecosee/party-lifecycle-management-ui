@@ -145,7 +145,9 @@ export class RelatedPartiesComponent implements OnInit {
   }
   public openDialog() {
     const dialogRef = this.dialog.open(RelatedPartiesDialogComponent,{
-      data:{isOrganization:this.isOrganization}
+      data:{isOrganization:this.isOrganization},
+      height: '70%',
+      width: '40%'
     });
 
     dialogRef.afterClosed().subscribe(result => {
