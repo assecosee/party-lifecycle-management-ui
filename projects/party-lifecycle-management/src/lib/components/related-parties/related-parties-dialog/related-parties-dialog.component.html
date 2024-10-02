@@ -7,9 +7,10 @@
                 [autocompleteList]="relatedPartyConnectionTypeList"
                 [label]="'lblRelatedPartyConnectionTypeList' | translate : locale.language" filterBehaviour="includes"
                 labelProperty="formattedName" valueProperty="name" appearance="outline"></asee-autocomplete>
+                <error-handling [control]="formGroup.controls['relatedPartyConnectionType']"></error-handling>
         </div>
         <div class="flex-item">
-            <asee-lookup [control]="formGroup.controls['party']" service="party" endPoint="parties/search?search-mode=any&search-fields=registration-number,personal-id-number&page=1&page-size=10&q="
+            <asee-lookup [control]="formGroup.controls['party']" service="party" class="lookup" endPoint="parties/search?search-mode=any&search-fields=registration-number,personal-id-number&page=1&page-size=10&q="
                 responseProperty="parties" labelProperty="contactName" valueProperty="contactName"
                 [label]="'lblSearchParties' | translate : locale.language" auto="true" [sublabels]="['partyNumber']"
                 appearance="outline"></asee-lookup>

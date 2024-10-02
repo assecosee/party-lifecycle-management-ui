@@ -13,3 +13,6 @@ button:disabled {
 asee-decimal-input{
     margin-bottom: 6%;
 }
+::ng-deep .lookup .mat-mdc-form-field-error-wrapper{
+    top: -24px !important;
+}
