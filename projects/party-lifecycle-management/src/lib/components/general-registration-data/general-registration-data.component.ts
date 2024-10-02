@@ -89,7 +89,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
       ],
     },
     {
-      key: 'clientCountryOfBirth',
+      key: 'clientPlaceOfBirth',
       validators: [Validators.required],
     },
     {

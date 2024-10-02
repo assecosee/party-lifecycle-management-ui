@@ -52,7 +52,9 @@
             (click)="markAsTouched('organizationUnit')"
           >
           </asee-autocomplete>
-          <error-handling [control]="formGroup.controls['agentOuCode']"></error-handling>
+          <error-handling
+            [control]="formGroup.controls['agentOuCode']"
+          ></error-handling>
         </div>
         <div class="flex-item">
           <asee-autocomplete
@@ -87,19 +89,18 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-text-input
             #clientCountryOfBirth
             filterBehaviour="includes"
             appearance="outline"
-            [control]="formGroup.controls['clientCountryOfBirth']"
-            [autocompleteList]="countriesList"
-            [label]="'lblClientCountryOfBirth' | translate : locale.language"
+            [control]="formGroup.controls['clientPlaceOfBirth']"
+            [label]="'lblClientPlaceOfBirth' | translate : locale.language"
             labelProperty="name"
             valueProperty="name"
-            (click)="markAsTouched('clientCountryOfBirth')"
-          ></asee-autocomplete>
+            (click)="markAsTouched('clientPlaceOfBirth')"
+          ></asee-text-input>
           <error-handling
-            [control]="formGroup.controls['clientCountryOfBirth']"
+            [control]="formGroup.controls['clientPlaceOfBirth']"
           ></error-handling>
         </div>
       </div>
@@ -279,7 +280,7 @@
             [control]="formGroup.controls['taxNumber']"
           ></error-handling>
         </div>
-      }
+        }
       </div>
     </mat-card-content>
     <div class="bottom-end-alignment">
