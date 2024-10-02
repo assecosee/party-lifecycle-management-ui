@@ -140,9 +140,6 @@ export class RelatedPartiesComponent implements OnInit {
         });
       });
   }
-  public onSubmit(){
-    console.log(this.formGroup);
-  }
   public openDialog() {
     const dialogRef = this.dialog.open(RelatedPartiesDialogComponent,{
       data:{isOrganization:this.isOrganization},
