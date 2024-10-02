@@ -341,6 +341,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     let documentKind = '';
     const customerName = this.formGroup.controls['customerName']?.value;
     const nameOfLegalEntity = this.formGroup.controls['nameOfPl']?.value;
+    // eslint-disable-next-line max-len
+    const dateOfBirth = this.formGroup.controls['dateOfBirth']?.value;
 
     // Map selected identification document to form control values and document kinds
     const documentMap = {
@@ -382,6 +384,12 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     // Add nameOfLegalEntity if it exists
     if (nameOfLegalEntity) {
       queryParams += queryParams.includes('?') ? `&name=${nameOfLegalEntity}` : `?name=${nameOfLegalEntity}`;
+    }
+
+    // Add dateOfBirth if it exists
+    if (dateOfBirth) {
+      const dob = dateOfBirth.toLocaleString('sv-SE', { timeZone: 'Europe/Berlin' }).replace(' ', 'T');
+      queryParams += queryParams.includes('?') ? `&birth-date=${dob}` : `?birth-date=${dob}`;
     }
 
     // Log or send the queryParams only if there's a valid query
