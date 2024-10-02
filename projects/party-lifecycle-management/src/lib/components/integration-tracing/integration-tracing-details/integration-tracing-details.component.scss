@@ -1,0 +1,90 @@
+.party-lcm-integration-wrapper {
+    @media screen and (min-width: 769px) {
+      .card {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        min-height: calc(100vh - 143px);
+      }
+    }
+  
+    .copy-actions {
+      box-sizing: border-box;
+      //max-height   : 100%;
+      position: relative;
+      bottom: 0;
+      right: 0;
+      //margin-bottom: 16px !important;
+      margin-top: 5px !important;
+      text-transform: uppercase;
+      margin-right: 8px;
+      text-align: right;
+  
+      >button {
+        text-transform: uppercase;
+      }
+    }
+  }
+  
+  .uppercase {
+    text-transform: uppercase;
+  }
+  
+  
+  ::ng-deep .read-only {
+  
+    /*TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-mdc-form-field-outline {
+      background: rgba(0, 0, 0, 0.04) !important;
+      color: rgba(0, 0, 0, 0.06) !important;
+      border-radius: 5px;
+    }
+  
+    mat-label {
+      color: rgba(0, 0, 0, 0.6) !important;
+    }
+  }
+  
+  .border {
+    height: 0px;
+    padding-top: 0px;
+    font-weight: bold;
+    border-bottom: 2px solid #f5f5f5;
+    border-radius: 50%;
+    margin-bottom: 20px !important;
+  }
+  
+  .header {
+    font-size: medium;
+    font-weight: 400;
+    color: #000000;
+    padding-left: 10px;
+    padding-bottom: 5px;
+  }
+  
+  .ml-auto {
+    margin-top: -20px !important;
+    margin-left: auto;
+    padding-right: 15px;
+  }
+  
+  .pointer {
+    cursor: pointer;
+  }
+  
+  .color-accent {
+    color: rgba(var(--palette-accent-500), 1);
+  }
+  
+  .error {
+    color: #8f3434 !important;
+  }
+  
+  .request {
+    color: #2d689e !important;
+  }
+  
+  .response {
+    color: #2d4d25 !important;
+  }
