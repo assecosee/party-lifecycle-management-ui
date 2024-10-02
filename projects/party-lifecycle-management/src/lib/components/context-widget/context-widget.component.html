@@ -5,13 +5,13 @@
         <h2>{{ this.case.partyReference.partyName }}</h2>
       </div>
       <div class="party-kind">
-        <div class="party-number">{{ this.case.partyReference.partyNumber || 'Uknown' }}</div>
+        <div class="party-number" translate>{{ this.case.partyReference.partyNumber || 'Uknown' }}</div>
       </div>
     </div>
     <p></p>
         <div class="list-item">
           <div class="item-content">
-            <div class="label" [matTooltip]="'Identification Number'"> {{ 'Identification number' }}: </div>
+            <div class="label" translate [matTooltip]="'Identification Number'"> {{ 'Identification number' }}: </div>
             <div class="label-value"
             [ngClass]="{ 'no-data': !case.partyReference.partyIdentificationNumber}"
             [matTooltip]="case.partyReference.partyIdentificationNumber || 'Unknown'">
@@ -21,7 +21,7 @@
         </div>
         <div class="list-item">
           <div class="item-content">
-            <div class="label" [matTooltip]="'Identification Number Kind'"> {{ 'Identification Number Kind' }}: </div>
+            <div class="label" translate [matTooltip]="'Identification Number Kind'"> {{ 'Identification Number Kind' }}: </div>
             <div class="label-value"
             [ngClass]="{ 'no-data': !case.partyReference.partyIdentificationKind }"
             [matTooltip]="(case.partyReference.partyIdentificationKind | titlecase) || 'Unknown'">
@@ -31,7 +31,7 @@
         </div>  
           <div class="list-item">
             <div class="item-content">
-              <div class="label" [matTooltip]="'Party kind'">{{ 'Party kind' }}:</div>
+              <div class="label" translate [matTooltip]="'Party kind'">{{ 'Party kind' }}:</div>
               <div class="label-value"
               [ngClass]="{ 'no-data': !case.partyReference.partyKind}"
               [matTooltip]="case.partyReference?.partyKind || 'Unknown'">
