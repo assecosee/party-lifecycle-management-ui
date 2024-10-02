@@ -144,6 +144,7 @@ export class RelatedPartiesComponent implements OnInit {
           });
         });
       });
+    this.formGroup.addControl('relatedPartyList',new AseeFormControl(this.relatedPartyList));
   }
   public openDialog() {
     const dialogRef = this.dialog.open(RelatedPartiesDialogComponent, {
@@ -234,19 +235,6 @@ export class RelatedPartiesComponent implements OnInit {
         );
       })
       .join('');
-  }
-  public onSubmit() {
-    this.formGroup = new FormGroup({});
-    this.formGroup.addControl('relatedPartyList', new AseeFormControl(this.relatedPartyList));
-    this.bpmTaskService.complete(this.task.id, this.formGroup)
-      .build().subscribe((res) => {
-        this.router.navigateByUrl('tasks');
-        console.log('Related party list: ',this.formGroup);
-      },
-        (err) => {
-          this.errorEmitterService.setError(err);
-        }
-      );
   }
 
 }
