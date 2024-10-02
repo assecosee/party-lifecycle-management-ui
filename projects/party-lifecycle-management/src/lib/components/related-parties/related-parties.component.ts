@@ -5,8 +5,9 @@ import { ChangeDetectorRef, Component, ElementRef, inject, Injector, OnInit, Vie
 import { FormGroup, ValidationErrors } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
-import { BpmTasksHttpClient, ConfigurationHttpClient, FormField, LoaderService } from '@asseco/common-ui';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient,
+  ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialConfirmDialogComponent, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { combineLatest } from 'rxjs';
@@ -31,6 +32,7 @@ export class RelatedPartiesComponent implements OnInit {
   public formFields: FormField[] = [];
   public formGroup: FormGroup = new FormGroup({});
   public relatedPartyList: any[] = [];
+  protected router: Router;
   // public relatedPartyList: any[] = [
   //   {
   //     id: '1',
@@ -106,10 +108,13 @@ export class RelatedPartiesComponent implements OnInit {
 
   constructor(
     protected injector: Injector,
-    protected configurationService: ConfigurationHttpClient, private cdr: ChangeDetectorRef) {
+    protected configurationService: ConfigurationHttpClient,
+    private cdr: ChangeDetectorRef,
+    protected errorEmitterService: ErrorEmitterService) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
+    this.router = this.injector.get(Router);
     this.locale = injector.get(L10N_LOCALE);
   }
 
@@ -163,7 +168,6 @@ export class RelatedPartiesComponent implements OnInit {
         }
       }
       this.chcekIfExistsPZ();
-      this.formGroup.controls['relatedPartyList'].setValue(this.relatedPartyList);
     });
   }
   public removeParty(i: any) {
@@ -231,4 +235,17 @@ export class RelatedPartiesComponent implements OnInit {
       })
       .join('');
   }
+  public onSubmit() {
+    this.formGroup = new FormGroup({});
+    this.formGroup.addControl('relatedPartyList', new AseeFormControl(this.relatedPartyList));
+    this.bpmTaskService.complete(this.task.id, this.formGroup)
+      .build().subscribe((res) => {
+        this.router.navigateByUrl('tasks');
+      },
+        (err) => {
+          this.errorEmitterService.setError(err);
+        }
+      );
+  }
+
 }

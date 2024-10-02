@@ -54,7 +54,7 @@
             </div>
         </mat-card-content>
         <mat-card-actions class='card-actions bottom-end-alignment'>
-            <customer-actions [submitDisabled]="submitDisable" [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
+            <customer-actions [submitDisabled]="submitDisable" (onSubmit)="onSubmit()" [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
             </customer-actions>
         </mat-card-actions>
     </mat-card>
