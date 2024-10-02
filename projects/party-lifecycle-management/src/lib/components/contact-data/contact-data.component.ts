@@ -227,7 +227,7 @@ export class ContactDataComponent implements OnInit {
         fg.controls['phoneNumber'].updateValueAndValidity();
       }
 
-      fg.controls['showMailField'].setValue(newValue?.additionalFields.kind === 'electronic-address');
+      fg.controls['showMailField'].setValue(newValue?.additionalFields.method === 'email');
 
       if (fg.controls['showMailField'].value) {
         fg.addControl('email', new AseeFormControl(null, [Validators.required, Validators.email]));
