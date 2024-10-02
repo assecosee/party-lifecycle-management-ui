@@ -19,7 +19,7 @@
                 @if (channels) {
                 <asee-tree-select appearance="outline" parentReferenceProperty="parentChannelId" [options]="channels"
                     [labelProperty]="'description'" [valueProperty]="'code'" [label]="'Channels'"
-                    [control]="filtersGroup.controls['channel']">
+                    [control]="filtersGroup.controls['channel']" translate>
                 </asee-tree-select>
                 }
                 <asee-autocomplete appearance="outline" [control]="filtersGroup.controls['agent']" [resetOnBlurDisabled]="false"
