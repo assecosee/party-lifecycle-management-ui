@@ -197,8 +197,8 @@ export class RelatedPartiesComponent implements OnInit {
   }
   public chcekIfExistsPZ(){
     if(this.isOrganization){
-      const relationshipTypeZTNew = this.newRelatedPartyList.find(o => o.subrole === 'PZ');
-      const relationshipTypeZTOld = this.relatedPartyList.find(o => o.subrole === 'PZ');
+      const relationshipTypeZTNew = this.newRelatedPartyList.find(o => o.subrole === 'ZT');
+      const relationshipTypeZTOld = this.relatedPartyList.find(o => o.subrole === 'ZT');
       if(relationshipTypeZTNew === undefined){
         if(relationshipTypeZTOld === undefined){
           this.submitDisable = true;
@@ -210,6 +210,9 @@ export class RelatedPartiesComponent implements OnInit {
       else{
         this.submitDisable = false;
       }
+    }
+    else {
+      this.submitDisable = false;
     }
   }
 }
