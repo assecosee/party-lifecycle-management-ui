@@ -11,3 +11,5 @@ export * from './lib/components/check-up-widget/check-up-widget.component';
 export * from './lib/components/tracking-widget/tracking-widget.component';
 export * from './lib/components/assigne-work-item-dialog/assigne-work-item-dialog.component';
 export * from './lib/components/agent-search/agent-search.component';
+export * from './lib/components/integration-tracing/integration-tracing.component';
+export * from './lib/components/integration-tracing/integration-tracing-details/integration-tracing-details.component';

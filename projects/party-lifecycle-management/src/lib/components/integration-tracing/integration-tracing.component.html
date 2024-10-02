@@ -1,0 +1,112 @@
+<div #container>
+    <mat-card appearance="outlined">
+        <mat-card-content class="card-content">
+            <div class="section-header">
+                <mat-card-title class="card-title" translate>Integration tracing</mat-card-title>
+            </div>
+            <div class="row no-content-placeholder" *ngIf="!integrationList?.length">
+                <img src="assets/img/empty_set.png">
+                {{'No information available' | translate:locale.language}}
+            </div>
+            <mat-tab-group mat-stretch-tabs="false" class='tab-result' *ngIf="integrationList?.length">
+                <mat-tab>
+                    <ng-template matTabLabel>
+                        {{'tabIntegrationTracingRecents' | translate: locale.language}}
+                    </ng-template>
+                    <div class="integration-tracing-list" *ngIf="integrationList?.length">
+                        <div class="list-item" *ngFor="let integrationResult of integrationList | slice:0:5;">
+                            <div class='icon-list'>
+                                <mat-icon matTooltip="{{'Error' | translate: locale.language}}" mat-list-icon
+                                    *ngIf="integrationResult.severity == 'error'" class="list-icon red">error</mat-icon>
+                                <mat-icon mat-list-icon *ngIf="integrationResult.severity == 'success'"
+                                    class="list-icon green">done_all</mat-icon>
+                            </div>
+                            <div class='integration-details row'>
+                                <div class='integration-message-details col-xs-8 col-md-9'>
+                                    <span class='integration-message' translate>{{integrationResult.name}}</span>
+                                    <span class="icon-prefix">
+                                        <div class='time'>
+                                            <mat-icon color="primary" mat-list-icon class="icon">access_time</mat-icon>
+                                            <span>{{integrationResult.createdOn | date:'hh:mm a, MMM d, y'}}
+                                            </span>
+                                            <mat-icon class='verified-icon'
+                                                [matTooltip]="('Initiated by' | translate: locale.language) + ': ' + integrationResult.createdBy"
+                                                color='primary' mat-list-icon>person
+                                            </mat-icon>
+                                            <span>{{integrationResult.createdBy}}
+                                            </span>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div class="result-context col-xs-4 col-md-2">
+                                    <div>
+                                        <button mat-icon-button class='action-icon'
+                                            (click)='showPayload(integrationResult)'
+                                            matTooltip="{{'Details' | translate: locale.language}}"
+                                            onclick="this.blur()">
+                                            <mat-icon class="context-image"
+                                                style="color: rgba(var(--palette-primary-500), 1);"
+                                                onclick="this.blur()" mat-list-icon>info</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template matTabLabel>
+                        <span [matBadge]="integrationTotalCount" matBadgeColor="primary" matBadgeOverlap="false">
+                            {{'tabIntegrationTracingAll' | translate: locale.language}}
+                        </span>
+                    </ng-template>
+                    <div class="party-lcm-integration-tracing-list" *ngIf="integrationList?.length">
+                        <div class="list-item" *ngFor="let integrationResult of integrationList">
+                            <div class='icon-list'>
+                                <mat-icon matTooltip="{{'Error' | translate: locale.language}}" mat-list-icon
+                                    *ngIf="integrationResult.severity == 'error'" class="list-icon red">error</mat-icon>
+                                <mat-icon mat-list-icon *ngIf="integrationResult.severity == 'success'"
+                                    class="list-icon green">done_all</mat-icon>
+                            </div>
+                            <div class='integration-details row'>
+                                <div class='integration-message-details col-xs-8 col-md-9'>
+                                    <span class='integration-message' translate>{{integrationResult.name}}</span>
+                                    <span class="icon-prefix">
+                                        <div class='time'>
+                                            <mat-icon color="primary" mat-list-icon class="icon">access_time</mat-icon>
+                                            <span>{{integrationResult.createdOn | date:'hh:mm a, MMM d, y'}}
+                                            </span>
+                                            <mat-icon class='verified-icon'
+                                                [matTooltip]="('Initiated by' | translate: locale.language) + ': ' + integrationResult.createdBy"
+                                                color='primary' mat-list-icon>person
+                                            </mat-icon>
+                                            <span>{{integrationResult.createdBy}}
+                                            </span>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div class="result-context col-xs-4 col-md-2">
+                                    <div>
+                                        <button mat-icon-button class='action-icon'
+                                            (click)='showPayload(integrationResult)'
+                                            matTooltip="{{'Details' | translate: locale.language}}"
+                                            onclick="this.blur()">
+                                            <mat-icon class="context-image"
+                                                style="color: rgba(var(--palette-primary-500), 1);"
+                                                onclick="this.blur()" mat-list-icon>info</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button #btnMoreIntegrationList mat-button color="primary" style="float: inline-end;"
+                            (click)="this.getNextPageIntegrationList()" translate
+                            [disabled]="this.disableBtnMoreIntegrationList">
+                            More
+                        </button>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card-content>
+    </mat-card>
+</div>

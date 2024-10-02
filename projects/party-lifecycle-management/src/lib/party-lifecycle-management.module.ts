@@ -25,6 +25,9 @@ import { ChangeCaseStatusDialogComponent } from './components/change-case-status
 import { AssigneWorkItemDialogComponent } from './components/assigne-work-item-dialog/assigne-work-item-dialog.component';
 import { AgentSearchComponent } from './components/agent-search/agent-search.component';
 import { MultiselectAutocompleteComponent } from './utils/multiselect-autocomplete/multiselect-autocomplete.component';
+import { IntegrationTracingComponent } from './components/integration-tracing/integration-tracing.component';
+import { IntegrationTracingDetailsComponent } from
+  './components/integration-tracing/integration-tracing-details/integration-tracing-details.component';
 
 
 
@@ -44,7 +47,9 @@ import { MultiselectAutocompleteComponent } from './utils/multiselect-autocomple
     ChangeCaseStatusDialogComponent,
     AssigneWorkItemDialogComponent,
     AgentSearchComponent,
-    MultiselectAutocompleteComponent
+    MultiselectAutocompleteComponent,
+    IntegrationTracingComponent,
+    IntegrationTracingDetailsComponent
   ],
   imports: [
     PartyLifecycleManagementRoutingModule,
@@ -68,7 +73,9 @@ import { MultiselectAutocompleteComponent } from './utils/multiselect-autocomple
     TrackingWidgetComponent,
     CheckUpWidgetComponent,
     AssigneWorkItemDialogComponent,
-    AgentSearchComponent
+    AgentSearchComponent,
+    IntegrationTracingComponent,
+    IntegrationTracingDetailsComponent
   ]
 })
 export class PartyLifecycleManagementModule {
@@ -106,6 +113,12 @@ export class PartyLifecycleManagementModule {
       }, {
         title: 'Check ups widget',
         componentName: 'CheckUpWidgetComponent',
+        tags: ['case'],
+        thumbnail: ''
+      },
+      {
+        title: 'Integration tracing widget',
+        componentName: 'IntegrationTracingComponent',
         tags: ['case'],
         thumbnail: ''
       }

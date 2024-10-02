@@ -1,0 +1,189 @@
+.party-lcm-integration-tracing-list {
+    overflow-y: overlay;
+  
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .icon-prefix {
+      align-items: center;
+      width: 100%;
+  
+      .time {
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+  
+        .verified-icon {
+          margin-left: 2px;
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+  
+      >i,
+      .icon {
+        padding: 0px 4px;
+        font-size: 18px;
+  
+        &.mat-icon {
+          height: auto;
+          width: auto;
+        }
+  
+        &.wide {
+          margin-right: 16px;
+        }
+  
+        @media screen and (max-width: 1600px) {
+          padding-left: 0px;
+        }
+      }
+  
+      >span,
+      .text {
+        display: block;
+      }
+  
+      @media screen and (max-width: 1600px) {
+        display: grid;
+      }
+  
+      display: flex;
+    }
+  
+    ::ng-deep .mat-mdc-list-item {
+      height: auto !important;
+    }
+  
+    /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
+    ::ng-deep .mat-mdc-list-item .mat-list-item-content {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  
+    .icon-list {
+      position: relative;
+    }
+  
+    .list-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+  
+    .border-top {
+      width: 48px;
+      border-top: 1px rgba(0, 0, 0, 0.36) solid;
+      display: block;
+      height: 1px;
+      margin-top: 4px;
+    }
+  
+    .initial-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      right: -15px;
+      bottom: -15px;
+    }
+  
+    .action-icon {
+      cursor: pointer;
+    }
+  
+    .integration-message {
+      white-space: pre-line;
+      font-size: 14px;
+    }
+  
+    .yellow {
+      color: #ff9800;
+    }
+  
+    .red {
+      color: #f44336;
+    }
+  
+    .green {
+      color: green;
+    }
+  
+    .gray {
+      color: gray;
+    }
+  
+    /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
+    ::ng-deep .mat-list-text {
+      display: flex;
+      flex-direction: column;
+      align-self: center;
+      width: unset;
+      flex: 1 !important;
+    }
+  
+    .result-context {
+      justify-content: flex-end;
+      display: flex;
+      align-self: center;
+      align-items: center;
+      text-align: left;
+  
+      .context-image {
+        color: rgba(0, 0, 0, 0.54);
+      }
+    }
+  
+    .integration-details {
+      justify-content: space-between;
+      line-height: normal !important;
+      border-radius: 0px !important;
+      display: flex !important;
+      text-transform: none;
+      align-items: center !important;
+      width: 100%;
+      border-bottom: 0.5px rgba(0, 0, 0, 0.07) solid;
+      padding: 8px 0px 8px 8px;
+      padding-right: 16px;
+    }
+  
+    .comment {
+      font-size: 12px;
+      font-style: italic;
+      color: rgba(0, 0, 0, 0.54);
+    }
+  
+    .integration-message-details {
+      text-align: left;
+      flex: 1;
+      flex-basis: 100%;
+    }
+  
+    .integration-milestone {
+      text-transform: uppercase;
+      color: rgba(0, 0, 0, 0.57);
+      font-weight: 600;
+      font-size: 12px;
+    }
+  }
+  
+  .no-content-placeholder {
+    text-align: center;
+    color: rgba(0, 0, 0, .54);
+    font-weight: 700;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 24px;
+    font-size: 16px;
+  }
+  
+  .no-content-placeholder img {
+    max-width: 70px;
+    opacity: .16;
+    margin-bottom: 16px;
+  }
