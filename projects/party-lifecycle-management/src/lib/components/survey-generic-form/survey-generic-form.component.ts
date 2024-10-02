@@ -37,6 +37,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
   public countries = [];
   private routeSubscription: Subscription = new Subscription();
   private taskSubscription: Subscription  = new Subscription();
+  private formData: any[];
 
   constructor(
     protected surveyService: SurveyService,
@@ -95,7 +96,8 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
         return forkJoin([
           this.taskService.getTask(params['taskId']).build(),
           this.initSurveyForm(this.templateId),
-          this.referenceService.getCountries()
+          this.referenceService.getCountries(),
+          this.taskService.getFormData(params['taskId']).build()
         ]).pipe(
           catchError(
             (error: HttpErrorResponse) => {
@@ -107,8 +109,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
         );
       }
       )).subscribe(
-        ([task, surverField, countries]: [Task, SurveyTemplate, any]) => {
+        ([task, surverField, countries, taskResults]: [Task, SurveyTemplate, any, any]) => {
           this.task = task;
+          this.formData = taskResults;
           if(this.task && this.task !== undefined) {
             this.notificationService.lastBusinessKey = this.task.businessKey;
             this.notificationService.lastDate = new Date();
@@ -209,6 +212,24 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
       this.appendComplexValidators(field);
     }
     this.resolveCondition();
+    this.fillForm(listFormFields);
+  }
+
+  fillForm(listFormFields: FormField[]) {
+    listFormFields.forEach(fiels => {
+      const formData = this.formData?.find(data => data.id === fiels.id);
+      if (fiels.data.type === 'custom-enum' || fiels.data.type === 'string') {
+        fiels.data.value = formData?.data.value;
+      }
+      if (fiels.data.type === 'multi-select' || fiels.data.type === 'multi-select-country') {
+        fiels.data.value = formData?.data.value?.split(',');
+      }
+      if (fiels.data.type === 'boolean') {
+        // bool pitanja su kind=string
+        fiels.data.value = formData?.data.value === 'true';
+      }
+      this.formGroup.controls[fiels.id].setValue(fiels.data.value);
+    });
   }
 
   appendComplexValidators(field: FormField) {
