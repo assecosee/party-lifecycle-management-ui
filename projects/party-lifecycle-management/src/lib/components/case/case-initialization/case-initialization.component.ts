@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild, inject } from '@angular/core';
-import { AssecoMaterialModule, MaterialAutocompleteComponent, MaterialErrorDialogComponent, MaterialModule } from '@asseco/components-ui';
+import { AssecoMaterialModule, MaterialAutocompleteComponent, MaterialDatepickerComponent, MaterialModule } from '@asseco/components-ui';
 import { L10nTranslationModule, L10nIntlModule, L10nLocale, L10N_LOCALE, L10nTranslationService } from 'angular-l10n';
 import { MaterialCustomerActionsComponent } from '../../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../../utils/directives/uppercase-directive';
@@ -48,6 +48,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   public maxDate = new Date();
   @ViewChild('basisOfReg', { static: false })
   public basisOfReg: MaterialAutocompleteComponent | undefined;
+  @ViewChild('clientDateOfBirthPicker', { static: false })
+  public dateOfBirth: MaterialDatepickerComponent | undefined;
   public formKeysIndividualPerson = [
     {
       key: 'jmbg',
@@ -472,4 +474,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     }
   }
 
+  checkValue(val: any) {
+    if(!val.target.value){
+      this.formGroup.controls['dateOfBirth'].setValue(null);
+      this.dateOfBirth?.controlDate.setValue(null);
+    }
+  }
 }

@@ -98,6 +98,11 @@
     margin-bottom: 0px !important;
 }
 
+.label {
+	margin-top: 16px;
+	font-weight: bold;
+}
+
 @media (max-width: 768px) {
     .flex-item {
         flex: 100%; /* Stack items on smaller screens */
