@@ -160,6 +160,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       this.bapoIdentificationDocumentNumber = null;
       this.bapoClientKind = null;
       this.bapoRegistrationProfile = null;
+      this.selectedUser = null;
+      this.setRegistrationProfile();
     }
   }
 
