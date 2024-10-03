@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BpmTasksHttpClient, ErrorEmitterService } from '@asseco/common-ui';
+import { BpmTasksHttpClient, ErrorEmitterService, UIService } from '@asseco/common-ui';
 import { MaterialModule } from '@asseco/components-ui';
 import { NotificationListenerService } from '@asseco/task-inbox';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
+import { CaseDetailsWidgetComponent } from '../../components/case-details-widget/case-details-widget.component';
 
 @Component({
   standalone: true,
@@ -25,7 +26,8 @@ export class MaterialCustomerActionsComponent implements OnInit, OnChanges {
   constructor(
     protected injector: Injector,
     protected errorEmitterService: ErrorEmitterService,
-    protected notificationService: NotificationListenerService
+    protected notificationService: NotificationListenerService,
+    protected uiService: UIService
   ) {
     this.locale = this.injector.get(L10N_LOCALE);
     this.bpmTasksHttpClient = this.injector.get(BpmTasksHttpClient);
@@ -36,6 +38,9 @@ export class MaterialCustomerActionsComponent implements OnInit, OnChanges {
     if(changes['currentTask']?.currentValue && changes['currentTask']?.currentValue !== undefined) {
       this.notificationService.lastBusinessKey = this.currentTask.businessKey;
       this.notificationService.lastDate = new Date();
+      if(this.currentTask.businessKey) {
+        this.initCaseInfo(this.currentTask.businessKey);
+      }
     }
   }
 
@@ -83,5 +88,8 @@ export class MaterialCustomerActionsComponent implements OnInit, OnChanges {
       );
 
   }
-
+  private initCaseInfo(caseId: string) {
+    const component = this.uiService.addComponentToRightSideNav(CaseDetailsWidgetComponent, true);
+    component.instance.caseId = caseId;
+  }
 }

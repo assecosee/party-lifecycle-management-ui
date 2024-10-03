@@ -1,4 +1,4 @@
-import { Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BpmTasksHttpClient, EnvironmentConfig } from '@asseco/common-ui';
 import { GenericScreenWidgetService } from '@asseco/task-inbox';
@@ -15,6 +15,19 @@ export class CaseDetailsWidgetComponent implements OnInit, OnDestroy{
   public locale: L10nLocale;
   public case: Case;
   public caseTitle: string;
+  @Input() set caseId(caseId: string) {
+    if(caseId) {
+      this.partyLcmService.getCaseById(caseId, this.filterCaseParams, true)
+        .subscribe(
+                (res: Case) => {
+                  this.case = res;
+                  if(this.case) {
+                    this.caseTitle = this.transformCaseType(this.case.type);
+                  }
+                }
+        );
+    }
+  }
   private filterCaseParams = {
     include: 'entity-info,servicing-info,context'
   };

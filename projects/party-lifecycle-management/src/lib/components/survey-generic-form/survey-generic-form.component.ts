@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationListenerService } from '@asseco/task-inbox';
 import { ReferenceService } from '../../services/reference.service';
+import { CaseDetailsWidgetComponent } from '../case-details-widget/case-details-widget.component';
 
 interface RuleData {
   key?: string;
@@ -115,6 +116,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
           if(this.task && this.task !== undefined) {
             this.notificationService.lastBusinessKey = this.task.businessKey;
             this.notificationService.lastDate = new Date();
+            this.initCaseInfo(task.businessKey);
           }
           if(countries && countries.items) {
             this.countries = countries.items.filter((e: any) => e.name && e.alpha2);
@@ -593,5 +595,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
   }
   public theCallback(controlName: string){
     return this.formGroup.controls[controlName].value;
+  }
+  private initCaseInfo(caseId: string) {
+    const component = this.uiService.addComponentToRightSideNav(CaseDetailsWidgetComponent, true);
+    component.instance.caseId = caseId;
   }
 }
