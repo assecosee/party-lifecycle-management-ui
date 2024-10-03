@@ -3,7 +3,7 @@
 <mat-dialog-content>
     <div class="flex-container">
         <div class="flex-item">
-            <asee-autocomplete #typeOfRelatedPartiesList [control]="formGroup.controls['relatedPartyConnectionType']"
+            <asee-autocomplete [freeFormText]="false" #typeOfRelatedPartiesList [control]="formGroup.controls['relatedPartyConnectionType']"
                 [autocompleteList]="relatedPartyConnectionTypeList"
                 [label]="'lblRelatedPartyConnectionTypeList' | translate : locale.language" filterBehaviour="includes"
                 labelProperty="formattedName" valueProperty="name" appearance="outline"></asee-autocomplete>

@@ -11,7 +11,7 @@
     <mat-card-content class="pt">
       <div class="flex-container">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             [control]="formGroup.controls['employmentStatus']"
             [autocompleteList]="employmentStatusList"
             [label]="'lblEmploymentStatus' | translate : locale.language"
@@ -26,7 +26,7 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             [control]="formGroup.controls['legalStatusOfIndividualPerson']"
             [autocompleteList]="legalStatusList"
             [label]="
@@ -153,7 +153,7 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             [control]="formGroup.controls['levelOfEducation']"
             [autocompleteList]="levelOfEducationList"
             [label]="'lblLevelOfEducation' | translate : locale.language"
@@ -170,7 +170,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             [control]="formGroup.controls['companyPositionCode']"
             [autocompleteList]="companyPositionCodeList"
             [label]="'lblCompanyPositionCode' | translate : locale.language"

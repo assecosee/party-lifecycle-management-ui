@@ -23,7 +23,7 @@
                     <div>
                         <div class="flex-container">
                             <div class="flex-item">
-                                <asee-autocomplete appearance="outline" [control]="group.get('typeOfAddress')"
+                                <asee-autocomplete [freeFormText]="false" appearance="outline" [control]="group.get('typeOfAddress')"
                                     [autocompleteList]="addressTypes"
                                     [label]="'lblTypeOfAddress' | translate : locale.language"
                                     filterBehaviour="includes" labelProperty="name" valueProperty="literal"
@@ -32,7 +32,7 @@
                                 <error-handling [control]="group.get('typeOfAddress')"></error-handling>
                             </div>
                             <div [class]="!countryControlDisabled ? 'flex-item' : 'flex-item disable-div'">
-                                <asee-autocomplete #country appearance="outline" [readonly]="countryControlDisabled"
+                                <asee-autocomplete [freeFormText]="false" #country appearance="outline" [readonly]="countryControlDisabled"
                                     [control]="group.get('country')" [autocompleteList]="countriesList"
                                     [label]="'lblCountry' | translate : locale.language" filterBehaviour="includes"
                                     labelProperty="name" valueProperty="code" (click)="markAsTouched('country')"
@@ -43,10 +43,11 @@
                         </div>
                         <div class="flex-container pt">
                             <div class="flex-item">
-                                <asee-autocomplete #placeNameAutocomplete appearance="outline" [control]="group.get('placeName')"
+                                <asee-autocomplete [freeFormText]="false" #placeNameAutocomplete appearance="outline" [control]="group.get('placeName')"
                                     [autocompleteList]="allPlaces"
                                     [label]="'lblPlaceName' | translate : locale.language" filterBehaviour="includes"
                                     labelProperty="formattedName" valueProperty="placeCode"
+                                    [freeFormText]="false"
                                     (click)="markAsTouched('placeName')"
                                     [resetOnBlurDisabled]="false"></asee-autocomplete>
                                 <error-handling [control]="group.get('placeName')"></error-handling>

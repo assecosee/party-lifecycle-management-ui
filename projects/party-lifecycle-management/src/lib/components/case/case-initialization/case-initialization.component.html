@@ -11,7 +11,7 @@
     <mat-card-content class="pt">
       <div class="flex-container">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #typeOfClientAutocomplete
             appearance="outline"
             [control]="formGroup.controls['typeOfClient']"
@@ -33,7 +33,7 @@
       <div class="border"></div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #identificationDocumentsAutocomplete
             appearance="outline"
             [control]="formGroup.controls['identificationDocuments']"
@@ -157,7 +157,7 @@
       <div class="border"></div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #identificationDocumentsAutocomplete
             appearance="outline"
             [control]="formGroup.controls['identificationDocuments']"
@@ -273,7 +273,7 @@
       } }
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #basisOfReg
             [readonly]="readonlyRP"
             [autocompleteList]="basisOptions"

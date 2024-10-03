@@ -22,7 +22,7 @@
                     [control]="filtersGroup.controls['channel']" translate>
                 </asee-tree-select>
                 }
-                <asee-autocomplete appearance="outline" [control]="filtersGroup.controls['agent']" [resetOnBlurDisabled]="false"
+                <asee-autocomplete [freeFormText]="false" appearance="outline" [control]="filtersGroup.controls['agent']" [resetOnBlurDisabled]="false"
                     valueProperty="username" labelProperty="displayName" [autocompleteList]="agents" filterValue="false"
                     [showClear]="false" [label]="'Agent'" disableFilter="true">
                 </asee-autocomplete>

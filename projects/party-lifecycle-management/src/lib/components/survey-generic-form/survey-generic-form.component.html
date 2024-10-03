@@ -138,7 +138,7 @@
                   </party-lcm-multiselect-autocomplete>
                   }
                   @if (field.data.type == 'select-country') {
-                    <asee-autocomplete appearance="outline" [id]="field.id" [controlName]="field.id"
+                    <asee-autocomplete [freeFormText]="false" appearance="outline" [id]="field.id" [controlName]="field.id"
                     [readonly]="field.readonly" [formGroup]="formGroup" [control]="formGroup.controls[field.id]"
                     [label]="field.label" [emitValueOnly]="true" [filterValue]="true" [showClear]="true"
                     [autocompleteList]="field.enumProps" [valueProperty]="'alpha2'" [labelProperty]="'name'"

@@ -11,7 +11,7 @@
     <mat-card-content class="pt">
       <div class="flex-container">
         <div class="flex-item">
-          <asee-autocomplete #typeOfClientAutocomplete appearance="outline"
+          <asee-autocomplete [freeFormText]="false" #typeOfClientAutocomplete appearance="outline"
             [control]="formGroup.controls['typeOfClient']" [autocompleteList]="typeOfClientList"
             [label]="'lblTypeOfClient' | translate : locale.language" filterBehaviour="includes"
             labelProperty="formattedName" valueProperty="name"
@@ -54,7 +54,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete #countryOfHqOfficialAddressAutocomplete filterBehaviour="includes" appearance="outline"
+          <asee-autocomplete [freeFormText]="false" #countryOfHqOfficialAddressAutocomplete filterBehaviour="includes" appearance="outline"
             [control]="
               formGroup.controls['countryOfHeadquartersOfficialAddress']
             " [autocompleteList]="countriesList" [label]="
@@ -67,7 +67,7 @@
             "></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete filterBehaviour="includes" #countryOfOriginAutocomplete appearance="outline"
+          <asee-autocomplete [freeFormText]="false" filterBehaviour="includes" #countryOfOriginAutocomplete appearance="outline"
             [control]="formGroup.controls['countryOfOrigin']" [autocompleteList]="countriesList"
             [label]="'lblCountryOfOrigin' | translate : locale.language" labelProperty="name" valueProperty="name"
             (click)="markAsTouched('countryOfOrigin')"></asee-autocomplete>
@@ -76,7 +76,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete #subjectTypeInAPRAutocomplete appearance="outline"
+          <asee-autocomplete [freeFormText]="false" #subjectTypeInAPRAutocomplete appearance="outline"
             [control]="formGroup.controls['subjectTypeInAPR']" [autocompleteList]="typeOfAPRList"
             [label]="'lblSubjectTypeInAPR' | translate : locale.language" filterBehaviour="includes"
             labelProperty="description" valueProperty="name"
@@ -113,7 +113,7 @@
           <error-handling [control]="formGroup.controls['clientLastName']"></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete #countryOfficialAddressAutocomplete filterBehaviour="includes" appearance="outline"
+          <asee-autocomplete [freeFormText]="false" #countryOfficialAddressAutocomplete filterBehaviour="includes" appearance="outline"
             [control]="formGroup.controls['countryOfficialAddress']" [autocompleteList]="countriesList"
             [label]="'lblCountryOfficialAddress' | translate : locale.language" labelProperty="name"
             valueProperty="name" (click)="markAsTouched('countryOfficialAddress')"></asee-autocomplete>
@@ -122,7 +122,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete filterBehaviour="includes" #clientCitizenshipAutocomplete appearance="outline"
+          <asee-autocomplete [freeFormText]="false" filterBehaviour="includes" #clientCitizenshipAutocomplete appearance="outline"
             [control]="formGroup.controls['clientCitizenship']" [autocompleteList]="countriesList"
             [label]="'lblClientCitizenship' | translate : locale.language" labelProperty="name" valueProperty="name"
             (click)="markAsTouched('clientCitizenship')"></asee-autocomplete>
@@ -140,7 +140,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete #clientCountryOfBirthAutocomplete filterBehaviour="includes" appearance="outline"
+          <asee-autocomplete [freeFormText]="false" [freeFormText]="false" #clientCountryOfBirthAutocomplete filterBehaviour="includes" appearance="outline"
             [control]="formGroup.controls['clientCountryOfBirth']" [autocompleteList]="countriesList"
             [label]="'lblClientCountryOfBirth' | translate : locale.language" labelProperty="name" valueProperty="name"
             (click)="markAsTouched('clientCountryOfBirth')"></asee-autocomplete>

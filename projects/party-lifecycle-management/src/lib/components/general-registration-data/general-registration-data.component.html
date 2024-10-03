@@ -39,7 +39,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #orgUnits
             [autocompleteList]="organizationUnits"
             [readonly]="true"
@@ -57,7 +57,7 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #lang
             [autocompleteList]="languages"
             labelProperty="description"
@@ -115,7 +115,7 @@
           ></asee-radio-button-group>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #maritalStatus
             [autocompleteList]="martialStatus"
             labelProperty="description"
@@ -134,7 +134,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #propertyOwnership
             [autocompleteList]="ownership"
             labelProperty="description"

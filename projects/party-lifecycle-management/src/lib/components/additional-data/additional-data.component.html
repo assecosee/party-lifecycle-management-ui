@@ -12,7 +12,7 @@
         <mat-card-content class="pt">
             <div class="flex-container">
                 <div class="flex-item">
-                    <asee-autocomplete [readonly]="isRegistrationProcess && !isTest" #treatmentOfClientInterestAutocomplete
+                    <asee-autocomplete [freeFormText]="false" [readonly]="isRegistrationProcess && !isTest" #treatmentOfClientInterestAutocomplete
                         [control]="formGroup.controls['treatmentOfClientInterest']"
                         [autocompleteList]="treatmentOfClientInterestList"
                         [label]="'lblTreatmentOfClientInterest' | translate : locale.language"
@@ -32,7 +32,7 @@
             </div>
             <div class="flex-container pt">
                 <div class="flex-item">
-                    <asee-autocomplete [readonly]="isRegistrationProcess && !isTest" #tariffGroupOfClientCommissionsAutocomplete
+                    <asee-autocomplete [freeFormText]="false" [readonly]="isRegistrationProcess && !isTest" #tariffGroupOfClientCommissionsAutocomplete
                         [control]="formGroup.controls['tariffGroupOfClientCommissions']"
                         [autocompleteList]="treatmentOfClientInterestList"
                         [label]="'lblTariffGroupOfClientCommissions' | translate : locale.language"
@@ -53,7 +53,7 @@
             </div>
             <div class="flex-container pt">
                 <div class="flex-item">
-                    <asee-autocomplete #accountManagerAutocomplete
+                    <asee-autocomplete [freeFormText]="false" #accountManagerAutocomplete
                         [control]="formGroup.controls['accountManager']"
                         [autocompleteList]="accountManagerList"
                         [label]="'lblAccountManager' | translate : locale.language"
@@ -62,7 +62,7 @@
                     <error-handling [control]="formGroup.controls['accountManager']"></error-handling>
                 </div>
                 <div class="flex-item">
-                    <asee-autocomplete #backupAccountManagerAutocomplete
+                    <asee-autocomplete [freeFormText]="false" #backupAccountManagerAutocomplete
                         [control]="formGroup.controls['backupAccountManager']" [autocompleteList]="accountManagerList"
                         [label]="'lblBackupAccountManager' | translate : locale.language" filterBehaviour="includes"
                         labelProperty="formattedName" valueProperty="name" appearance="outline"
@@ -72,7 +72,7 @@
             </div>
             <div class="flex-container pt">
                 <div class="flex-item">
-                    <asee-autocomplete #classificationAccordingToNBSAutocomplete
+                    <asee-autocomplete [freeFormText]="false" #classificationAccordingToNBSAutocomplete
                         [control]="formGroup.controls['classificationAccordingToNBS']"
                         [autocompleteList]="classificationAccordingToNBSList"
                         [label]="'lblClassificationAccordingToNBS' | translate : locale.language"
@@ -82,7 +82,7 @@
                     <error-handling [control]="formGroup.controls['classificationAccordingToNBS']"></error-handling>
                 </div>
                 <div class="flex-item">
-                    <asee-autocomplete [readonly]="isRegistrationProcess" #sectoralDivisionUSSPOAutocomplete
+                    <asee-autocomplete [freeFormText]="false" [readonly]="isRegistrationProcess" #sectoralDivisionUSSPOAutocomplete
                         [control]="formGroup.controls['sectoralDivisionUSSPO']"
                         [autocompleteList]="sectoralDivisionUSSPOList"
                         [label]="'lblSectoralDivisionUSSPO' | translate : locale.language" filterBehaviour="includes"

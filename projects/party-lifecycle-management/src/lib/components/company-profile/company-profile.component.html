@@ -24,7 +24,7 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             [control]="formGroup.controls['activityCode']"
             filterBehaviour="includes"
             [autocompleteList]="activityCodeList"
@@ -62,7 +62,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             readonly="true"
             [control]="formGroup.controls['codeOfBranchPredominantActivity']"
@@ -80,7 +80,7 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             [readonly]="isRegistrationProcess"
             [control]="formGroup.controls['statusOfLegalEntity']"
@@ -98,7 +98,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             [control]="formGroup.controls['sizeOfLegalEntity']"
             [autocompleteList]="sizeOfLegalEntityList"
@@ -113,7 +113,7 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             [control]="formGroup.controls['typeOfProperty']"
             [autocompleteList]="typeOfPropertyList"
@@ -156,7 +156,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             [control]="formGroup.controls['naceCodeCustomer']"
             [autocompleteList]="naceCodeList"
@@ -171,7 +171,7 @@
           ></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             [control]="formGroup.controls['naceCodeRisk']"
             [autocompleteList]="naceCodeList"
@@ -188,7 +188,7 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             [control]="formGroup.controls['crmIndCode']"
             [autocompleteList]="crmIndCodeList"

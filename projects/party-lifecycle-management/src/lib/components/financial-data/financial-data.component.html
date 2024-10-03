@@ -11,7 +11,7 @@
     <mat-card-content class="pt">
       <div class="flex-container">
         <div class="flex-item">
-          <asee-autocomplete #clientCategoryAutocomplete [control]="formGroup.controls['clientCategory']"
+          <asee-autocomplete [freeFormText]="false" #clientCategoryAutocomplete [control]="formGroup.controls['clientCategory']"
             [autocompleteList]="clientCategoryList" [label]="'lblClientCategory' | translate : locale.language"
             filterBehaviour="includes" labelProperty="description" valueProperty="name" appearance="outline"
             (click)="markAsTouched('clientCategory')"></asee-autocomplete>
@@ -44,7 +44,7 @@
           <error-handling [control]="formGroup.controls['netIncome']"></error-handling>
         </div>
         <div class="flex-item">
-          <asee-autocomplete #currencyAutocomplete [control]="formGroup.controls['currency']"
+          <asee-autocomplete [freeFormText]="false" #currencyAutocomplete [control]="formGroup.controls['currency']"
             [autocompleteList]="currencyList" [label]="'lblCurrency' | translate : locale.language"
             filterBehaviour="includes" labelProperty="formattedName" valueProperty="currencyCode" appearance="outline"
             (click)="markAsTouched('currency')"></asee-autocomplete>

@@ -11,7 +11,7 @@
       <mat-card-content class="pt">
         <div class="flex-container">
           <div class="flex-item">
-            <asee-autocomplete #processSelectionAutocomplete [control]="formGroup.controls['selectedProcess']"
+            <asee-autocomplete [freeFormText]="false" #processSelectionAutocomplete [control]="formGroup.controls['selectedProcess']"
               [autocompleteList]="processSelectionList" [label]="'lblSelectedProcess' | translate : locale.language"
               filterBehaviour="includes" labelProperty="name" valueProperty="name" appearance="outline"
               (click)="markAsTouched('selectedProcess')"></asee-autocomplete>

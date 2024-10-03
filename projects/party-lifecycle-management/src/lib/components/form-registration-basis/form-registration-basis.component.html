@@ -11,7 +11,7 @@
     <mat-card-content class="pt">
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete
+          <asee-autocomplete [freeFormText]="false"
             #basisOfReg
             [autocompleteList]="basisOptions"
             [readonly]="readonly"

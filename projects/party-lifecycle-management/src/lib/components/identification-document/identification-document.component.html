@@ -22,7 +22,7 @@
                     <div [formGroup]="group">
                         <div class="flex-container">
                             <div class="flex-item">
-                                <asee-autocomplete #typeOfClientAutocomplete appearance="outline"
+                                <asee-autocomplete [freeFormText]="false" #typeOfClientAutocomplete appearance="outline"
                                     [control]="group.get('typeOfID')" [autocompleteList]="idDocumentTypes"
                                     [label]="'lblTypeOfID' | translate : locale.language" filterBehaviour="includes"
                                     labelProperty="description" valueProperty="name"
@@ -38,7 +38,7 @@
                         </div>
                         <div class="flex-container pt">
                             <div class="flex-item">
-                                <asee-autocomplete appearance="outline" [control]="group.get('countryOfIssuing')"
+                                <asee-autocomplete [freeFormText]="false" appearance="outline" [control]="group.get('countryOfIssuing')"
                                     [autocompleteList]="countriesList"
                                     [label]="'lblCountryOfIssuing' | translate : locale.language"
                                     filterBehaviour="includes" labelProperty="name" valueProperty="code"
