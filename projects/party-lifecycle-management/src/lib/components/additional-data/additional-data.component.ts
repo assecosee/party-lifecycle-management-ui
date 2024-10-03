@@ -231,6 +231,11 @@ export class AdditionalDataComponent implements OnInit {
         }
       });
 
+      if (this.isIndividualEntity == null) {
+        console.error('Individual entity is null, cannot set default data');
+        return;
+      }
+
       // If the entity is an individual, set form controls with corresponding 'individual' data
       if (this.isIndividualEntity && this.defaultData['individual']) {
         this.formGroup.controls['tariffGroupOfClientCommissions'].setValue(
