@@ -171,7 +171,7 @@ export class IdentificationDocumentComponent implements OnInit {
       if (status === 'VALID') {
         // Update the submitDisable flag based on the presence of a duplicated types of ID in form array
         const hasDuplicateByProperty = (array: any[]): boolean => {
-          const values = array.map(item => item.controls['typeOfID'].value.literal);
+          const values = array.map(item => item.controls.typeOfID.value.literal);
           return values.filter((value, index) => values.indexOf(value) !== index).length > 0;
         };
 

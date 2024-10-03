@@ -37,7 +37,6 @@ export class AdditionalDataComponent implements OnInit {
   public classificationAccordingToNBSList: any = [];
   public accountManagerList: any = [];
   public sectoralDivisionUSSPOList: any = [];
-  public marketingConsentList: any = [];
   public maxDate = new Date();
   public datePickerFlags: any = { treatmentDateValidFrom: true, tarrifDateValidFrom: true };
   public defaultData = null;
@@ -78,7 +77,6 @@ export class AdditionalDataComponent implements OnInit {
       accountManagerCategories: this.customService.getClassification('ACC_MNG'),
       classificationAccordingToNBS: this.customService.getClassification('NBS_KLS'),
       sectoralDivisionUSSPOCategories: this.customService.getClassification('KS3USEK'),
-      marketingConsentListCategories: this.customService.getClassification('SAGMARK'),
       currencies: this.referenceService.getCurrencies(),
       defaultData: this.configurationService.getEffective('party-lcm/treatment-and-additional-attributes-default-data').build()
     }).pipe(
@@ -87,7 +85,6 @@ export class AdditionalDataComponent implements OnInit {
         accountManagerCategories,
         classificationAccordingToNBS,
         sectoralDivisionUSSPOCategories,
-        marketingConsentListCategories,
         defaultData }) => {
 
         treatmentOfClientInterestCategories.items.map((element: any) =>
@@ -105,15 +102,10 @@ export class AdditionalDataComponent implements OnInit {
           element.formattedName = `${element.description} - ${element.name}`
         );
 
-        marketingConsentListCategories.items.map((element: any) =>
-          element.formattedName = `${element.description} - ${element.name}`
-        );
-
         this.treatmentOfClientInterestList = treatmentOfClientInterestCategories.items;
         this.accountManagerList = accountManagerCategories.items;
         this.classificationAccordingToNBSList = classificationAccordingToNBS.items;
         this.sectoralDivisionUSSPOList = sectoralDivisionUSSPOCategories.items;
-        this.marketingConsentList = marketingConsentListCategories.items;
         this.defaultData = JSON.parse(defaultData);
 
       })
@@ -141,11 +133,12 @@ export class AdditionalDataComponent implements OnInit {
 
   private initFormGroup() {
     this.formGroupInitialized = false;
-    this.isIndividualEntity = this.getFormFieldValue('isIndividualEntity');
+    this.isIndividualEntity = !(this.getFormFieldValue('isLegalEntity'));
     this.isRegistrationProcess = this.getFormFieldValue('isRegistrationProcess');
     this.isTest = this.getFormFieldValue('isTest');
     this.formGroup = new FormGroup({});
 
+    console.log('Is individual entry ',this.isIndividualEntity);
     // Create controls
     this.formKeys.forEach(formKey => {
       if (formKey) {
