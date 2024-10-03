@@ -331,7 +331,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       type: 'individual-onboarding',
       'party-reference': {
         'party-number': this.selectedUser && this.selectedUser.partyNumber ? this.selectedUser.partyNumber : null,
-        'party-name': this.selectedUser && this.selectedUser.fullName ? this.selectedUser.fullName : 'Test',
+        'party-name': this.selectedUser && this.selectedUser.fullName ? this.selectedUser.fullName : null,
         'party-kind': this.selectedUser && this.selectedUser.kind ?
           this.selectedUser.kind : this.isIndividualPerson ? 'individual' : 'organization',
         'party-identification-number': this.selectedUser
