@@ -285,9 +285,16 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   }
 
   openDialog(data: any) {
+    const formattedData = data.map((item: any) => {
+      const [year, month, day] = item.birthDate.substring(0, 10).split('-'); // Split 'YYYY-MM-DD'
+      return {
+        ...item,
+        birthDate: `${day}-${month}-${year}` // Reformat to 'DD-MM-YYYY'
+      };
+    });
     const dialogRef = this.dialog.open(PartySelectionComponent, {
       data:
-        { parties: data, isIndividualPerson: this.isIndividualPerson }, disableClose: true
+        { parties: formattedData, isIndividualPerson: this.isIndividualPerson }, disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
