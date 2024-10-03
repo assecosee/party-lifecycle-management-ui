@@ -91,16 +91,6 @@
                     <error-handling [control]="formGroup.controls['sectoralDivisionUSSPO']"></error-handling>
                 </div>
             </div>
-            @if(isIndividualEntity){
-            <div class="flex-container pt">
-                <div class="flex-item">
-                    <asee-checkbox #marketingConsentAutocomplete id="checkbox" [control]="formGroup.controls['marketingConsent']"  
-                    appearance="outline" color="primary" [label]="'lblMarketingConsent' | translate : locale.language" (click)="markAsTouched('marketingConsent')"></asee-checkbox>
-                    <error-handling [control]="formGroup.controls['marketingConsent']"></error-handling>
-                </div>
-                <div class="flex-item"></div>
-            </div>
-            }
             @if(!isRegistrationProcess){
             <div class="flex-container pt">
                 <div class="flex-item">
@@ -138,6 +128,16 @@
                     </asee-textarea>
                 </div>
             </div>
+            @if(isIndividualEntity){
+                <div class="flex-container pt">
+                    <div class="flex-item">
+                        <asee-checkbox #marketingConsentAutocomplete id="checkbox" [control]="formGroup.controls['marketingConsent']"  
+                        appearance="outline" color="primary" [label]="'lblMarketingConsent' | translate : locale.language" (click)="markAsTouched('marketingConsent')"></asee-checkbox>
+                        <error-handling [control]="formGroup.controls['marketingConsent']"></error-handling>
+                    </div>
+                    <div class="flex-item"></div>
+                </div>
+                }
         </mat-card-content>
         <div class="bottom-end-alignment">
             <customer-actions [currentTask]="task" submitButtonName="Complete" [formGroup]="formGroup">
