@@ -1,0 +1,58 @@
+@if(case){
+<mat-card appearance="outlined" class="case">
+    @if (case) {
+    <mat-card-content>
+        <div class="case-info">
+            <div class="title" translate>{{caseTitle}}</div>
+        </div>
+        <table class="details-table">
+            <tbody>
+                @if (case.id) {
+                <tr>
+                    <th>{{'Case Number' | translate: locale.language}}:</th>
+                    <td>
+                        {{case.id}}
+                    </td>
+                </tr>
+                }
+                @if (case.status) {
+                <tr>
+                    <th>{{'Status' | translate: locale.language}}:</th>
+                    <td>
+                        {{case.status | translate: locale.language}}
+                    </td>
+                </tr>
+                }
+                @if (case?.partyReference.partyName) {
+                    <tr>
+                        <th>{{'Party name' | translate: locale.language}}:</th>
+                        <td>
+                            {{case?.partyReference.partyName | translate: locale.language}}
+                        </td>
+                    </tr>
+                    }
+                @if (case.entityInfo?.creationTime) {
+                <tr>
+                    <th>{{'Creation time' | translate: locale.language}}:</th>
+                    <td>
+                        {{case.entityInfo?.creationTime | date: 'mediumDate'}}
+                    </td>
+                </tr>
+                }
+                @if (case.entityInfo?.createdBy) {
+                <tr>
+                    <th>{{'Created by' | translate: locale.language}}:</th>
+                    <td>
+                        {{case.entityInfo?.createdBy }}
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </mat-card-content>
+    }
+    <mat-card-actions align="end">
+        <button mat-button translate color="primary" (click)="openCaseOverview()" translate>More</button>
+    </mat-card-actions>
+</mat-card>
+}

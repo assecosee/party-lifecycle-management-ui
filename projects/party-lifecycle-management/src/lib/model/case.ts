@@ -56,7 +56,7 @@ export interface Case {
   readonly lastModifiedBy?: string;
   entityInfo?: EntityInfo;
   servicingInfo?: ServicingInfo;
-  type?: string;
+  type: string;
   tracking?: CaseTracking;
   context?: CaseContext;
 }

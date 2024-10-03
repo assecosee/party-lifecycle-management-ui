@@ -36,12 +36,13 @@ export class PartyLifecycleManagementService extends AbstractHttpClient {
     }
     return builder.build();
   }
-  public getCaseById(caseId: string, filterCaseCommandQuery: FilterCaseCommandQuery): Observable<Case> {
+  public getCaseById(caseId: string, filterCaseCommandQuery: FilterCaseCommandQuery, ignoreError = false): Observable<Case> {
     const builder = this.getHttpClientBuilder<Case>()
       .setUrl(this.getUrl() + 'lifecycle-cases/' + caseId)
       .addRawQueryParams(filterCaseCommandQuery)
       .mapResponseToCamelCase()
-      .addAuthentication();;
+      .setIgnoreError(ignoreError)
+      .addAuthentication();
     return builder.build();
   }
   public patchCaseStatus(caseId: string, changeCaseStatusBody: any): Observable<any>{

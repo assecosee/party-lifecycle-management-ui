@@ -28,6 +28,7 @@ import { MultiselectAutocompleteComponent } from './utils/multiselect-autocomple
 import { IntegrationTracingComponent } from './components/integration-tracing/integration-tracing.component';
 import { IntegrationTracingDetailsComponent } from
   './components/integration-tracing/integration-tracing-details/integration-tracing-details.component';
+import { CaseDetailsWidgetComponent } from './components/case-details-widget/case-details-widget.component';
 
 
 
@@ -49,7 +50,8 @@ import { IntegrationTracingDetailsComponent } from
     AgentSearchComponent,
     MultiselectAutocompleteComponent,
     IntegrationTracingComponent,
-    IntegrationTracingDetailsComponent
+    IntegrationTracingDetailsComponent,
+    CaseDetailsWidgetComponent
   ],
   imports: [
     PartyLifecycleManagementRoutingModule,
@@ -75,7 +77,8 @@ import { IntegrationTracingDetailsComponent } from
     AssigneWorkItemDialogComponent,
     AgentSearchComponent,
     IntegrationTracingComponent,
-    IntegrationTracingDetailsComponent
+    IntegrationTracingDetailsComponent,
+    CaseDetailsWidgetComponent
   ]
 })
 export class PartyLifecycleManagementModule {

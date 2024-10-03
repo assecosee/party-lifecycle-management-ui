@@ -13,3 +13,4 @@ export * from './lib/components/assigne-work-item-dialog/assigne-work-item-dialo
 export * from './lib/components/agent-search/agent-search.component';
 export * from './lib/components/integration-tracing/integration-tracing.component';
 export * from './lib/components/integration-tracing/integration-tracing-details/integration-tracing-details.component';
+export * from './lib/components/case-details-widget/case-details-widget.component';
