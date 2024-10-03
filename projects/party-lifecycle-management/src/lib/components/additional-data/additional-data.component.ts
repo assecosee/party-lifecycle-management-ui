@@ -28,7 +28,7 @@ export class AdditionalDataComponent implements OnInit {
   public taskId = '';
   public task: any;
   public formGroupInitialized = false;
-  public isIndividualEntity = false;
+  public isIndividualEntity = true;
   public isRegistrationProcess = false;
   public isTest = false;
   public formGroup: FormGroup = new FormGroup({});
@@ -133,12 +133,11 @@ export class AdditionalDataComponent implements OnInit {
 
   private initFormGroup() {
     this.formGroupInitialized = false;
-    this.isIndividualEntity = !(this.getFormFieldValue('isLegalEntity'));
+    this.isIndividualEntity = !this.getFormFieldValue('isLegalEntity');
     this.isRegistrationProcess = this.getFormFieldValue('isRegistrationProcess');
     this.isTest = this.getFormFieldValue('isTest');
     this.formGroup = new FormGroup({});
 
-    console.log('Is individual entry ',this.isIndividualEntity);
     // Create controls
     this.formKeys.forEach(formKey => {
       if (formKey) {
