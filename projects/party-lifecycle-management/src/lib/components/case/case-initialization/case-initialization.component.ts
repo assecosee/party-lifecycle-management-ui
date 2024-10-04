@@ -221,8 +221,9 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     }
 
     if (this.bapoClientKind) {
-      this.formGroup.controls['typeOfClient']?.setValue(this.findItemByProperty(
-        this.typeOfClientList, 'name', this.bapoClientKind === 'individual' ? 'FL' : 'PL'));
+      const val = this.findItemByProperty(this.typeOfClientList, 'name', this.bapoClientKind === 'individual' ? 'FL' : 'PL');
+      this.formGroup.controls['typeOfClient']?.setValue(val);
+      this.previousValue = val;
     }
 
     if (this.bapoTypeOfIdentificationDocument) {
