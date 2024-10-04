@@ -191,6 +191,16 @@ export class BasicDataComponent implements OnInit, DoCheck {
         console.log('Form data: ', this.formFields);
         // Populate form group with controls received from task
         this.initFormGroup(true);
+        const partyRefObj = JSON.parse(this.formFields.find(o => o.id === 'partyReference')?.data?.value);
+        const isIndividual = partyRefObj['party-kind'];
+        if (isIndividual === 'individual') {
+          this.typeOfClientList = this.typeOfClientList.filter((obj: { value: string;
+            description: string; name: string;formattedName: string;}) => obj?.value === '0');
+        }
+        else {
+          this.typeOfClientList = this.typeOfClientList.filter((obj: { value: string;
+            description: string; name: string;formattedName: string;}) => obj?.value === '1');
+        }
       });
     });
   }
