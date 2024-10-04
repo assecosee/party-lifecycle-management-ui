@@ -7,7 +7,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient,
-  ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
+  ErrorEmitterService, FormField, LoaderService, 
+  UIService} from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialConfirmDialogComponent, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { combineLatest } from 'rxjs';
@@ -110,7 +111,9 @@ export class RelatedPartiesComponent implements OnInit {
     protected injector: Injector,
     protected configurationService: ConfigurationHttpClient,
     private cdr: ChangeDetectorRef,
-    protected errorEmitterService: ErrorEmitterService) {
+    protected errorEmitterService: ErrorEmitterService,
+    protected uiService: UIService) {
+    this.uiService.setTitle('Related parties');
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
     this.loaderService = this.injector.get(LoaderService);
