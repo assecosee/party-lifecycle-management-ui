@@ -53,14 +53,14 @@
       </div>
       <div class="flex-container pt">
         <div class="flex-item disable-div">
-          <asee-text-input readonly="true" appUppercase appearance="outline" [control]="formGroup.controls['financialDataModificationTime']" [label]="
+          <asee-text-input [readonly]="true" appUppercase appearance="outline" [control]="formGroup.controls['financialDataModificationTime']" [label]="
                 'lblFinancialDataModificationTime' | translate : locale.language
               ">
           </asee-text-input>
           <error-handling [control]="formGroup.controls['financialDataModificationTime']"></error-handling>
         </div>
         <div class="flex-item disable-div">
-          <asee-text-input readonly="true" appUppercase [control]="formGroup.controls['financialDataChangeOperator']" appearance="outline" [label]="
+          <asee-text-input [readonly]="true" appUppercase [control]="formGroup.controls['financialDataChangeOperator']" appearance="outline" [label]="
                 'lblFinancialDataChangeOperator' | translate : locale.language
               ">
           </asee-text-input>

@@ -11,7 +11,7 @@
         @if(formGroupInitialized){
         <mat-card-content class="pt">
             <div class="flex-container">
-                <div class="flex-item">
+                <div [class]="isRegistrationProcess && !isTest ? 'flex-item disable-div' : 'flex-item'">
                     <asee-autocomplete [freeFormText]="false" [readonly]="isRegistrationProcess && !isTest" #treatmentOfClientInterestAutocomplete
                         [control]="formGroup.controls['treatmentOfClientInterest']"
                         [autocompleteList]="treatmentOfClientInterestList"
@@ -20,7 +20,7 @@
                         appearance="outline" (click)="markAsTouched('treatmentOfClientInterest')"></asee-autocomplete>
                     <error-handling [control]="formGroup.controls['treatmentOfClientInterest']"></error-handling>
                 </div>
-                <div class="flex-item">
+                <div class="flex-item disable-div">
                     @if(datePickerFlags['treatmentDateValidFrom']) {
                     <asee-datepicker readonly="true" #treatmentDateValidFromPicker (click)="markAsTouched('treatmentDateValidFrom')"
                         [control]="formGroup.controls['treatmentDateValidFrom']" startView="month"
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="flex-container pt">
-                <div class="flex-item">
+                <div [class]="isRegistrationProcess && !isTest ? 'flex-item disable-div' : 'flex-item'">
                     <asee-autocomplete [freeFormText]="false" [readonly]="isRegistrationProcess && !isTest" #tariffGroupOfClientCommissionsAutocomplete
                         [control]="formGroup.controls['tariffGroupOfClientCommissions']"
                         [autocompleteList]="treatmentOfClientInterestList"
@@ -41,7 +41,7 @@
                         (click)="markAsTouched('tariffGroupOfClientCommissions')"></asee-autocomplete>
                     <error-handling [control]="formGroup.controls['tariffGroupOfClientCommissions']"></error-handling>
                 </div>
-                <div class="flex-item">
+                <div class="flex-item disable-div">
                     @if(datePickerFlags['tarrifDateValidFrom']) {
                     <asee-datepicker readonly="true" #treatmentDateValidFromPicker (click)="markAsTouched('tarrifDateValidFrom')"
                         [control]="formGroup.controls['tarrifDateValidFrom']" startView="month"
@@ -81,7 +81,7 @@
                         (click)="markAsTouched('classificationAccordingToNBS')"></asee-autocomplete>
                     <error-handling [control]="formGroup.controls['classificationAccordingToNBS']"></error-handling>
                 </div>
-                <div class="flex-item">
+                <div [class]="isRegistrationProcess ? 'flex-item disable-div' : 'flex-item'">
                     <asee-autocomplete [freeFormText]="false" [readonly]="isRegistrationProcess" #sectoralDivisionUSSPOAutocomplete
                         [control]="formGroup.controls['sectoralDivisionUSSPO']"
                         [autocompleteList]="sectoralDivisionUSSPOList"
@@ -93,7 +93,7 @@
             </div>
             @if(!isRegistrationProcess){
             <div class="flex-container pt">
-                <div class="flex-item">
+                <div class="flex-item disable-div">
                     <asee-text-input readonly="true" appUppercase appearance="outline" [control]="formGroup.controls['riskLevel']"
                         [label]="
                           'lblRiskLevel' | translate : locale.language
@@ -101,7 +101,7 @@
                     </asee-text-input>
                     <error-handling [control]="formGroup.controls['riskLevel']"></error-handling>
                 </div>
-                <div class="flex-item">
+                <div class="flex-item disable-div">
                     <asee-datepicker readonly="true" #dateOfRiskLevelPicker (click)="markAsTouched('dateOfRiskLevel')"
                         [control]="formGroup.controls['dateOfRiskLevel']" startView="month"
                         [label]="'lbldateOfRiskLevel' | translate : locale.language" appearance="outline"
@@ -110,7 +110,7 @@
                 </div>
             </div>
             <div class="flex-container pt">
-                <div class="flex-item">
+                <div class="flex-item disable-div">
                     <asee-datepicker readonly="true" #dateOfNextRiskLevelPicker (click)="markAsTouched('dateOfNextRiskLevel')"
                         [control]="formGroup.controls['dateOfNextRiskLevel']" startView="month"
                         [label]="'lblDateOfNextRiskLevel' | translate : locale.language" appearance="outline"

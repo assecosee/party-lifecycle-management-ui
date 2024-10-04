@@ -101,6 +101,7 @@ mat-expansion-panel {
 }
 
 .disable-div {
+    height: fit-content;
     pointer-events: none;
     background-color: #f0f0f0;
     color: #333;

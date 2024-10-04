@@ -10,7 +10,7 @@
     @if(formGroupInitialized) {
     <mat-card-content class="pt">
       <div class="flex-container pt">
-        <div class="flex-item">
+        <div [class]="!readonly ? 'flex-item' : 'flex-item disable-div'">
           <asee-autocomplete [freeFormText]="false"
             #basisOfReg
             [autocompleteList]="basisOptions"
@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="flex-container pt">
-        <div class="flex-item">
+        <div class="flex-item disable-div">
           <asee-text-input
             [readonly]="true"
             appUppercase

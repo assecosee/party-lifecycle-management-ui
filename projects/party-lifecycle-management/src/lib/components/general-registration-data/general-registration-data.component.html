@@ -24,12 +24,12 @@
           ></error-handling>
         </div>
         }
-        <div class="flex-item">
+        <div class="flex-item disable-div">
           <asee-datepicker
             appearance="outline"
             [control]="formGroup.controls['dateOfActivation']"
             [label]="'lblDateOfActivation' | translate : locale.language"
-            readonly="true"
+            [readonly]="true"
           >
           </asee-datepicker>
           <error-handling
@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="flex-container pt">
-        <div class="flex-item">
+        <div class="flex-item disable-div">
           <asee-autocomplete [freeFormText]="false"
             #orgUnits
             [autocompleteList]="organizationUnits"
@@ -241,7 +241,7 @@
             [control]="formGroup.controls['nonResidentCode']"
           ></error-handling>
         </div>
-        <div class="flex-item">
+        <div class="flex-item disable-div">
           <asee-datepicker
             readonly="true"
             appearance="outline"

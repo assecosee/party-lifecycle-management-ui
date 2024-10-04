@@ -68,11 +68,10 @@
 }
 
 .disable-div {
+    height: fit-content;
 	pointer-events: none;
-	background-color: #f0f0f0;
-	border: 1px solid #b0b0b0;
-	border-radius: 4px;
-	color: #333;
+    background-color: #f0f0f0;
+    color: #333;
 }
 
 .border {

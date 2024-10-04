@@ -176,9 +176,6 @@ export class FinancialDataComponent implements OnInit {
       }
     });
 
-    this.formGroup.controls['financialDataModificationTime'].disable();
-    this.formGroup.controls['financialDataChangeOperator'].disable();
-
     this.formGroup.markAllAsTouched();
     this.formGroupInitialized = true;
   }

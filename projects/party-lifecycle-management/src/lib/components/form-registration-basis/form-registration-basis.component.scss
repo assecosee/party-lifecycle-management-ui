@@ -53,6 +53,13 @@
   min-width: 200px; /* Set a minimum width for each item */
 }
 
+.disable-div {
+  height: fit-content;
+  pointer-events: none;
+  background-color: #f0f0f0;
+  color: #333;
+}
+
 .flex-row-wrap {
     display: flex;
 	gap: 24px;

@@ -61,7 +61,7 @@
         </div>
       </div>
       <div class="flex-container pt">
-        <div class="flex-item">
+        <div class="flex-item disable-div">
           <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             readonly="true"
@@ -79,7 +79,7 @@
             [control]="formGroup.controls['codeOfBranchPredominantActivity']"
           ></error-handling>
         </div>
-        <div class="flex-item">
+        <div [class]="!isRegistrationProcess ? 'flex-item' : 'flex-item disable-div'">
           <asee-autocomplete [freeFormText]="false"
             filterBehaviour="includes"
             [readonly]="isRegistrationProcess"

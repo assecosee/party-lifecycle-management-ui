@@ -1,80 +1,87 @@
 .card-wrapper {
-	min-width : 100%;
-	margin    : 0 auto;
-	height    : calc(100vh - 88px);
-	margin-top: 16px;
+  min-width: 100%;
+  margin: 0 auto;
+  height: calc(100vh - 88px);
+  margin-top: 16px;
 
-	@media screen and (min-width: 1440px) {
-		max-width: 800px;
-		min-width: 800px;
-		width    : 800px;
-	}
+  @media screen and (min-width: 1440px) {
+    max-width: 800px;
+    min-width: 800px;
+    width: 800px;
+  }
 
-	@media screen and (min-width: 800px) {
-		width: unset;
-	}
+  @media screen and (min-width: 800px) {
+    width: unset;
+  }
 }
 
 .task-card {
-	width     : 100%;
-	min-width : 100%;
-	min-height: 100%;
-	height    : initial !important;
-	box-sizing: border-box;
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  height: initial !important;
+  box-sizing: border-box;
 }
 
 .task-header {
-	justify-content: space-between;
-	margin-bottom  : 0px;
+  justify-content: space-between;
+  margin-bottom: 0px;
 
-	:host ::ng-deep .mat-mdc-card-header-text {
-		margin: 0px;
-	}
+  :host ::ng-deep .mat-mdc-card-header-text {
+    margin: 0px;
+  }
 }
 
 .task-title {
-	position   : relative;
-	color      : black;
-	float      : left;
-	margin-left: 16px !important;
+  position: relative;
+  color: black;
+  float: left;
+  margin-left: 16px !important;
 }
 :host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-	display: none !important;
+  display: none !important;
 }
 
 .flex-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px; /* Add space between the items */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px; /* Add space between the items */
 }
 
 .flex-item {
-    flex: 1;
-    min-width: 200px; /* Set a minimum width for each item */
-	.gender {
-		::ng-deep .radio-group {
-			flex-direction: row;
-			height: 56px;
-			margin: 0px;
-			align-items: center;
-		}
-	}
+  flex: 1;
+  min-width: 200px; /* Set a minimum width for each item */
+  .gender {
+    ::ng-deep .radio-group {
+      flex-direction: row;
+      height: 56px;
+      margin: 0px;
+      align-items: center;
+    }
+  }
+}
+
+.disable-div {
+  height: fit-content;
+  pointer-events: none;
+  background-color: #f0f0f0;
+  color: #333;
 }
 
 .pt {
-	padding-top: 20px;
+  padding-top: 20px;
 }
 
 .bottom-end-alignment {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    flex-grow: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-grow: 1;
 }
 
 @media (max-width: 768px) {
-    .flex-item {
-        flex: 100%; /* Stack items on smaller screens */
-        min-width: 100%;
-    }
+  .flex-item {
+    flex: 100%; /* Stack items on smaller screens */
+    min-width: 100%;
+  }
 }
