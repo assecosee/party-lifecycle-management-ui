@@ -344,7 +344,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       'extension-data': {
         'registration-profile': this.formGroup.controls['registrationProfile'].value?.literal
       },
-      channel: 'DO',
+      channel: this.getChannel(),
       'creator-id': this.agent.userName,
       'initiating-plan': null
     };
@@ -480,5 +480,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       this.formGroup.controls['dateOfBirth'].setValue(null);
       this.dateOfBirth?.controlDate.setValue(null);
     }
+  }
+  private getChannel() {
+    const username = this.userService.getUsername();
+    const channel = localStorage.getItem('selected_channel_' + username) || 'branch';
+    return channel;
   }
 }
