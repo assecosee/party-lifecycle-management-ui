@@ -12,7 +12,7 @@
         <div class="flex-item">
             <asee-lookup [control]="formGroup.controls['party']" service="party" class="lookup" endPoint="parties/search?search-mode=any&search-fields=registration-number,personal-id-number&page=1&page-size=10&q="
                 responseProperty="parties" labelProperty="contactName" valueProperty="contactName"
-                [label]="'lblSearchParties' | translate : locale.language" auto="true" [sublabels]="['partyNumber']"
+                [label]="'lblSearchParties' | translate : locale.language" auto="true" [sublabels]="['partyNumber','branchIdentifier']"
                 appearance="outline"></asee-lookup>
         </div>
         @if(formGroup.controls['party']?.value?.kind === 'organization'){
