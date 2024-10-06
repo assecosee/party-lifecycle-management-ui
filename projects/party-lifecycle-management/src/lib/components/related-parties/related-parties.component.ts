@@ -7,7 +7,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient,
-  ErrorEmitterService, FormField, LoaderService, 
+  ErrorEmitterService, FormField, LoaderService,
   UIService} from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialConfirmDialogComponent, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
