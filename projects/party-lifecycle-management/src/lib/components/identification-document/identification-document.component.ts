@@ -170,12 +170,7 @@ export class IdentificationDocumentComponent implements OnInit {
     fg.statusChanges.subscribe(status => {
       if (status === 'VALID') {
         // Update the submitDisable flag based on the presence of a duplicated types of ID in form array
-        const hasDuplicateByProperty = (array: any[]): boolean => {
-          const values = array.map(item => item.controls.typeOfID.value.literal);
-          return values.filter((value, index) => values.indexOf(value) !== index).length > 0;
-        };
-
-        this.submitDisable = hasDuplicateByProperty(this.groups.controls);
+        this.submitDisable = this.hasDuplicateByProperty(this.groups.controls);
       }
     });
 
@@ -259,6 +254,9 @@ export class IdentificationDocumentComponent implements OnInit {
   public removeGroup() {
     this.groups.controls.pop();
     this.groups.updateValueAndValidity();
+
+    // Update the submitDisable flag based on the presence of a duplicated types of ID in form array
+    this.submitDisable = this.hasDuplicateByProperty(this.groups.controls);
   }
 
   private setValidatorsConditionally(newValue: any, fg: FormGroup) {
@@ -292,6 +290,11 @@ export class IdentificationDocumentComponent implements OnInit {
     // Use the `filter` method to return only items where `additional-fields.in-use` is "true"
     return identificationTypes.filter((item: any) => item['additional-fields']['in-use'] === 'true');
   }
+
+  private hasDuplicateByProperty = (array: any[]): boolean => {
+    const values = array.map(item => item.controls.typeOfID.value.literal);
+    return values.filter((value, index) => values.indexOf(value) !== index).length > 0;
+  };
 
   private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {
     if (!arrayToSearch) {
