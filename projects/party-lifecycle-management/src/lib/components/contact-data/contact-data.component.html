@@ -10,7 +10,7 @@
         @if(formGroupInitialized){
         <mat-card-content class="pt" [formGroup]="form">
             <div formArrayName="groups">
-                @for (group of groups.controls; track $index){
+                @for (group of groups.controls; track group){
                 <mat-expansion-panel [expanded]="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
@@ -23,8 +23,8 @@
                     <div [formGroup]="group">
                         <div class="flex-container">
                             <div class="flex-item">
-                                <asee-autocomplete [freeFormText]="false" appearance="outline" [control]="group.controls['typeOfContact']"
-                                    [autocompleteList]="contactTypes"
+                                <asee-autocomplete [freeFormText]="false" appearance="outline"
+                                    [control]="group.controls['typeOfContact']" [autocompleteList]="contactTypes"
                                     [label]="'lblTypeOfContact' | translate : locale.language"
                                     filterBehaviour="includes" labelProperty="name" valueProperty="literal"
                                     (click)="markAsTouched('typeOfContact')"

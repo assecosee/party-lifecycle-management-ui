@@ -239,7 +239,7 @@ export class ContactDataComponent implements OnInit {
       if (fg.controls['typeOfContact'].value.literal === 'other-mobile-phone-numbers') {
         if (!newValue.startsWith('+381')) {
           fg.controls['phoneNumber'].clearValidators();
-          fg.controls['phoneNumber'].addValidators([Validators.required, Validators.pattern(/^\+[0-9]{9,10}$/)]);
+          fg.controls['phoneNumber'].addValidators([Validators.required, Validators.pattern(/^\+[0-9]{11,12}$/)]);
         }
       }
 
@@ -251,28 +251,30 @@ export class ContactDataComponent implements OnInit {
 
   public logicToEnsureRequredContactsAreAdded() {
     // Update the submitDisable flag based on the presence of a certain contact type
-    if (!this.isLegalEntity) {
-      this.submitDisable = !this.groups.controls.some(group =>
-        group.controls['typeOfContact']?.value?.literal === 'legal-mobile-phone-number'
-      );
-    }
-
-    if (this.isLegalEntity && this.basisForClientRegistration !== null && this.basisForClientRegistration.toUpperCase() !== 'KLIJENT') {
-      this.submitDisable = !this.groups.controls.some(group =>
-        group.controls['typeOfContact']?.value?.literal === 'legal-mobile-phone-number'
-      );
-    }
-
-    if (this.isRegistrationProcess && this.basisForClientRegistration.toUpperCase() !== 'KLIJENT') {
-      this.submitDisable = !this.groups.controls.some(group =>
-        group.controls['typeOfContact']?.value?.literal === 'other-mail-address'
-      );
-    }
+    const isKLIJENT = this.basisForClientRegistration?.toUpperCase() === 'KLIJENT';
 
     if (this.isRegistrationProcess) {
-      this.submitDisable = !this.groups.controls.some(group =>
-        group.controls['typeOfContact']?.value?.literal === 'legal-mail-address'
-      );
+      const hasLegalMail = this.groups.controls.some(group => group.controls['typeOfContact']?.value?.literal === 'legal-mail-address');
+      const hasOtherMail = this.groups.controls.some(group => group.controls['typeOfContact']?.value?.literal === 'other-mail-address');
+      const hasLegalMobile = this.groups.controls.some(
+        group => group.controls['typeOfContact']?.value?.literal === 'legal-mobile-phone-number');
+
+      this.submitDisable = !hasLegalMail;
+
+      if (isKLIJENT) {
+        this.submitDisable = !(hasLegalMail && hasOtherMail);
+        if (this.isLegalEntity) {
+          this.submitDisable = !(hasLegalMail && hasOtherMail) && hasLegalMobile;
+        }
+      }
+      if (!this.isLegalEntity) {
+        this.submitDisable = !(hasLegalMail && hasLegalMobile);
+      }
+    } else {
+
+      this.submitDisable = !this.isLegalEntity || (this.isLegalEntity && isKLIJENT)
+        ? !this.groups.controls.some(group => group.controls['typeOfContact']?.value?.literal === 'legal-mobile-phone-number')
+        : this.submitDisable;
     }
 
   }
