@@ -146,7 +146,7 @@ export class CustomValidatorsService {
       // Ensure value is a string before checking the format
       const stringValue = String(value);
 
-      
+
 
       if (!this.parsePersonalNumber(stringValue)) {
         return { invalidRegistrationNumber: true };
@@ -166,14 +166,14 @@ export class CustomValidatorsService {
   //     const day = parseInt(jmbg.substring(0, 2), 10);
   //     const month = parseInt(jmbg.substring(2, 4), 10) - 1;
   //     let year = parseInt(jmbg.substring(4, 7), 10);
-  
+
   //     // Ako je vrednost godine manja od 800, onda je 2000-ti vek, inače 1900-ti
   //     if (year < 800) {
   //       year = 2000 + year;
   //     } else {
   //       year = 1000 + year;
   //     }
-  
+
   //     if (this.validDate(new Date(year, month, day))) {
   //       return (
   //         /^60|66$/.test(jmbg.substring(7, 9)) ||
@@ -214,7 +214,7 @@ export class CustomValidatorsService {
     }
     return false;
   }
-  
+
   // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
   private static checkPersonalNumber(
     day: number,
@@ -233,7 +233,7 @@ export class CustomValidatorsService {
       return true;
     }
   }
-  
+
 
   // Validator to disallow slashes in any text input
   static validateRegNumLegalEntity(): ValidatorFn {
