@@ -346,4 +346,16 @@ export class CustomValidatorsService {
       return isValid ? null : { invalidFormat: true };
     };
   }
+
+  static checkUndefined(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      if (typeof value === 'undefined') {
+        return { invalidValue: true };
+      }
+
+      return null;
+    };
+  }
 }

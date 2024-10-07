@@ -98,11 +98,11 @@ export class GeneralRegistrationDataComponent implements OnInit {
     },
     {
       key: 'maritalStatus',
-      validators: [],
+      validators: [CustomValidatorsService.checkUndefined()],
     },
     {
       key: 'propertyOwnership',
-      validators: [],
+      validators: [CustomValidatorsService.checkUndefined()],
     },
     {
       key: 'onAddressFrom',

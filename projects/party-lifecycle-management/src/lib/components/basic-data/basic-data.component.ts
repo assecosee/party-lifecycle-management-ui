@@ -113,7 +113,7 @@ export class BasicDataComponent implements OnInit, DoCheck {
     },
     {
       key: 'subjectTypeInAPR',
-      validators: []
+      validators: [CustomValidatorsService.checkUndefined()]
     },
     {
       key: 'clientActivity',

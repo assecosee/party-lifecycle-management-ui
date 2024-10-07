@@ -13,6 +13,7 @@ import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { CustomValidatorsService } from '../../services/custom-validators.service';
 
 @Component({
   selector: 'additional-data',
@@ -45,9 +46,9 @@ export class AdditionalDataComponent implements OnInit {
     { key: 'treatmentDateValidFrom', validators: [Validators.required] },
     { key: 'tariffGroupOfClientCommissions', validators: [Validators.required] },
     { key: 'tarrifDateValidFrom', validators: [Validators.required] },
-    { key: 'accountManager', validators: [] },
-    { key: 'backupAccountManager', validators: [] },
-    { key: 'classificationAccordingToNBS', validators: [] },
+    { key: 'accountManager', validators: [CustomValidatorsService.checkUndefined()] },
+    { key: 'backupAccountManager', validators: [CustomValidatorsService.checkUndefined()] },
+    { key: 'classificationAccordingToNBS', validators: [CustomValidatorsService.checkUndefined()] },
     { key: 'note', validators: [] },
     { key: 'sectoralDivisionUSSPO', validators: [] },
     { key: 'riskLevel', validators: [] },

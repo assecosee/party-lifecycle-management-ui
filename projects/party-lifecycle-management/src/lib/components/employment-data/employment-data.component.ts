@@ -14,6 +14,7 @@ import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/c
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { PartyService } from '../../services/party.service';
+import { CustomValidatorsService } from '../../services/custom-validators.service';
 
 @Component({
   selector: 'employment-data',
@@ -32,15 +33,15 @@ export class EmploymentDataComponent implements OnInit {
   public formFields: FormField[] = [];
   public formKeys = [
     { key: 'employmentStatus', validators: [Validators.required] },
-    { key: 'legalStatusOfIndividualPerson', validators: [] },
+    { key: 'legalStatusOfIndividualPerson', validators: [CustomValidatorsService.checkUndefined()] },
     { key: 'companyRegistrationNumber', validators: [] },
     { key: 'companyOrganizationPart', validators: [] },
     { key: 'companyRegisteredName', validators: [] },
     { key: 'occupationTitle', validators: [] },
     { key: 'employedSince', validators: [] },
     { key: 'workExperience', validators: [] },
-    { key: 'levelOfEducation', validators: [] },
-    { key: 'companyPositionCode', validators: [] },
+    { key: 'levelOfEducation', validators: [CustomValidatorsService.checkUndefined()] },
+    { key: 'companyPositionCode', validators: [CustomValidatorsService.checkUndefined()] },
   ];
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;

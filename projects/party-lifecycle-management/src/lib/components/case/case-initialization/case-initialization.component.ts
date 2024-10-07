@@ -14,6 +14,7 @@ import { MaterialCustomerActionsComponent } from '../../../utils/customer-action
 import { UppercaseDirective } from '../../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../../utils/error-handling/error-handling.component';
 import { PartySelectionComponent } from './party-selection/party-selection.component';
+import { CustomValidatorsService } from '../../../services/custom-validators.service';
 
 @Component({
   selector: 'party-lcm-case-initialization',
@@ -214,7 +215,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   private initFormGroup(isInitial: boolean = false) {
     this.formGroupInitialized = false;
     let typeOfClientControl = new AseeFormControl(JSON.parse(this.getFormFieldValue('typeOfClient')), Validators.required) as any;
-    let identificationDocumentsControl = new AseeFormControl(JSON.parse(this.getFormFieldValue('identificationDocuments'))) as any;
+    let identificationDocumentsControl = new AseeFormControl(
+      JSON.parse(this.getFormFieldValue('identificationDocuments') ?? null),
+      CustomValidatorsService.checkUndefined()
+    ) as any;
 
     // If init form group is not initial call then restore previous type of client
     if (!isInitial) {
@@ -276,12 +280,6 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
         this.formGroup.controls[formKey.key].updateValueAndValidity();
       }
     });
-
-    if (this.isIndividualPerson) {
-      this.formGroup.controls['identificationDocuments'].setValue(this.individualPersonOptionsList);
-    } else {
-      this.formGroup.controls['identificationDocuments'].setValue(this.legalPersonOptionsList);
-    }
 
     if (this.bapoClientKind) {
       const val = this.findItemByProperty(this.typeOfClientList, 'name', this.bapoClientKind === 'individual' ? 'FL' : 'PL');
@@ -626,4 +624,5 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     const channel = localStorage.getItem('selected_channel_' + username) || 'branch';
     return channel;
   }
+
 }

@@ -14,6 +14,7 @@ import { ReferenceService } from '../../services/reference.service';
 import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
+import { CustomValidatorsService } from '../../services/custom-validators.service';
 
 @Component({
   selector: 'financial-data',
@@ -31,9 +32,9 @@ export class FinancialDataComponent implements OnInit {
   public formGroup: FormGroup = new FormGroup({});
   public formFields: FormField[] = [];
   public formKeys = [
-    { key: 'clientCategory', validators: [] },
+    { key: 'clientCategory', validators: [CustomValidatorsService.checkUndefined()] },
     { key: 'financialDataDate', validators: [] },
-    { key: 'currency', validators: [] },
+    { key: 'currency', validators: [CustomValidatorsService.checkUndefined()] },
     { key: 'grossIncome', validators: [] },
     { key: 'netIncome', validators: [] },
     { key: 'financialDataChangeOperator', validators: [] },

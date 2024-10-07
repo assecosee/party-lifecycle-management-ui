@@ -11,6 +11,7 @@ import { MaterialCustomerActionsComponent } from '../../utils/customer-actions/c
 import { UppercaseDirective } from '../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../utils/error-handling/error-handling.component';
 import { PartyService } from '../../services/party.service';
+import { CustomValidatorsService } from '../../services/custom-validators.service';
 
 @Component({
   selector: 'lib-company-profile',
@@ -44,18 +45,18 @@ export class CompanyProfileComponent implements OnInit {
   public isRegistrationProcess = false;
   public formKeysLegalEntity = [
     { key: 'dateOfRegistration', validators: [Validators.required] },
-    { key: 'activityCode', validators: [] },
+    { key: 'activityCode', validators: [CustomValidatorsService.checkUndefined()] },
     { key: 'alignmentWithApr', validators: [] },
     { key: 'identificationNumber', validators: [] },
     { key: 'codeOfBranchPredominantActivity', validators: [] },
     { key: 'statusOfLegalEntity', validators: [Validators.required] },
-    { key: 'sizeOfLegalEntity', validators: [] },
-    { key: 'typeOfProperty', validators: [] },
+    { key: 'sizeOfLegalEntity', validators: [CustomValidatorsService.checkUndefined()] },
+    { key: 'typeOfProperty', validators: [CustomValidatorsService.checkUndefined()] },
     { key: 'bicCode', validators: [] },
     { key: 'emirLei', validators: [] },
-    { key: 'naceCodeCustomer', validators: [] },
-    { key: 'naceCodeRisk', validators: [] },
-    { key: 'crmIndCode', validators: [] },
+    { key: 'naceCodeCustomer', validators: [CustomValidatorsService.checkUndefined()] },
+    { key: 'naceCodeRisk', validators: [CustomValidatorsService.checkUndefined()] },
+    { key: 'crmIndCode', validators: [CustomValidatorsService.checkUndefined()] },
   ];
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
