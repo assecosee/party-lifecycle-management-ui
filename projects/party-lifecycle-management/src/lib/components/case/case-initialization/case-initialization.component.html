@@ -11,40 +11,21 @@
     <mat-card-content class="pt">
       <div class="flex-container">
         <div class="flex-item">
-          <asee-autocomplete [freeFormText]="false"
-            #typeOfClientAutocomplete
-            appearance="outline"
-            [control]="formGroup.controls['typeOfClient']"
-            [autocompleteList]="typeOfClientList"
-            [label]="'lblTypeOfClient' | translate : locale.language"
-            filterBehaviour="includes"
-            labelProperty="name"
-            valueProperty="name"
-            (click)="markAsTouched('typeOfClient')"
-          ></asee-autocomplete>
-          <error-handling
-            [control]="formGroup.controls['typeOfClient']"
-          ></error-handling>
+          <asee-autocomplete [freeFormText]="false" #typeOfClientAutocomplete appearance="outline"
+            [control]="formGroup.controls['typeOfClient']" [autocompleteList]="typeOfClientList"
+            [label]="'lblTypeOfClient' | translate : locale.language" filterBehaviour="includes" labelProperty="name"
+            valueProperty="name" (click)="markAsTouched('typeOfClient')"></asee-autocomplete>
+          <error-handling [control]="formGroup.controls['typeOfClient']"></error-handling>
         </div>
         <div [class]="!readonlyRP ? 'flex-item' : 'flex-item disable-div'">
-          <asee-autocomplete [freeFormText]="false"
-            #basisOfReg
-            [readonly]="readonlyRP"
-            [autocompleteList]="basisOptions"
-            labelProperty="description"
-            valueProperty="literal"
-            filterBehaviour="includes"
-            appearance="outline"
-            [control]="formGroup.controls['registrationProfile']"
+          <asee-autocomplete [freeFormText]="false" #basisOfReg [readonly]="readonlyRP"
+            [autocompleteList]="basisOptions" labelProperty="description" valueProperty="literal"
+            filterBehaviour="includes" appearance="outline" [control]="formGroup.controls['registrationProfile']"
             [label]="
               'lblRegistrationProfile' | translate : locale.language
-            "
-            (click)="markAsTouched('registrationProfile')"
-          >
+            " (click)="markAsTouched('registrationProfile')">
           </asee-autocomplete>
-          <error-handling
-            [control]="formGroup.controls['registrationProfile']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['registrationProfile']"></error-handling>
         </div>
       </div>
       <div class="border"></div>
@@ -56,72 +37,44 @@
       formGroup.controls['typeOfClient'].value['name'] == 'FL'){
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete [freeFormText]="false"
-            #identificationDocumentsAutocomplete
-            appearance="outline"
-            [control]="formGroup.controls['identificationDocuments']"
-            [autocompleteList]="individualPersonOptionsList"
-            [label]="'lblIdentificationDocuments' | translate : locale.language"
-            filterBehaviour="includes"
-            labelProperty="name"
-            valueProperty="name"
-            (click)="markAsTouched('identificationDocuments')"
-          ></asee-autocomplete>
-          <error-handling
-            [control]="formGroup.controls['identificationDocuments']"
-          ></error-handling>
+          <asee-autocomplete [freeFormText]="false" #identificationDocumentsAutocomplete appearance="outline"
+            [control]="formGroup.controls['identificationDocuments']" [autocompleteList]="individualPersonOptionsList"
+            [label]="'lblIdentificationDocuments' | translate : locale.language" filterBehaviour="includes"
+            labelProperty="name" valueProperty="name"
+            (click)="markAsTouched('identificationDocuments')"></asee-autocomplete>
+          <error-handling [control]="formGroup.controls['identificationDocuments']"></error-handling>
         </div>
         @if(formGroup.controls['identificationDocuments']?.value?.literal ===
         "jmbg"){
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['jmbg']"
-            [label]="'lblJmbg' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['jmbg']"
+            [label]="'lblJmbg' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['jmbg']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['jmbg']"></error-handling>
         </div>
         } @else if(formGroup.controls['identificationDocuments']?.value?.literal
         === "broj-lk"){
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['registrationNumber']"
-            [label]="'lblRegistrationNumber' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['registrationNumber']"
+            [label]="'lblRegistrationNumber' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['registrationNumber']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['registrationNumber']"></error-handling>
         </div>
         } @else if(formGroup.controls['identificationDocuments']?.value?.literal
         === "broj-pasosa"){
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['passportNumber']"
-            [label]="'lblPassportNumber' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['passportNumber']"
+            [label]="'lblPassportNumber' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['passportNumber']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['passportNumber']"></error-handling>
         </div>
         } @else if(formGroup.controls['identificationDocuments']?.value?.literal
         === "id-komitenta"){
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['clientId']"
-            [label]="'lblClientId' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['clientId']"
+            [label]="'lblClientId' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['clientId']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['clientId']"></error-handling>
         </div>
         } @else {
         <div class="flex-item"></div>
@@ -130,49 +83,41 @@
       <div class="border"></div>
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['customerName']"
-            [label]="'lblCustomerName' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['customerName']"
+            [label]="'lblCustomerName' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['customerName']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['customerName']"></error-handling>
         </div>
         <div class="flex-item">
-          <asee-datepicker
-            #clientDateOfBirthPicker
-            appearance="outline"
-            [control]="formGroup.controls['dateOfBirth']"
-            (click)="markAsTouched('dateOfBirth')"
-            (input)="checkValue($event)"
-            startView="month"
-            [label]="'lblDateOfBirth' | translate : locale.language"
-            [max]="maxDate"
-          ></asee-datepicker>
-          <error-handling
-            [control]="formGroup.controls['dateOfBirth']"
-          ></error-handling>
+          <asee-datepicker #clientDateOfBirthPicker appearance="outline" [control]="formGroup.controls['dateOfBirth']"
+            (click)="markAsTouched('dateOfBirth')" (input)="checkValue($event)" startView="month"
+            [label]="'lblDateOfBirth' | translate : locale.language" [max]="maxDate"></asee-datepicker>
+          <error-handling [control]="formGroup.controls['dateOfBirth']"></error-handling>
         </div>
       </div>
+      @if (selectedUser && this.formGroup.controls["registrationProfile"] && this.formGroup.controls["registrationProfile"].value) {
+        <div class="flex-container pt">
+          <div class="flex-item">
+            <asee-autocomplete [freeFormText]="false" #processSelectionAutocomplete
+          [control]="formGroup.controls['selectedProcess']" [autocompleteList]="processSelectionList"
+          [label]="'lblSelectedProcess' | translate : locale.language" filterBehaviour="includes" labelProperty="name"
+          valueProperty="name" appearance="outline" (click)="markAsTouched('selectedProcess')"></asee-autocomplete>
+          <error-handling [control]="formGroup.controls['selectedProcess']"></error-handling>
+          </div>
+          <div class="flex-item"></div>
+        </div>
+      }
       @if(selectedUser){
       <div class="flex-container-without-gap pt">
         <div>
-          <button
-            color="primary"
-            mat-icon-button
-            (click)="removeSelectedUser()"
-            [title]="'Ukloni odabranog klijenta' | translate : locale.language"
-          >
+          <button color="primary" mat-icon-button (click)="removeSelectedUser()"
+            [title]="'Ukloni odabranog klijenta' | translate : locale.language">
             <mat-icon class="filterIcon">close</mat-icon>
           </button>
         </div>
         <div class="flex-item-text">
-          <b
-            >{{ "Odabrani klijent:" | translate : locale.language }}
-            {{ selectedUser["contactName"] }}</b
-          >
+          <b>{{ "Odabrani klijent:" | translate : locale.language }}
+            {{ selectedUser["contactName"] }}</b>
         </div>
       </div>
       } } @if(formGroup.controls['typeOfClient'] &&
@@ -180,20 +125,12 @@
       formGroup.controls['typeOfClient'].value['name'] == 'PL'){
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-autocomplete [freeFormText]="false"
-            #identificationDocumentsAutocomplete
-            appearance="outline"
-            [control]="formGroup.controls['identificationDocuments']"
-            [autocompleteList]="legalPersonOptionsList"
-            [label]="'lblIdentificationDocuments' | translate : locale.language"
-            filterBehaviour="includes"
-            labelProperty="name"
-            valueProperty="name"
-            (click)="markAsTouched('identificationDocuments')"
-          ></asee-autocomplete>
-          <error-handling
-            [control]="formGroup.controls['identificationDocuments']"
-          ></error-handling>
+          <asee-autocomplete [freeFormText]="false" #identificationDocumentsAutocomplete appearance="outline"
+            [control]="formGroup.controls['identificationDocuments']" [autocompleteList]="legalPersonOptionsList"
+            [label]="'lblIdentificationDocuments' | translate : locale.language" filterBehaviour="includes"
+            labelProperty="name" valueProperty="name"
+            (click)="markAsTouched('identificationDocuments')"></asee-autocomplete>
+          <error-handling [control]="formGroup.controls['identificationDocuments']"></error-handling>
         </div>
         <div class="flex-item"></div>
       </div>
@@ -202,26 +139,16 @@
       "mbr-org"){
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['mbrNumber']"
-            [label]="'lblMbrNumber' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['mbrNumber']"
+            [label]="'lblMbrNumber' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['mbrNumber']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['mbrNumber']"></error-handling>
         </div>
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['organizationNumber']"
-            [label]="'lblOrganizationNumber' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['organizationNumber']"
+            [label]="'lblOrganizationNumber' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['organizationNumber']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['organizationNumber']"></error-handling>
         </div>
       </div>
 
@@ -229,15 +156,10 @@
       "pib"){
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['pib']"
-            [label]="'lblPib' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['pib']"
+            [label]="'lblPib' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['pib']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['pib']"></error-handling>
         </div>
         <div class="flex-item"></div>
       </div>
@@ -246,14 +168,9 @@
       "id-komitenta"){
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['clientId']"
-            [label]="'lblClientId' | translate : locale.language"
-          ></asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['clientId']"
-          ></error-handling>
+          <asee-text-input appearance="outline" [control]="formGroup.controls['clientId']"
+            [label]="'lblClientId' | translate : locale.language"></asee-text-input>
+          <error-handling [control]="formGroup.controls['clientId']"></error-handling>
         </div>
         <div class="flex-item"></div>
       </div>
@@ -262,35 +179,34 @@
 
       <div class="flex-container pt">
         <div class="flex-item">
-          <asee-text-input
-            appearance="outline"
-            [control]="formGroup.controls['nameOfPl']"
-            [label]="'lblNameOfPl' | translate : locale.language"
-          >
+          <asee-text-input appearance="outline" [control]="formGroup.controls['nameOfPl']"
+            [label]="'lblNameOfPl' | translate : locale.language">
           </asee-text-input>
-          <error-handling
-            [control]="formGroup.controls['nameOfPl']"
-          ></error-handling>
+          <error-handling [control]="formGroup.controls['nameOfPl']"></error-handling>
         </div>
+        @if (selectedUser && this.formGroup.controls["registrationProfile"] && this.formGroup.controls["registrationProfile"].value) {
+          <div class="flex-item">
+            <asee-autocomplete [freeFormText]="false" #processSelectionAutocomplete
+          [control]="formGroup.controls['selectedProcess']" [autocompleteList]="processSelectionList"
+          [label]="'lblSelectedProcess' | translate : locale.language" filterBehaviour="includes" labelProperty="name"
+          valueProperty="name" appearance="outline" (click)="markAsTouched('selectedProcess')"></asee-autocomplete>
+          <error-handling [control]="formGroup.controls['selectedProcess']"></error-handling>
+          </div>
+        } @else {
         <div class="flex-item"></div>
+        }
       </div>
       @if(selectedUser){
       <div class="flex-container-without-gap pt">
         <div>
-          <button
-            color="primary"
-            mat-icon-button
-            (click)="removeSelectedUser()"
-            [title]="'Ukloni odabranog klijenta' | translate : locale.language"
-          >
+          <button color="primary" mat-icon-button (click)="removeSelectedUser()"
+            [title]="'Ukloni odabranog klijenta' | translate : locale.language">
             <mat-icon class="filterIcon">close</mat-icon>
           </button>
         </div>
         <div class="flex-item-text">
-          <b
-            >{{ "Odabrani klijent:" | translate : locale.language }}
-            {{ selectedUser["contactName"] }}</b
-          >
+          <b>{{ "Odabrani klijent:" | translate : locale.language }}
+            {{ selectedUser["contactName"] }}</b>
         </div>
       </div>
       } }
@@ -299,26 +215,13 @@
     formGroup.controls['typeOfClient'].value &&
     formGroup.controls['typeOfClient'].value['name']){
     <div class="bottom-end-alignment">
-      <button
-        mat-button
-        class="pt"
-        color="primary"
-        (click)="
+      <button mat-button class="pt" color="primary" (click)="
           send(formGroup.controls['identificationDocuments']?.value?.literal)
-        "
-        translate
-      >
+        " translate>
         {{ "lblSearch" | translate : locale.language }}
       </button>
-      <button
-        mat-button
-        [disabled]="!formGroup.valid"
-        (click)="createRequest()"
-        class="pt"
-        color="primary"
-        translate
-      >
-        {{ "lblCreateRequest" | translate : locale.language }}
+      <button mat-button [disabled]="!formGroup.valid" (click)="createRequest(formGroup.controls['identificationDocuments']?.value?.literal)" class="pt" color="primary" translate>
+        {{ selectedUser != null ? "lblCreateDataUpdateRequest" : "lblCreateNewRequest" | translate : locale.language }}
       </button>
     </div>
     } }

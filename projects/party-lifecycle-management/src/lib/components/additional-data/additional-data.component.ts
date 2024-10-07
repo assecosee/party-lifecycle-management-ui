@@ -155,7 +155,7 @@ export class AdditionalDataComponent implements OnInit {
     });
 
     this.formGroup.controls['basisForClientRegistration'].valueChanges.subscribe(basis => {
-      if (basis === 'klijent') {
+      if (basis === 'customer') {
         this.formGroup.controls['accountManager'].addValidators(Validators.required);
       }
     });

@@ -1,19 +1,19 @@
 import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild, inject } from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AseeFormControl, FormField, UIService, UserService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialAutocompleteComponent, MaterialDatepickerComponent, MaterialModule } from '@asseco/components-ui';
-import { L10nTranslationModule, L10nIntlModule, L10nLocale, L10N_LOCALE, L10nTranslationService } from 'angular-l10n';
+import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule, L10nTranslationService } from 'angular-l10n';
+import { catchError, forkJoin, of, tap } from 'rxjs';
+import { OfferService } from '../../../services/offer.service';
+import { PartyLcmService } from '../../../services/party-lcm.service';
+import { PartyService } from '../../../services/party.service';
 import { MaterialCustomerActionsComponent } from '../../../utils/customer-actions/customer-actions.component';
 import { UppercaseDirective } from '../../../utils/directives/uppercase-directive';
 import { ErrorHandlingComponent } from '../../../utils/error-handling/error-handling.component';
-import { AseeFormControl, FormField, UIService, UserService } from '@asseco/common-ui';
-import { catchError, forkJoin, of, tap } from 'rxjs';
-import { FormGroup, Validators } from '@angular/forms';
-import { OfferService } from '../../../services/offer.service';
-import { PartyService } from '../../../services/party.service';
-import { MatDialog } from '@angular/material/dialog';
 import { PartySelectionComponent } from './party-selection/party-selection.component';
-import { PartyLcmService } from '../../../services/party-lcm.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'party-lcm-case-initialization',
@@ -32,8 +32,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   private bapoIdentificationDocumentNumber: any = null;
   private bapoRegistrationProfile: any = null;
   private bapoClientKind: any = null;
+  private bapoBranchIdentifier: any = null;
   private agentHasRegistrationRole = false;
   private agentHasDataUpdateRole = false;
+  private agentHasAmlRole = false;
   public readonlyRP = false;
   public basisOptions = [{}];
   public selectedUser: any;
@@ -43,6 +45,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   public typeOfClientList: any = [{ name: 'FL' }, { name: 'PL' }];
   public individualPersonOptionsList: any = [];
   public legalPersonOptionsList: any = [];
+  public processSelectionList: any = [];
+  public initialProcessSelectionList: any = [];
   public formFields: FormField[] = [];
   public formGroup: FormGroup = new FormGroup({});
   public maxDate = new Date();
@@ -78,6 +82,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     {
       key: 'registrationProfile',
       validators: [Validators.required]
+    },
+    {
+      key: 'selectedProcess',
+      validators: []
     }
   ];
   public formKeysLegalEntity = [
@@ -104,6 +112,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     {
       key: 'registrationProfile',
       validators: [Validators.required]
+    },
+    {
+      key: 'selectedProcess',
+      validators: [Validators.required]
     }
   ];
   public isIndividualPerson = false;
@@ -124,6 +136,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     this.agent = this.userService.getUserData();
     this.agentHasRegistrationRole = this.agent.roles.some((item: string) => item.includes('DO_Agent_Maticenje'));
     this.agentHasDataUpdateRole = this.agent.roles.some((item: string) => item.includes('DO_Agent_Azuriranje'));
+    this.agentHasAmlRole = this.agent.roles.some((item: string) => item.includes('DO_AML'));
   }
 
   ngOnInit(): void {
@@ -132,17 +145,27 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       this.bapoTypeOfIdentificationDocument = params['id-kind'] || null;
       this.bapoIdentificationDocumentNumber = params['id-number'] || null;
       this.bapoRegistrationProfile = params['registration-profile'] || null;
+      this.bapoBranchIdentifier = params['branch-identifier'] || null;
     });
     // Combine multiple HTTP requests using forkJoin
     forkJoin({
       individualPersonOptions: this.offerService.getClassification('individual-person-options'),
       legalPersonOptions: this.offerService.getClassification('legal-person-options'),
-      basis: this.partyService.getRegistrationProfiles()
+      basis: this.partyService.getRegistrationProfiles(),
+      processOptions: this.offerService.getClassification('agent-process-choose')
     }).pipe(
-      tap(({ individualPersonOptions, legalPersonOptions, basis }) => {
+      tap(({ individualPersonOptions, legalPersonOptions, basis, processOptions }) => {
         this.individualPersonOptionsList = individualPersonOptions.values;
         this.legalPersonOptionsList = legalPersonOptions.values;
         this.basisOptions = basis.values.filter((item: any) => item.literal);
+        this.processSelectionList = processOptions.values;
+
+        if (!this.agentHasAmlRole) {
+          this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'recalculation-of-risk-level');
+        }
+
+        this.initialProcessSelectionList = processOptions.values;
+
         this.initFormGroup(true);
       }),
       catchError(error => {
@@ -162,8 +185,20 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       this.bapoIdentificationDocumentNumber = null;
       this.bapoClientKind = null;
       this.bapoRegistrationProfile = null;
+      this.bapoBranchIdentifier = null;
       this.selectedUser = null;
       this.setRegistrationProfile();
+    }
+    if (this.selectedUser != null) {
+      this.formGroup.controls['selectedProcess'].addValidators(Validators.required);
+      this.formGroup.controls['selectedProcess'].updateValueAndValidity();
+      this.formGroup.controls['selectedProcess'].markAsTouched();
+    } else {
+      if (this.formGroup.controls['selectedProcess']) {
+        this.formGroup.controls['selectedProcess'].clearValidators();
+        this.formGroup.controls['selectedProcess'].updateValueAndValidity();
+        this.formGroup.controls['selectedProcess'].markAsTouched();
+      }
     }
   }
 
@@ -184,11 +219,16 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     this.formGroup.addControl('typeOfClient', typeOfClientControl);
     this.formGroup.addControl('identificationDocuments', identificationDocumentsControl);
 
-    const formKeys = this.formGroup.controls['typeOfClient'].value
+
+    let formKeys = this.formGroup.controls['typeOfClient'].value
       && this.formGroup.controls['typeOfClient'].value.name === 'PL' ? this.formKeysLegalEntity : this.formKeysIndividualPerson;
     this.isIndividualPerson = this.formGroup.controls['typeOfClient'].value
       && this.formGroup.controls['typeOfClient'].value.name === 'PL' ? false : true;
 
+    if (isInitial && this.bapoClientKind) {
+      this.isIndividualPerson = this.bapoClientKind === 'individual' ? true : false;
+      formKeys = this.bapoClientKind === 'individual' ? this.formKeysIndividualPerson : this.formKeysLegalEntity;
+    }
 
     // Create controls
     formKeys.forEach(formKey => {
@@ -196,6 +236,20 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
         const control = new AseeFormControl(null, formKey.validators);
         this.formGroup.addControl(formKey.key, control);
         this.formGroup.controls[formKey.key].updateValueAndValidity();
+      }
+    });
+
+    this.formGroup.controls['registrationProfile'].valueChanges.subscribe(newValue => {
+      this.formGroup.controls['selectedProcess'].setValue(null);
+      this.formGroup.controls['selectedProcess'].updateValueAndValidity();
+      this.formGroup.controls['selectedProcess'].markAsTouched();
+      if (newValue && newValue.literal) {
+        if (newValue.literal === 'customer' || newValue.literal === 'counter-party') {
+          this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'kyc-renewal');
+          this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'recalculation-of-risk-level');
+        }
+      } else {
+        this.processSelectionList = this.initialProcessSelectionList;
       }
     });
 
@@ -224,6 +278,11 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       const val = this.findItemByProperty(this.typeOfClientList, 'name', this.bapoClientKind === 'individual' ? 'FL' : 'PL');
       this.formGroup.controls['typeOfClient']?.setValue(val);
       this.previousValue = val;
+
+    }
+
+    if (this.bapoRegistrationProfile) {
+      this.setRegistrationProfile(this.bapoRegistrationProfile);
     }
 
     if (this.bapoTypeOfIdentificationDocument) {
@@ -237,16 +296,16 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       } as const;
       const documentKey = this.bapoTypeOfIdentificationDocument as keyof typeof documentMap;
       const documentValue = documentMap[documentKey];
+
       this.formGroup.controls['identificationDocuments']?.setValue(
         this.findItemByProperty(this.isIndividualPerson ?
           this.individualPersonOptionsList : this.legalPersonOptionsList, 'literal', documentValue.literal));
       if (this.bapoIdentificationDocumentNumber) {
         this.formGroup.controls[documentValue.formControl]?.setValue(this.bapoIdentificationDocumentNumber);
       }
-    }
-
-    if (this.bapoRegistrationProfile) {
-      this.setRegistrationProfile(this.bapoRegistrationProfile);
+      if (documentValue.formControl === 'mbrNumber' && this.bapoBranchIdentifier) {
+        this.formGroup.controls['organizationNumber']?.setValue(this.bapoBranchIdentifier);
+      }
     }
 
     if (!isInitial) {
@@ -271,6 +330,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     }
 
     return null;
+  }
+
+  private removeByProperty(array: [], property: string, value: string) {
+    return array.filter(item => item[property] !== value);
   }
 
   private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {
@@ -324,27 +387,81 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     this.setRegistrationProfile();
   }
 
-  createRequest() {
-    const isRegistrationProcess = this.selectedUser && this.selectedUser.partyNumber ? false: true;
-    if(!isRegistrationProcess && !this.agentHasDataUpdateRole){
+  createRequest(selectedIdentificationDocument: string) {
+    const isRegistrationProcess = this.selectedUser && this.selectedUser.partyNumber ? false : true;
+    const selectedProcess = this.formGroup.controls['selectedProcess'] &&
+    this.formGroup.controls['selectedProcess'].value ? this.formGroup.controls['selectedProcess'].value.literal : null;
+    let caseType = '';
+    if (!isRegistrationProcess && !this.agentHasDataUpdateRole) {
       this.openSnackBar('Nemate rolu za ažuriranje podataka klijenta', 'OK');
       return;
     }
-    if(isRegistrationProcess && !this.agentHasRegistrationRole){
+    if (isRegistrationProcess && !this.agentHasRegistrationRole) {
       this.openSnackBar('Nemate rolu za matičenje klijenta', 'OK');
       return;
     }
+
+    if (this.selectedUser == null) {
+      caseType = this.isIndividualPerson
+        ? 'individual-onboarding'
+        : 'organization-onboarding';
+    } else if (selectedProcess != null) {
+      switch (selectedProcess) {
+        case 'data-update':
+          caseType = this.isIndividualPerson
+            ? 'individual-update'
+            : 'organization-update';
+          break;
+        case 'kyc-renewal':
+          caseType = this.isIndividualPerson
+            ? 'individual-kyc-renew'
+            : 'organization-kyc-renew';
+          break;
+        case 'recalculation-of-risk-level':
+          caseType = this.isIndividualPerson
+            ? 'individual-risk-assessment-renew'
+            : 'organization-risk-assessment-renew';
+          break;
+        default:
+          break;
+      }
+    }
+
+    let selectedDocumentNumber = null;
+    let selectedDocumentKind = null;
+
+
+    if (selectedIdentificationDocument) {
+      const documentMap = {
+        jmbg: { formControl: 'jmbg', kind: 'personal-id-number' },
+        'broj-lk': { formControl: 'registrationNumber', kind: 'identity-card-number' },
+        'broj-pasosa': { formControl: 'passportNumber', kind: 'passport-number' },
+        'id-komitenta': { formControl: 'clientId', kind: 'id' },
+        'mbr-org': { formControl: 'mbrNumber', kind: 'registration-number' },
+        pib: { formControl: 'pib', kind: 'tax-id-number' }
+      } as const;
+      const documentKey = selectedIdentificationDocument as keyof typeof documentMap;
+      const documentValue = documentMap[documentKey];
+      selectedDocumentKind = documentValue.kind;
+      selectedDocumentNumber = this.formGroup.controls[documentValue.formControl].value;
+      if (documentValue.formControl === 'mbrNumber' && this.formGroup.controls['organizationNumber'].value) {
+        selectedDocumentNumber += '|' + this.formGroup.controls['organizationNumber'].value;
+      }
+    }
+
     const payload = {
-      type: 'individual-onboarding',
+      type: caseType,
       'party-reference': {
         'party-number': this.selectedUser && this.selectedUser.partyNumber ? this.selectedUser.partyNumber : null,
-        'party-name': this.selectedUser && this.selectedUser.fullName ? this.selectedUser.fullName : null,
+        'party-name': this.selectedUser && this.selectedUser.contactName ? this.selectedUser.contactName : null,
         'party-kind': this.selectedUser && this.selectedUser.kind ?
           this.selectedUser.kind : this.isIndividualPerson ? 'individual' : 'organization',
         'party-identification-number': this.selectedUser
-          && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.number : null,
+          && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.number :
+          selectedDocumentNumber ? selectedDocumentNumber : null,
         'party-identification-kind': this.selectedUser
-          && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.kind : null
+          && this.selectedUser.primaryId.number ? this.selectedUser.primaryId.kind :
+          selectedDocumentKind ? selectedDocumentKind : null
       },
       priority: 'high',
       'extension-data': {
@@ -420,8 +537,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
 
     // Add dateOfBirth if it exists
     if (dateOfBirth) {
-      const dob = dateOfBirth.toLocaleString('sv-SE', { timeZone: 'Europe/Berlin' }).replace(' ', 'T');
-      queryParams += queryParams.includes('?') ? `&birth-date=${dob}` : `?birth-date=${dob}`;
+      const birthDate = dateOfBirth.toLocaleString('sv-SE', { timeZone: 'Europe/Berlin' }).replace(' ', 'T');
+      queryParams += queryParams.includes('?') ? `&birth-date=${birthDate}` : `?birth-date=${birthDate}`;
     }
 
     // Log or send the queryParams only if there's a valid query
@@ -470,8 +587,8 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     }
   }
 
-  setRegistrationProfile(value: any = null){
-    if(value) {
+  setRegistrationProfile(value: any = null) {
+    if (value) {
       const val = this.basisOptions.find((item: any) => item.literal === value);
       this.formGroup.controls['registrationProfile'].setValue(val);
       this.basisOfReg?.controlInternal.setValue(val);
@@ -484,7 +601,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   }
 
   checkValue(val: any) {
-    if(!val.target.value){
+    if (!val.target.value) {
       this.formGroup.controls['dateOfBirth'].setValue(null);
       this.dateOfBirth?.controlDate.setValue(null);
     }

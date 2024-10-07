@@ -251,7 +251,7 @@ export class ContactDataComponent implements OnInit {
 
   public logicToEnsureRequredContactsAreAdded() {
     // Update the submitDisable flag based on the presence of a certain contact type
-    const isKLIJENT = this.basisForClientRegistration?.toUpperCase() === 'KLIJENT';
+    const isCustomer = this.basisForClientRegistration?.toUpperCase() === 'customer';
 
     if (this.isRegistrationProcess) {
       const hasLegalMail = this.groups.controls.some(group => group.controls['typeOfContact']?.value?.literal === 'legal-mail-address');
@@ -261,7 +261,7 @@ export class ContactDataComponent implements OnInit {
 
       this.submitDisable = !hasLegalMail;
 
-      if (isKLIJENT) {
+      if (isCustomer) {
         this.submitDisable = !(hasLegalMail && hasOtherMail);
         if (this.isLegalEntity) {
           this.submitDisable = !(hasLegalMail && hasOtherMail) && hasLegalMobile;
@@ -272,7 +272,7 @@ export class ContactDataComponent implements OnInit {
       }
     } else {
 
-      this.submitDisable = !this.isLegalEntity || (this.isLegalEntity && isKLIJENT)
+      this.submitDisable = !this.isLegalEntity || (this.isLegalEntity && isCustomer)
         ? !this.groups.controls.some(group => group.controls['typeOfContact']?.value?.literal === 'legal-mobile-phone-number')
         : this.submitDisable;
     }

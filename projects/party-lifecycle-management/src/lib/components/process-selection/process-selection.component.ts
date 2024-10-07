@@ -99,8 +99,8 @@ export class ProcessSelectionComponent implements OnInit {
       }
     });
 
-    if (this.basisForClientRegistration !== null && this.basisForClientRegistration.toUpperCase() !== 'KLIJENT'
-      && this.basisForClientRegistration.toUpperCase() !== 'POVREMENI KLIJENT') {
+    if (this.basisForClientRegistration !== null && this.basisForClientRegistration.toUpperCase() !== 'customer'
+      && this.basisForClientRegistration.toUpperCase() !== 'counter-party') {
       this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'kyc-renewal');
       this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'recalculation-of-risk-level');
     }
