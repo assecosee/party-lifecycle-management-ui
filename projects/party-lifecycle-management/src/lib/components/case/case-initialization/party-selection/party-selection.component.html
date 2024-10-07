@@ -13,7 +13,7 @@
             @if(column === 'primaryId'){
             <td mat-cell *matCellDef="let element"> {{element[column]['number']}} </td>
             } @else if(column === 'primaryIdKind'){
-            <td mat-cell *matCellDef="let element"> {{element['primaryId']['kind']}} </td>
+            <td mat-cell *matCellDef="let element"> {{element['primaryId']['kind'] | translate : locale.language }} </td>
             } @else {
             <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
             }

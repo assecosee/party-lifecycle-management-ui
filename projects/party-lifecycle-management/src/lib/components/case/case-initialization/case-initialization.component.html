@@ -47,13 +47,13 @@
           ></error-handling>
         </div>
       </div>
-      @if(formGroup.controls['typeOfClient'] &&
-      formGroup.controls['typeOfClient'].value &&
-      formGroup.controls['typeOfClient'].value['name'] == 'FL'){
       <div class="border"></div>
       <div class="flex-container">
         <mat-label class="label">{{'lblCustomerSearchInCore' | translate : locale.language }}</mat-label>
       </div>
+      @if(formGroup.controls['typeOfClient'] &&
+      formGroup.controls['typeOfClient'].value &&
+      formGroup.controls['typeOfClient'].value['name'] == 'FL'){
       <div class="flex-container pt">
         <div class="flex-item">
           <asee-autocomplete [freeFormText]="false"
@@ -178,7 +178,6 @@
       } } @if(formGroup.controls['typeOfClient'] &&
       formGroup.controls['typeOfClient'].value &&
       formGroup.controls['typeOfClient'].value['name'] == 'PL'){
-      <div class="border"></div>
       <div class="flex-container pt">
         <div class="flex-item">
           <asee-autocomplete [freeFormText]="false"

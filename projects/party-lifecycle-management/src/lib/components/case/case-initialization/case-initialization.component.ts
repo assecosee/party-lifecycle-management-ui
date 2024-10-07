@@ -295,6 +295,12 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
           ...item,
           birthDate: `${day}-${month}-${year}` // Reformat to 'DD-MM-YYYY'
         };
+      } else if (item.established) {
+        const [year, month, day] = item.established.substring(0, 10).split('-');
+        return {
+          ...item,
+          established: `${day}-${month}-${year}` // Reformat to 'DD-MM-YYYY'
+        };
       } else {
         return item; // Return the object unchanged if birthDate is not present
       }
@@ -392,14 +398,16 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     if (documentKind === 'id' && formControlValue) {
       queryParams = `/${formControlValue}`;
     } else if (documentKind === 'registration-number' && formControlValue) {
-      queryParams = `?kind=organization&id-kind=${documentKind}&id-number=${formControlValue}`;
+      queryParams = `?id-kind=${documentKind}&id-number=${formControlValue}`;
       const organizationNumber = this.formGroup.controls['organizationNumber']?.value || 'all';
       queryParams += `&branch-identifier=${organizationNumber}`;
     } else if (documentKind !== 'default' && formControlValue) {
-      queryParams = `?kind=${this.isIndividualPerson ?
-        'individual' : 'organization'}&id-kind=${documentKind}&id-number=${formControlValue}`;
+      queryParams = `?id-kind=${documentKind}&id-number=${formControlValue}`;
     }
 
+    const queryKind = this.isIndividualPerson ?
+      'kind=individual' : 'kind=organization';
+    queryParams += queryParams.includes('?') ? `&${queryKind}` : `?${queryKind}`;
     // Add customerName if it exists
     if (customerName) {
       queryParams += queryParams.includes('?') ? `&name=${customerName}` : `?name=${customerName}`;
