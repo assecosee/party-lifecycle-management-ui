@@ -22,6 +22,10 @@ export class TaskWidgetComponent extends BaseWidget implements OnInit{
   @ViewChild('completedTasksContainer', { static: false }) public completedTasksContainer: MaterialTaskListComponent;
   public displayedColumnsCompletedTasks: string[] = [];
   public displayedColumnsActiveTasks: string[] = ['taskIcon', 'name', 'created', 'action'];
+  public complateParams: any = {
+    sortBy: 'create-time',
+    sortOrder: 'desc'
+  };
   constructor(
     protected cdr: ChangeDetectorRef,
     protected dashboardDataService: DashboardDataStoreService,
