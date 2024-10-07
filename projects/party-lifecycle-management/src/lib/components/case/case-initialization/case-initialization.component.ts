@@ -36,6 +36,7 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
   private agentHasRegistrationRole = false;
   private agentHasDataUpdateRole = false;
   private agentHasAmlRole = false;
+  private initialSearch = false;
   public readonlyRP = false;
   public basisOptions = [{}];
   public selectedUser: any;
@@ -146,6 +147,9 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       this.bapoIdentificationDocumentNumber = params['id-number'] || null;
       this.bapoRegistrationProfile = params['registration-profile'] || null;
       this.bapoBranchIdentifier = params['branch-identifier'] || null;
+
+
+
     });
     // Combine multiple HTTP requests using forkJoin
     forkJoin({
@@ -199,6 +203,11 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
         this.formGroup.controls['selectedProcess'].updateValueAndValidity();
         this.formGroup.controls['selectedProcess'].markAsTouched();
       }
+    }
+
+    if(document.getElementById('searchButton') && this.initialSearch){
+      this.initialSearch = false;
+      document.getElementById('searchButton')?.click();
     }
   }
 
@@ -314,6 +323,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
 
     this.formGroupInitialized = true;
 
+    if(this.bapoClientKind && this.bapoTypeOfIdentificationDocument && this.bapoIdentificationDocumentNumber && isInitial){
+      this.initialSearch = true;
+    }
+
     console.log('Form group: ', this.formGroup);
   }
 
@@ -376,8 +389,10 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.selectedUser = result;
-        const val = result.registrationProfile;
-        this.setRegistrationProfile(val);
+        if(result.registrationProfile){
+          const val = result.registrationProfile;
+          this.setRegistrationProfile(val);
+        }
       }
     });
   }

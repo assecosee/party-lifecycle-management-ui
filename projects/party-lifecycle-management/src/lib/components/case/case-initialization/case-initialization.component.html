@@ -215,7 +215,7 @@
     formGroup.controls['typeOfClient'].value &&
     formGroup.controls['typeOfClient'].value['name']){
     <div class="bottom-end-alignment">
-      <button mat-button class="pt" color="primary" (click)="
+      <button id="searchButton" mat-button class="pt" color="primary" (click)="
           send(formGroup.controls['identificationDocuments']?.value?.literal)
         " translate>
         {{ "lblSearch" | translate : locale.language }}
