@@ -13,7 +13,7 @@
                     <ng-template matTabLabel>
                         {{'tabIntegrationTracingRecents' | translate: locale.language}}
                     </ng-template>
-                    <div class="integration-tracing-list" *ngIf="integrationList?.length">
+                    <div class="party-lcm-integration-tracing-list" *ngIf="integrationList?.length">
                         <div class="list-item" *ngFor="let integrationResult of integrationList | slice:0:5;">
                             <div class='icon-list'>
                                 <mat-icon matTooltip="{{'Error' | translate: locale.language}}" mat-list-icon
