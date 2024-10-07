@@ -11,6 +11,11 @@
     font-size: 1.10rem;
     font-weight: 600;
   }
+  .history-task-list { 
+    overflow-y: scroll;
+    max-height: 300px;
+    display: block;
+  }
 }
 
 .tasks {
