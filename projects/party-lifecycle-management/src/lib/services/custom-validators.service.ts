@@ -146,13 +146,94 @@ export class CustomValidatorsService {
       // Ensure value is a string before checking the format
       const stringValue = String(value);
 
-      if (!this.validRegNumIndividualPerson(stringValue)) {
+      
+
+      if (!this.parsePersonalNumber(stringValue)) {
         return { invalidRegistrationNumber: true };
       }
 
       return null; // No error
     };
   }
+
+  // private static validRegNumIndividualPerson(jmbg: any) {
+  //   if (
+  //     typeof jmbg !== 'undefined' &&
+  //     jmbg !== null &&
+  //     jmbg.length === 13 &&
+  //     this.validNumber(jmbg)
+  //   ) {
+  //     const day = parseInt(jmbg.substring(0, 2), 10);
+  //     const month = parseInt(jmbg.substring(2, 4), 10) - 1;
+  //     let year = parseInt(jmbg.substring(4, 7), 10);
+  
+  //     // Ako je vrednost godine manja od 800, onda je 2000-ti vek, inače 1900-ti
+  //     if (year < 800) {
+  //       year = 2000 + year;
+  //     } else {
+  //       year = 1000 + year;
+  //     }
+  
+  //     if (this.validDate(new Date(year, month, day))) {
+  //       return (
+  //         /^60|66$/.test(jmbg.substring(7, 9)) ||
+  //         parseInt(jmbg.charAt(12), 10) ===
+  //           this.mod11(
+  //             jmbg.substring(0, 12),
+  //             // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+  //             function(kb: any) {
+  //               return kb === 11 ? 0 : kb === 10 ? 'X' : kb;
+  //             }
+  //           )
+  //       );
+  //     }
+  //   }
+  //   return false;
+  // }
+
+  private static parsePersonalNumber(personalNumber: string) {
+    if (personalNumber && personalNumber.length === 13) {
+      const day = Number(personalNumber[0] + personalNumber[1]);
+      const mounth = Number(personalNumber[2] + personalNumber[3]);
+      const year = Number(personalNumber[4] + personalNumber[5] + personalNumber[6]);
+      const region = personalNumber[7] + personalNumber[8];
+      const identificationNumber = Number(personalNumber[9] + personalNumber[10] + personalNumber[11]);
+      const controlNumber = Number(personalNumber[12]);
+      let correctControlNumber =
+        11 -
+        (7 * (Number(personalNumber[0]) + Number(personalNumber[6])) +
+          6 * (Number(personalNumber[1]) + Number(personalNumber[7])) +
+          5 * (Number(personalNumber[2]) + Number(personalNumber[8])) +
+          4 * (Number(personalNumber[3]) + Number(personalNumber[9])) +
+          3 * (Number(personalNumber[4]) + Number(personalNumber[10])) +
+          2 * (Number(personalNumber[5]) + Number(personalNumber[11]))) % 11;
+      if (correctControlNumber > 9) {
+        correctControlNumber = 0;
+      }
+      return this.checkPersonalNumber(day, mounth, year, region, identificationNumber, controlNumber, correctControlNumber);
+    }
+    return false;
+  }
+  
+  // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+  private static checkPersonalNumber(
+    day: number,
+    mounth: number,
+    year: number,
+    region: string,
+    identificationNumber: number,
+    controlNumber: number,
+    correctControlNumber: number) {
+    if(region === '66' || region === '06') {
+      return true;
+    }
+    if (controlNumber !== correctControlNumber) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
 
   // Validator to disallow slashes in any text input
   static validateRegNumLegalEntity(): ValidatorFn {
@@ -223,39 +304,12 @@ export class CustomValidatorsService {
     );
   }
 
-  private static validRegNumIndividualPerson(jmbg: any) {
-    if (
-      typeof jmbg !== 'undefined' &&
-      jmbg !== null &&
-      jmbg.length === 13 &&
-      this.validNumber(jmbg)
-    ) {
-      const day = parseInt(jmbg.substring(0, 2), 10);
-      const month = parseInt(jmbg.substring(2, 4), 10) - 1;
-      const year = parseInt('2' + jmbg.substring(4, 7), 10);
-      if (this.validDate(new Date(year, month, day))) {
-        return (
-          /^60|66$/.test(jmbg.substring(7, 9)) ||
-          parseInt(jmbg.charAt(12), 10) ===
-            this.mod11(
-              jmbg.substring(0, 12),
-              // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-              function(kb: any) {
-                return kb === 11 ? 0 : kb === 10 ? 'X' : kb;
-              }
-            )
-        );
-      }
-    }
-    return false;
-  }
-
-  private static validDate(value: any) {
-    if (Object.prototype.toString.call(value) === '[object Date]') {
-      return !isNaN(value.getTime());
-    }
-    return false;
-  }
+  // private static validDate(value: any) {
+  //   if (Object.prototype.toString.call(value) === '[object Date]') {
+  //     return !isNaN(value.getTime());
+  //   }
+  //   return false;
+  // }
 
   private static validNumber(value: any) {
     if (typeof value !== 'undefined' && value !== null) {
