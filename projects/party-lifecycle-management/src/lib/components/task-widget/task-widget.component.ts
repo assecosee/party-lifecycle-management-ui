@@ -56,15 +56,11 @@ export class TaskWidgetComponent extends BaseWidget implements OnInit{
   }
   public tabChange(event: MatTabChangeEvent) {
     // eslint-disable-next-line prefer-const
-    let tabLabel = event.tab.textLabel;
-    if (tabLabel === 'Active') {
-      if (this.activeTasksContainer) {
-        this.activeTasksContainer.onDomChange();
-      }
-    } else if (tabLabel === 'History') {
-      if (this.completedTasksContainer) {
-        this.completedTasksContainer.onDomChange();
-      }
+    let tabLabelIndex = event.index;
+    if (tabLabelIndex === 0) {
+      this.activeTasksContainer.onDomChange();
+    } else if (tabLabelIndex === 1) {
+      this.completedTasksContainer.onDomChange();
     }
   }
 
