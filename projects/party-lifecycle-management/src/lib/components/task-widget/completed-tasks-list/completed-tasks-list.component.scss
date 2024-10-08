@@ -1,0 +1,22 @@
+::ng-deep task-list .as-task-list-card .task-list-table {
+    padding-bottom: 0px !important;
+}
+:host {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 300px;
+    display: block;
+}
+
+completed-tasks-list {
+    overflow: scroll;
+}
+
+.completed-tasks-list ::ng-deep .mat-mdc-header-row {
+    position: sticky !important;
+    top: 0;
+    z-index: 2;
+}
+.completed-tasks-list ::ng-deep task-list .as-task-list-card .task-list-table {
+    padding-bottom: 0px !important;
+  }

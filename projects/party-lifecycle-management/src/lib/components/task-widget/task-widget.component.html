@@ -10,12 +10,9 @@
         </task-list>
       </mat-tab>
       <mat-tab label="{{'History' | translate:locale.language}}">
-        <div class="history-task-list">
-          <task-list class="tasks" [displayedColumns]="displayedColumnsCompletedTasks"
-            [businessKey]="caseNumber" (changeColumns)="adaptToSizeCompletedTasks($event)"
-            scrollDiv="lib-task-widget" displayedTasksKind="completed" #completedTasksContainer>
-          </task-list>
-        </div>
+        @if (tabLabelIndex === 1) {
+          <party-lcm-completed-tasks-list [caseNumber]="caseNumber"></party-lcm-completed-tasks-list>
+        }
       </mat-tab>
     </mat-tab-group>
     <div *ngIf="false" class="row no-content-placeholder">

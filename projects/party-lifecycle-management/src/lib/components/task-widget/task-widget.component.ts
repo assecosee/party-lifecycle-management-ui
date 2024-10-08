@@ -19,13 +19,13 @@ export class TaskWidgetComponent extends BaseWidget implements OnInit{
   public taskObjectNumber: any;
   public caseNumber: string;
   @ViewChild('activeTasksContainer', { static: false }) public activeTasksContainer: MaterialTaskListComponent;
-  @ViewChild('completedTasksContainer', { static: false }) public completedTasksContainer: MaterialTaskListComponent;
   public displayedColumnsCompletedTasks: string[] = [];
   public displayedColumnsActiveTasks: string[] = ['taskIcon', 'name', 'created', 'action'];
   public complateParams: any = {
     sortBy: 'create-time',
     sortOrder: 'desc'
   };
+  public tabLabelIndex = 0;
   constructor(
     protected cdr: ChangeDetectorRef,
     protected dashboardDataService: DashboardDataStoreService,
@@ -41,30 +41,15 @@ export class TaskWidgetComponent extends BaseWidget implements OnInit{
       this.caseNumber = dataCase.id;
     });
   }
-  public adaptToSizeCompletedTasks(size: any) {
-    if (size >= 1444) {
-      this.displayedColumnsCompletedTasks = ['taskIcon', 'name', 'created', 'due',
-        'startTime', 'endTime', 'duration'];
-    } else if (size >= 1280) {
-      this.displayedColumnsCompletedTasks = ['taskIcon', 'name', 'created',
-        'startTime', 'endTime', 'duration'];
-    } else if (size >= 800) {
-      this.displayedColumnsCompletedTasks = ['taskIcon', 'name', 'startTime',
-        'endTime', 'duration'];
-    } else if (size >= 600) {
-      this.displayedColumnsCompletedTasks = ['taskIcon', 'name', 'endTime', 'duration'];
-    } else {
-      this.displayedColumnsCompletedTasks = ['taskIcon', 'name', 'endTime','duration'];
-    }
-    this.cdr.detectChanges();
-  }
+
   public tabChange(event: MatTabChangeEvent) {
     // eslint-disable-next-line prefer-const
     let tabLabelIndex = event.index;
     if (tabLabelIndex === 0) {
+      this.tabLabelIndex = 0;
       this.activeTasksContainer.onDomChange();
     } else if (tabLabelIndex === 1) {
-      this.completedTasksContainer.onDomChange();
+      this.tabLabelIndex = 1;
     }
   }
 

@@ -29,6 +29,7 @@ import { IntegrationTracingComponent } from './components/integration-tracing/in
 import { IntegrationTracingDetailsComponent } from
   './components/integration-tracing/integration-tracing-details/integration-tracing-details.component';
 import { CaseDetailsWidgetComponent } from './components/case-details-widget/case-details-widget.component';
+import { CompletedTasksListComponent } from './components/task-widget/completed-tasks-list/completed-tasks-list.component';
 
 
 
@@ -51,7 +52,8 @@ import { CaseDetailsWidgetComponent } from './components/case-details-widget/cas
     MultiselectAutocompleteComponent,
     IntegrationTracingComponent,
     IntegrationTracingDetailsComponent,
-    CaseDetailsWidgetComponent
+    CaseDetailsWidgetComponent,
+    CompletedTasksListComponent
   ],
   imports: [
     PartyLifecycleManagementRoutingModule,
@@ -78,7 +80,8 @@ import { CaseDetailsWidgetComponent } from './components/case-details-widget/cas
     AgentSearchComponent,
     IntegrationTracingComponent,
     IntegrationTracingDetailsComponent,
-    CaseDetailsWidgetComponent
+    CaseDetailsWidgetComponent,
+    CompletedTasksListComponent
   ]
 })
 export class PartyLifecycleManagementModule {

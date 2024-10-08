@@ -1,0 +1,5 @@
+<task-list class="completed-tasks-list" (change)="adaptToSizeCompletedTasks($event)"
+  [displayedColumns]="displayedColumnsCompletedTasks" [businessKey]="caseNumber"
+  (changeColumns)="adaptToSizeCompletedTasks($event)" scrollDiv="party-lcm-completed-tasks-list" displayedTasksKind="completed" [params]="params"
+  #completedTasksContainer>
+</task-list>

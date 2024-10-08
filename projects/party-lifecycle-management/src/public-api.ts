@@ -14,3 +14,4 @@ export * from './lib/components/agent-search/agent-search.component';
 export * from './lib/components/integration-tracing/integration-tracing.component';
 export * from './lib/components/integration-tracing/integration-tracing-details/integration-tracing-details.component';
 export * from './lib/components/case-details-widget/case-details-widget.component';
+export * from './lib/components/task-widget/completed-tasks-list/completed-tasks-list.component';
