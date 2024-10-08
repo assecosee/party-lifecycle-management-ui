@@ -319,10 +319,6 @@ export class BasicDataComponent implements OnInit, DoCheck {
       }
     });
 
-    if (this.isRegistration) {
-      this.formGroup.controls['clientActivity'].setValue(true);
-    }
-
     // Initialize controls with values (this is because some logic in control listeners must be triggered)
     // So this is the reason why creation and initialization are separated
     formKeys.forEach(formKey => {
@@ -338,6 +334,8 @@ export class BasicDataComponent implements OnInit, DoCheck {
       }
     });
 
+    this.formGroup.controls['clientActivity'].setValue(true);
+    this.formGroup.controls['clientActivity'].disable({onlySelf: true, emitEvent: false});
     this.formGroup.controls['notResident'].setValue(this.notResidentClient);
 
     // For non resident clients set default country (REPUBLIKA SRBIJA)
