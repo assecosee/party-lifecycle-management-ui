@@ -214,20 +214,24 @@
           ></error-handling>
         </div>
       </div>
-      <div class="flex-container pt">
-        <div class="flex-item">
-          <asee-datepicker
-            appearance="outline"
-            [control]="formGroup.controls['dateOfDeath']"
-            [label]="'lblDateOfDeath' | translate : locale.language"
-            [max]="maxDate"
-          >
-          </asee-datepicker>
-          <error-handling
-            [control]="formGroup.controls['dateOfDeath']"
-          ></error-handling>
+      @if(!isRegistration) {
+        <div class="flex-container pt">
+          <div class="flex-item">
+            <asee-datepicker
+              #clientDateOfDeathPicker
+              appearance="outline"
+              [control]="formGroup.controls['dateOfDeath']"
+              [label]="'lblDateOfDeath' | translate : locale.language"
+              [max]="maxDate"
+              (input)="checkValue($event)"
+            >
+            </asee-datepicker>
+            <error-handling
+              [control]="formGroup.controls['dateOfDeath']"
+            ></error-handling>
+          </div>
         </div>
-      </div>
+        }
       } @if(notResidentClient) {
       <div class="flex-container pt">
         <div class="flex-item">
