@@ -258,11 +258,11 @@ export class CaseInitializationComponent implements OnInit, DoCheck {
       this.formGroup.controls['selectedProcess'].markAsTouched();
       if (newValue && newValue.literal) {
         if (newValue.literal === 'customer' || newValue.literal === 'counter-party') {
-          this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'kyc-renewal');
-          this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'recalculation-of-risk-level');
+          this.processSelectionList = this.initialProcessSelectionList;
         }
       } else {
-        this.processSelectionList = this.initialProcessSelectionList;
+        this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'kyc-renewal');
+        this.processSelectionList = this.removeByProperty(this.processSelectionList, 'literal', 'recalculation-of-risk-level');
       }
     });
 
