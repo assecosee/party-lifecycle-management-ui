@@ -147,19 +147,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
         });
     });
 
-    const subject = new Subject<string>();
-    this.inputSubjects.push(subject);
-
-    // Subscribe to the subject with debouncing
-    const subscription = subject.pipe(
-      debounceTime(1000),
-      distinctUntilChanged()
-    ).subscribe(value => {
-      this.getPlace(value, this.groups.length - 1); // Fetch data for the specific form
-    });
-
-    // Store the subscription
-    this.subscriptions.push(subscription);
+    this.createSubjectAndSubscribe();
   }
 
   onInputChange(index: number, value: string) {
@@ -318,19 +306,9 @@ export class AddressDataComponent implements OnInit, DoCheck {
     this.initEmptyFormGroup();
     this.filterAddressTypes();
     const subject = new Subject<string>();
-    this.inputSubjects.push(subject);
-
-    // Subscribe to the subject with debouncing
-    const subscription = subject.pipe(
-      debounceTime(1000),
-      distinctUntilChanged()
-    ).subscribe(value => {
-      this.getPlace(value, this.groups.length - 1); // Fetch data for the specific form
-    });
-
-    // Store the subscription
+    this.createSubjectAndSubscribe();
     this.fetchedLists[this.groups.length - 1] = this.allPlaces;
-    this.subscriptions.push(subscription);
+
   }
 
   private filterAddressTypes() {
@@ -467,5 +445,21 @@ export class AddressDataComponent implements OnInit, DoCheck {
         return element;
       });;
     });
+  }
+
+  private createSubjectAndSubscribe() {
+    const subject = new Subject<string>();
+    this.inputSubjects.push(subject);
+
+    // Subscribe to the subject with debouncing
+    const subscription = subject.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.getPlace(value, this.groups.length - 1); // Fetch data for the specific form
+    });
+
+    // Store the subscription
+    this.subscriptions.push(subscription);
   }
 }
