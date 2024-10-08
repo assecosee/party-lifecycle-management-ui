@@ -1,7 +1,8 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient, ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
+import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient, ErrorEmitterService, FormField, LoaderService }
+  from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { catchError, combineLatest, forkJoin, of, tap } from 'rxjs';
