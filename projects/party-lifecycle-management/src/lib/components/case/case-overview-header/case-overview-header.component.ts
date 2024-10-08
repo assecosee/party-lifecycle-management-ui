@@ -31,7 +31,8 @@ export class CaseOverviewHeaderComponent implements OnInit{
   public callbackMap: Record<string, () => void> = {
     AssignWorkItem: this.AssignWorkItem.bind(this),
     ChangeStatusWI: this.ChangeStatusWI.bind(this),
-    TakeoverWorkItem: this.TakeoverWorkItem.bind(this)
+    TakeoverWorkItem: this.TakeoverWorkItem.bind(this),
+    CancelCase: this.CancelCase.bind(this)
   };
   constructor(
     protected dialog: MatDialog,
@@ -121,6 +122,26 @@ export class CaseOverviewHeaderComponent implements OnInit{
           data: error
         }
       );
+    });
+  }
+
+  public CancelCase() {
+    const confirmDialog = this.dialog.open(MaterialConfirmDialogComponent,
+      { data: 'Do you really want to cancel this case?' }
+    );
+    confirmDialog.afterClosed().subscribe(e => {
+      if(e === 1){
+        const changeCaseStatusBody = {
+          status: 'canceled'
+        };
+        this.partyLCM.patchCaseStatus(this._caseOverview.id,changeCaseStatusBody).subscribe(result => {
+        }, (error) => {
+          // handle event
+          this.dialog.open(MaterialErrorDialogComponent,{
+            data: error
+          });
+        });
+      }
     });
   }
 
