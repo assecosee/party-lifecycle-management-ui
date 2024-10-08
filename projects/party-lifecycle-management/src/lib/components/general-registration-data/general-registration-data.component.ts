@@ -11,6 +11,7 @@ import {
 import {
   AssecoMaterialModule,
   MaterialAutocompleteComponent,
+  MaterialDatepickerComponent,
   MaterialModule,
 } from '@asseco/components-ui';
 import {
@@ -63,6 +64,8 @@ export class GeneralRegistrationDataComponent implements OnInit {
   public ownershipAC: MaterialAutocompleteComponent | undefined;
   @ViewChild('clientCountryOfBirth', { static: false })
   public clientCountryOfBirth: MaterialAutocompleteComponent | undefined;
+  @ViewChild('clientDateOfDeathPicker', { static: false })
+  public dateOfDeath: MaterialDatepickerComponent | undefined;
   public formKeysIndividualPerson = [
     {
       key: 'dateOfActivation',
@@ -328,6 +331,14 @@ export class GeneralRegistrationDataComponent implements OnInit {
     const control = this.formGroup.get(controlName);
     if (control) {
       control.markAsTouched();
+    }
+  }
+
+  checkValue(val: any) {
+    if (!val.target.value) {
+      this.formGroup.controls['dateOfDeath'].setValue(null);
+      this.formGroup.controls['dateOfDeath'].updateValueAndValidity();
+      this.dateOfDeath?.controlDate.setValue(null);
     }
   }
 
