@@ -189,7 +189,9 @@ export class FinancialDataComponent implements OnInit {
     if (this.formGroup.controls['grossIncome'].value == null || (parseFloat(this.formGroup.controls['grossIncome'].value) === 0) &&
       (this.formGroup.controls['netIncome'].value == null || (parseFloat(this.formGroup.controls['netIncome'].value) === 0))) {
       this.formGroup.controls['financialDataDate'].clearValidators();
-      this.formGroup.controls['currency'].clearValidators();
+      if (this.formGroup.controls['currency'].hasValidator(Validators.required)) {
+        this.formGroup.controls['currency'].removeValidators(Validators.required);
+      }
     }
 
     if (newValue > 0) {
