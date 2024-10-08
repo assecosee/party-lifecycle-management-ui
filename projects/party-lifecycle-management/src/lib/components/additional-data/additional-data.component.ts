@@ -200,7 +200,7 @@ export class AdditionalDataComponent implements OnInit {
     let accountManager = null;
 
     if (accountManagerValue) {
-      accountManager = this.accountManagerList.find((am: any) => am.value === accountManagerValue);
+      accountManager = this.accountManagerList.find((am: any) => am.name === accountManagerValue);
 
       if (accountManager) {
         this.formGroup.controls['accountManager'].setValue(accountManager);

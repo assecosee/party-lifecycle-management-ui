@@ -1,8 +1,7 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient, ErrorEmitterService, FormField, LoaderService }
-  from '@asseco/common-ui';
+import { AseeFormControl, BpmTasksHttpClient, ConfigurationHttpClient, ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
 import { catchError, combineLatest, forkJoin, of, tap } from 'rxjs';
@@ -55,6 +54,7 @@ export class ContactDataComponent implements OnInit {
     protected offerService: OfferService,
     protected configurationService: ConfigurationHttpClient,
     private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.activatedRoute = this.injector.get(ActivatedRoute);
     this.bpmTaskService = this.injector.get(BpmTasksHttpClient);
@@ -282,7 +282,7 @@ export class ContactDataComponent implements OnInit {
   private prefillData(fg: any, contactPoint: any) {
     const typeOfContactLiteral = contactPoint.typeOfContact;
     const typeOfContact = this.contactTypes.find((type: any) => type.literal === typeOfContactLiteral);
-    console.log(contactPoint);
+
     if (typeOfContact) {
       fg.controls.typeOfContact.setValue(typeOfContact);
       fg.controls.typeOfContact.updateValueAndValidity();
@@ -406,6 +406,9 @@ export class ContactDataComponent implements OnInit {
       });
     });
 
+  }
+  ngAfterContentChecked() {
+    this.cdr.detectChanges();
   }
 
 }
