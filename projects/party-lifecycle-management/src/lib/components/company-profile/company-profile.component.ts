@@ -201,6 +201,7 @@ export class CompanyProfileComponent implements OnInit {
     const codeOfBranchPredominantActivityValue = this.getFormFieldValue('codeOfBranchPredominantActivity');
     const sizeOfLegalEntityValue = this.getFormFieldValue('sizeOfLegalEntity');
     const statusOfLegalEntityValue = this.getFormFieldValue('statusOfLegalEntity');
+    const activityCodeValue = this.getFormFieldValue('activityCode');
 
     const codeOfBranchPredominantActivity = this.codeOfBranchPredominantActivityList.find((code: any) =>
       code.value === codeOfBranchPredominantActivityValue);
@@ -211,9 +212,13 @@ export class CompanyProfileComponent implements OnInit {
     const statusOfLegalEntity = this.statusOfLegalEntityList.find((status: any) =>
       status.name === statusOfLegalEntityValue);
 
+    const activityCode = this.activityCodeList.find((code: any) =>
+      code.name === activityCodeValue);
+
     this.formGroup.controls['codeOfBranchPredominantActivity'].setValue(codeOfBranchPredominantActivity);
     this.formGroup.controls['sizeOfLegalEntity'].setValue(sizeOfLegalEntity);
     this.formGroup.controls['statusOfLegalEntity'].setValue(statusOfLegalEntity);
+    this.formGroup.controls['activityCode'].setValue(activityCode);
   }
 
   private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {
