@@ -11,7 +11,7 @@
         <mat-card-content class="pt" [formGroup]="form">
             <div formArrayName="groups">
                 @for (group of groups.controls; track group){
-                <mat-expansion-panel [expanded]="true" [formGroup]="group">
+                <mat-expansion-panel [expanded]="true" [formGroup]="group" [formGroupName]="$index">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             <span>{{group.get('typeOfAddress')?.value?.description | translate : locale.language}}
@@ -44,7 +44,8 @@
                         <div class="flex-container pt">
                             <div class="flex-item">
                                 <asee-autocomplete [freeFormText]="false" #placeNameAutocomplete appearance="outline" [control]="group.get('placeName')"
-                                    [autocompleteList]="allPlaces"
+                                    [autocompleteList]="fetchedLists[$index]"
+                                    (input)="onInputChange($index, $event.target.value)"
                                     [label]="'lblPlaceName' | translate : locale.language" filterBehaviour="includes"
                                     labelProperty="formattedName" valueProperty="placeCode"
                                     [freeFormText]="false"

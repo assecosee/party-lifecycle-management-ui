@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AseeFormControl, BpmTasksHttpClient, ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
 import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { catchError, combineLatest, forkJoin, of, tap } from 'rxjs';
+import { catchError, combineLatest, debounceTime, distinctUntilChanged, forkJoin, of, Subject, Subscription, tap } from 'rxjs';
 import { CustomService } from '../../services/custom.service';
 import { LocationService } from '../../services/location.service';
 import { OfferService } from '../../services/offer.service';
@@ -40,6 +40,9 @@ export class AddressDataComponent implements OnInit, DoCheck {
   public addressTypes: any = [];
   public submitDisable = true;
   public originalAutocompleteOptions: Array<MatOption> = [];
+  fetchedLists: string[][] = [];  // To hold fetched data for each form
+  private inputSubjects: Subject<string>[] = [];  // Array of subjects for input handling
+  private subscriptions: Subscription[] = [];  // Array to hold subscriptions
   protected router: Router;
   protected activatedRoute: ActivatedRoute;
   protected bpmTaskService: BpmTasksHttpClient;
@@ -135,6 +138,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
         return of(null); // Handle the error and return a fallback value if needed
       })
     ).subscribe(response => {
+      this.fetchedLists[0] = this.allPlaces;
       // Handle ActivatedRoute data as before
       combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
         .subscribe((params) => {
@@ -142,6 +146,24 @@ export class AddressDataComponent implements OnInit, DoCheck {
           this.getTask();
         });
     });
+
+    const subject = new Subject<string>();
+    this.inputSubjects.push(subject);
+
+    // Subscribe to the subject with debouncing
+    const subscription = subject.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.getPlace(value, this.groups.length - 1); // Fetch data for the specific form
+    });
+
+    // Store the subscription
+    this.subscriptions.push(subscription);
+  }
+
+  onInputChange(index: number, value: string) {
+    this.inputSubjects[index].next(value); // Emit the value to the respective Subject
   }
 
   public getTask() {
@@ -295,6 +317,20 @@ export class AddressDataComponent implements OnInit, DoCheck {
   public addGroup() {
     this.initEmptyFormGroup();
     this.filterAddressTypes();
+    const subject = new Subject<string>();
+    this.inputSubjects.push(subject);
+
+    // Subscribe to the subject with debouncing
+    const subscription = subject.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.getPlace(value, this.groups.length - 1); // Fetch data for the specific form
+    });
+
+    // Store the subscription
+    this.fetchedLists[this.groups.length - 1] = this.allPlaces;
+    this.subscriptions.push(subscription);
   }
 
   private filterAddressTypes() {
@@ -334,6 +370,16 @@ export class AddressDataComponent implements OnInit, DoCheck {
     this.submitDisable = !this.groups.controls.some(group =>
       group.controls['typeOfAddress']?.value?.literal === 'legal'
     );
+
+    this.groups.removeAt(index);
+
+    // Unsubscribe from the respective input subject and subscription
+    if (this.subscriptions[index]) {
+      this.subscriptions[index].unsubscribe();
+    }
+    this.inputSubjects.splice(index, 1);
+    this.subscriptions.splice(index, 1);
+    this.fetchedLists.splice(index, 1);
   }
 
   private findItemByProperty(arrayToSearch: Array<any>, propertyName: string, propertyValue: string) {
@@ -409,4 +455,17 @@ export class AddressDataComponent implements OnInit, DoCheck {
     }
   }
 
+
+  getPlace(res: string, index: number) {
+    this.locationService.getPlacesByPlaceQuery(res).subscribe(places => {
+      this.fetchedLists[index] = places.items.filter((item: any) => item.name).map((element: any) => {
+        element.formattedName =
+          Object.entries(element)
+            .filter(([key, value]) => key !== 'translated-name' && value !== undefined)
+            .map(([key, value]) => value)
+            .join('-');
+        return element;
+      });;
+    });
+  }
 }
