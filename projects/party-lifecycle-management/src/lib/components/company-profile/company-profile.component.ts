@@ -207,7 +207,7 @@ export class CompanyProfileComponent implements OnInit {
       code.value === codeOfBranchPredominantActivityValue);
 
     const sizeOfLegalEntity = this.sizeOfLegalEntityList.find((size: any) =>
-      size.value === sizeOfLegalEntityValue);
+      size.literal === sizeOfLegalEntityValue);
 
     const statusOfLegalEntity = this.statusOfLegalEntityList.find((status: any) =>
       status.name === statusOfLegalEntityValue);
