@@ -83,8 +83,8 @@
             (click)="markAsTouched('subjectTypeInAPR')"></asee-autocomplete>
           <error-handling [control]="formGroup.controls['subjectTypeInAPR']"></error-handling>
         </div>
-        <div [class]="!isRegistration ? 'flex-item' : 'flex-item disable-div'">
-          <asee-checkbox id="checkbox" [readonly]="isRegistration" [control]="formGroup.controls['clientActivity']"
+        <div [class]="'flex-item disable-div'">
+          <asee-checkbox id="checkbox" [control]="formGroup.controls['clientActivity']"
             color="primary" [label]="'lblClientActivity' | translate : locale.language"></asee-checkbox>
         </div>
       </div>
@@ -146,8 +146,8 @@
             (click)="markAsTouched('clientCountryOfBirth')"></asee-autocomplete>
           <error-handling [control]="formGroup.controls['clientCountryOfBirth']"></error-handling>
         </div>
-        <div [class]="!isRegistration ? 'flex-item' : 'flex-item disable-div'">
-          <asee-checkbox id="checkbox" [readonly]="isRegistration" [control]="formGroup.controls['clientActivity']"
+        <div  [class]="'flex-item disable-div'">
+          <asee-checkbox id="checkbox" [control]="formGroup.controls['clientActivity']"
             color="primary" [label]="'lblClientActivity' | translate : locale.language"></asee-checkbox>
         </div>
       </div>
