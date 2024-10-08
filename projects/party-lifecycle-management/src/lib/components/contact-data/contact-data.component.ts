@@ -40,6 +40,8 @@ export class ContactDataComponent implements OnInit {
   public operatorNumbers = [];
   public isLegalEntity = false;
   public isRegistrationProcess = true;
+  public hasDuplicateContactTypes = false;
+  public noLegalPhone = false;
   public formKeys = [
     {
       key: 'typeOfContact',
@@ -233,6 +235,7 @@ export class ContactDataComponent implements OnInit {
         fg.addControl('email', new AseeFormControl(null, [Validators.required, Validators.email]));
         fg.controls['phoneNumber'].updateValueAndValidity();
       }
+      this.filterContactTypes();
     });
 
     fg.controls['phoneNumber']?.valueChanges.subscribe((newValue: any) => {
@@ -332,17 +335,25 @@ export class ContactDataComponent implements OnInit {
   }
 
   private filterContactTypes() {
+    this.hasDuplicateContactTypes = false;
+    const obj: any = {};
     const singleUseContacts = this.contactTypes.filter((contact: any) =>
       contact.additionalFields.single === 'true'
     );
-
+    // console.log(singleUseContacts);
+    singleUseContacts.forEach((contact: any) => {
+      obj[contact.literal] = 0;
+    });
     // remove already used single contact from dropdown
     this.groups.controls.forEach(element => {
       const matchingContact = singleUseContacts.find((a: any) => element.controls['typeOfContact'].value?.literal === a.literal);
       if (matchingContact) {
-        this.contactTypes = this.contactTypes.filter((item: any) => item.literal !== matchingContact.literal);
+        // this.contactTypes = this.contactTypes.filter((item: any) => item.literal !== matchingContact.literal);
+        obj[matchingContact.literal]++;
       }
     });
+    this.hasDuplicateContactTypes = !Object.values(obj).every((item: any) => item <= 1);
+    this.noLegalPhone = (obj['legal-mobile-phone-number'] === 0);
   }
 
   public removeGroup(index: any) {
@@ -364,7 +375,7 @@ export class ContactDataComponent implements OnInit {
     }
 
     this.logicToEnsureRequredContactsAreAdded();
-
+    this.filterContactTypes();
   }
 
   public onSubmit() {

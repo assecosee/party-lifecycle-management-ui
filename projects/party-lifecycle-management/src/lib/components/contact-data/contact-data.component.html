@@ -75,8 +75,13 @@
         </mat-card-content>
         }
         <div class="bottom-end-alignment">
+            @if(noLegalPhone){
+            <div class="error">
+                <mat-error>{{ 'lblNoLegalPhoneNumber' | translate : locale.language }}</mat-error>
+            </div>
+            }
             <customer-actions [currentTask]="task" (onSubmit)="onSubmit()" submitButtonName="Complete"
-                [submitDisabled]="submitDisable" [formGroup]="groups">
+                [submitDisabled]="submitDisable || hasDuplicateContactTypes" [formGroup]="groups">
             </customer-actions>
         </div>
     </mat-card>
