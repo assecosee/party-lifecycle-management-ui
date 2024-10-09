@@ -1,11 +1,24 @@
-import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, DoCheck, Injector, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AseeFormControl, BpmTasksHttpClient, ErrorEmitterService, FormField, LoaderService } from '@asseco/common-ui';
-import { AssecoMaterialModule, MaterialModule } from '@asseco/components-ui';
+import { AssecoMaterialModule, MaterialAutocompleteComponent, MaterialModule } from '@asseco/components-ui';
 import { L10N_LOCALE, L10nIntlModule, L10nLocale, L10nTranslationModule } from 'angular-l10n';
-import { catchError, combineLatest, debounceTime, distinctUntilChanged, forkJoin, of, Subject, Subscription, tap } from 'rxjs';
+import {
+  catchError,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+  tap,
+} from 'rxjs';
 import { CustomService } from '../../services/custom.service';
 import { LocationService } from '../../services/location.service';
 import { OfferService } from '../../services/offer.service';
@@ -24,6 +37,7 @@ import { ErrorHandlingComponent } from '../../utils/error-handling/error-handlin
 })
 export class AddressDataComponent implements OnInit, DoCheck {
   @ViewChild('country', { static: false }) countryAutocomplete!: any;
+  @ViewChildren('placeNameAutocomplete') placeNameInputs: QueryList<MaterialAutocompleteComponent>;
   public locale: L10nLocale;
   public taskId = '';
   public task: any;
@@ -138,7 +152,6 @@ export class AddressDataComponent implements OnInit, DoCheck {
         return of(null); // Handle the error and return a fallback value if needed
       })
     ).subscribe(response => {
-      this.fetchedLists[0] = this.allPlaces;
       // Handle ActivatedRoute data as before
       combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams])
         .subscribe((params) => {
@@ -147,7 +160,6 @@ export class AddressDataComponent implements OnInit, DoCheck {
         });
     });
 
-    this.createSubjectAndSubscribe();
   }
 
   onInputChange(index: number, value: string) {
@@ -186,7 +198,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
       return;
     }
 
-    addressDataList.forEach((id: any) => {
+    addressDataList.forEach((id: any, index: any) => {
       const fg: FormGroup = new FormGroup({});
       this.formKeys.forEach(formKey => {
         if (formKey) {
@@ -196,8 +208,7 @@ export class AddressDataComponent implements OnInit, DoCheck {
           fg.controls[formKey.key].updateValueAndValidity();
         }
       });
-      this.updateValueAndValidateControls(fg);
-      this.prefillData(fg, id);
+      this.updateValueAndValidateControls(fg, id);
     });
 
     this.filterAddressTypes();
@@ -210,14 +221,13 @@ export class AddressDataComponent implements OnInit, DoCheck {
     this.cdr.detectChanges();
   }
 
-  private prefillData(fg: any, addressData: any) {
-    const place = this.allPlaces.find((p: any) => {
-      if (addressData.placeName == null) {
-        addressData.placeName = '';
-      }
-      return p.name.toLowerCase() === addressData.placeName.toLowerCase();
-    });
-    fg.controls.placeName.setValue(place);
+  private prefillData(value: any, index: number) {
+    if(value) {
+      this.placeNameInputs.get(index)?.controlInternal.setValue(value);
+      return;
+    }
+    const place = this.allPlaces.find((p: any) => p.name.toLowerCase() === value.toLowerCase());
+    this.placeNameInputs.get(index)?.controlInternal.setValue(place);
   }
 
   private initEmptyFormGroup() {
@@ -246,10 +256,9 @@ export class AddressDataComponent implements OnInit, DoCheck {
 
     this.updateValueAndValidateControls(this.formGroup);
     this.formGroupInitialized = true;
-
   }
 
-  private updateValueAndValidateControls(fg: FormGroup) {
+  private updateValueAndValidateControls(fg: FormGroup, addressData?: any) {
     if (this.getFormFieldValue('isLegalEntity')) {
       this.addressTypes = this.addressTypes.filter((element: any) => element?.literal !== 'work');
     }
@@ -281,6 +290,17 @@ export class AddressDataComponent implements OnInit, DoCheck {
 
     fg.markAllAsTouched();
     this.groups.push(fg);
+    const index = this.groups.length - 1;
+    this.createSubjectAndSubscribe(index);
+    if(addressData) {
+      this.getPlace(addressData.placeName, index).subscribe(res => {
+        this.fetchedLists[index] = res;
+        const val = res.find((obj: any) => obj.name.toLowerCase() === addressData.placeName.toLowerCase());
+        this.prefillData(val, index);
+      });
+    } else {
+      this.fetchedLists[index] = this.allPlaces;
+    }
   }
 
   private getFormFieldValue(formField: string) {
@@ -305,10 +325,6 @@ export class AddressDataComponent implements OnInit, DoCheck {
   public addGroup() {
     this.initEmptyFormGroup();
     this.filterAddressTypes();
-    const subject = new Subject<string>();
-    this.createSubjectAndSubscribe();
-    this.fetchedLists[this.groups.length - 1] = this.allPlaces;
-
   }
 
   private filterAddressTypes() {
@@ -434,20 +450,16 @@ export class AddressDataComponent implements OnInit, DoCheck {
   }
 
 
-  getPlace(res: string, index: number) {
-    this.locationService.getPlacesByPlaceQuery(res).subscribe(places => {
-      this.fetchedLists[index] = places.items.filter((item: any) => item.name).map((element: any) => {
-        element.formattedName =
-          Object.entries(element)
-            .filter(([key, value]) => key !== 'translated-name' && value !== undefined)
-            .map(([key, value]) => value)
-            .join('-');
-        return element;
-      });;
-    });
+  getPlace(val: string, index: number): Observable<any> {
+    // eslint-disable-next-line max-len
+    return this.locationService.getPlacesByPlaceQuery(val).pipe(
+      filter((places: any) => places.items?.filter((item: any) => item.name)),
+      map((element: any) => this.mapFormatedName(element.items)),
+      tap((element: any) => console.log(element))
+    );
   }
 
-  private createSubjectAndSubscribe() {
+  private createSubjectAndSubscribe(index: any) {
     const subject = new Subject<string>();
     this.inputSubjects.push(subject);
 
@@ -456,10 +468,23 @@ export class AddressDataComponent implements OnInit, DoCheck {
       debounceTime(1000),
       distinctUntilChanged()
     ).subscribe(value => {
-      this.getPlace(value, this.groups.length - 1); // Fetch data for the specific form
+      this.getPlace(value, index).subscribe(res => this.fetchedLists[index] = res); // Fetch data for the specific form
     });
 
     // Store the subscription
     this.subscriptions.push(subscription);
+  }
+
+  private mapFormatedName(element: any) {
+    element.forEach((item: any) => {
+      item.formattedName = Object.entries(item)
+        .filter(
+          ([key, value]) => key !== 'translated-name' && value !== undefined
+        )
+        .map(([key, value]) => value)
+        .join('-');
+      return item;
+    });
+    return element;
   }
 }
