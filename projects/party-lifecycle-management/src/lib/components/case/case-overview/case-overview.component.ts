@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UIService } from '@asseco/common-ui';
+import { BrokerFacade, UIService, UserService } from '@asseco/common-ui';
 import { Case } from '../../../model/case';
 import { PartyLifecycleManagementService } from '../../../services/party-lifecycle-management.service';
 import { BehaviorSubject, combineLatest, Subject, Subscription, takeUntil } from 'rxjs';
@@ -19,11 +19,14 @@ export class CaseOverviewComponent implements OnInit{
   private routeSubscription: Subscription;
   public dashboardNameBody: string;
   public dashboardNameHeader: string;
+  private offerChangeSubscription: Subscription;
   constructor(
     private uiService: UIService,
     private partyLCMService: PartyLifecycleManagementService,
     private route: ActivatedRoute,
-    private dashboardDataService: DashboardDataStoreService
+    private dashboardDataService: DashboardDataStoreService,
+    private stompService: BrokerFacade,
+    private userService: UserService
   ) {
     this.uiService.setTitle('Case overview');
   }
@@ -35,9 +38,22 @@ export class CaseOverviewComponent implements OnInit{
       });
     this.initCase();
     this.dashboardNameBody = 'party-lcm/case-overview';
+    this.offerChangeSubscription = this.stompService.subscribe('party-lifecycle', 'username = \'ALL\' or username = \''
+      + this.userService.getUserData().userName + '\'')
+      .subscribe((message: any) => {
+        console.log(message);
+        // const applicationNumber = message.headers.get('caseId') || message.headers.get('case-number');
+        // if ((message.messageName === 'status-updated' || message.messageName === 'offer-canceled')
+        //   && applicationNumber === this.caseId) {
+        //   this.initCase();
+        // }
+      });
   }
   ngOnDestroy(): void{
     this.routeSubscription.unsubscribe();
+    if (this.offerChangeSubscription) {
+      this.offerChangeSubscription.unsubscribe();
+    }
   }
   initCase(){
     const filter = {
