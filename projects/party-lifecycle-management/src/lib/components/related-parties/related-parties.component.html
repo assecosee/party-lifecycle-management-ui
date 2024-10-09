@@ -10,15 +10,15 @@
                 <mat-table [dataSource]="relatedPartyList">
                     <ng-container matColumnDef="relationshipKind">
                         <mat-header-cell *matHeaderCellDef translate> Relationship kind </mat-header-cell>
-                        <mat-cell *matCellDef="let row"> {{row?.kind}}</mat-cell>
+                        <mat-cell *matCellDef="let row"> {{row?.additionalData?.subroleFullName}}</mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="name">
                         <mat-header-cell *matHeaderCellDef translate> Name </mat-header-cell>
                         <mat-cell *matCellDef="let row"> {{row?.toParty?.name}}</mat-cell>
                     </ng-container>
-                    <ng-container matColumnDef="partyKind">
-                        <mat-header-cell *matHeaderCellDef translate> Party kind </mat-header-cell>
-                        <mat-cell *matCellDef="let row"> {{row?.toParty?.kind}}</mat-cell>
+                    <ng-container matColumnDef="ownershipPercentage">
+                        <mat-header-cell *matHeaderCellDef translate> Ownership percentage </mat-header-cell>
+                        <mat-cell *matCellDef="let row"> {{row?.ownershipPercentage?(row?.ownershipPercentage +'%'): ''}}</mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="actions">
                         <mat-header-cell class='actions' *matHeaderCellDef translate> Actions
