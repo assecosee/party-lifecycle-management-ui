@@ -34,41 +34,6 @@ export class RelatedPartiesComponent implements OnInit {
   public formGroup: FormGroup = new FormGroup({});
   public relatedPartyList: any[] = [];
   protected router: Router;
-  // public relatedPartyList: any[] = [
-  //   {
-  //     id: '1',
-  //     kind: 'employment',
-  //     role: 'employer',
-  //     toParty: {
-  //       number: 123,
-  //       name: 'Tea Test',
-  //       kind: 'organization'
-  //     },
-  //     subrole: 'sas'
-  //   },
-  //   {
-  //     id: '2',
-  //     kind: 'employment',
-  //     role: 'employer',
-  //     toParty: {
-  //       number: 123,
-  //       name: 'Tea Test',
-  //       kind: 'organization'
-  //     },
-  //     subrole: 'sas'
-  //   },
-  //   {
-  //     id: '3',
-  //     kind: 'employment',
-  //     role: 'employer',
-  //     toParty: {
-  //       number: 123,
-  //       name: 'Tea Test',
-  //       kind: 'organization'
-  //     },
-  //     subrole: 'sas'
-  //   }
-  // ];
   public validationErrors1: ValidationErrors[] = [
     {
       errorCode: 'relatedPartyExist',
@@ -93,7 +58,7 @@ export class RelatedPartiesComponent implements OnInit {
   public newRelatedPartyList: any[] = [];
   public isOrganization = false;
   public displayedColumns = ['relationshipKind', 'name',
-    'partyKind', 'actions'];
+    'ownershipPercentage', 'actions'];
 
   public relationshipExist = false;
   public PLZTPartyNotExist = false;
@@ -158,8 +123,10 @@ export class RelatedPartiesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined && result !== null) {
-        const oldRelationshipExist = this.relatedPartyList.find(o => o.toParty.number === result.toParty.number);
-        const newRelatedPartyListExist = this.newRelatedPartyList.find(o => o.toParty.number === result.toParty.number);
+        const oldRelationshipExist = this.relatedPartyList.find(o => o.toParty.number === result.toParty.number
+          && o.subrole === result.subrole );
+        const newRelatedPartyListExist = this.newRelatedPartyList.find(o => o.toParty.number === result.toParty.number
+           && o.subrole === result.subrole );
         if (oldRelationshipExist !== undefined || newRelatedPartyListExist !== undefined) {
           this.relationshipExist = true;
         }

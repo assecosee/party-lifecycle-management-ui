@@ -106,10 +106,11 @@ export class RelatedPartiesDialogComponent implements OnInit {
           name: partyData['commercialName'],
           kind: partyData['kind']
         },
-        ownershipPercentage:this.formGroup.controls['percentageOfOwnership']?.value,
+        ownershipPercentage:this.formGroup.controls['percentageOfOwnership']?.value || '',
         endDate: this.formGroup.controls['connectionActivity'].value === true? '' : this.formattedDate,
         additionalData:{
-          rightToSign: this.formGroup.controls['signatureRight'].value
+          rightToSign: this.formGroup.controls['signatureRight'].value,
+          subroleFullName: this.formGroup.controls['relatedPartyConnectionType'].value?.formattedName
         }
       };
       this.dialogRef.close(orgParty);
@@ -124,9 +125,11 @@ export class RelatedPartiesDialogComponent implements OnInit {
           name: partyData['fullName'],
           kind: partyData['kind']
         },
+        ownershipPercentage:this.formGroup.controls['percentageOfOwnership']?.value || '',
         endDate: this.formGroup.controls['connectionActivity'].value === true? '' : this.formattedDate,
         additionalData:{
-          rightToSign: this.formGroup.controls['signatureRight'].value
+          rightToSign: this.formGroup.controls['signatureRight'].value,
+          subroleFullName: this.formGroup.controls['relatedPartyConnectionType'].value?.formattedName
         }
       };
       this.dialogRef.close(newParty);
