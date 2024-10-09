@@ -445,7 +445,7 @@ export class GeneralRegistrationDataComponent implements OnInit {
   }
 
   private checkGender(number: string) {
-    const num = parseInt(number.substring(8, 11), 10);
+    const num = parseInt(number.substring(9, 12), 10);
     if (num >= 0 && num <= 499) {
       return 0;
     }
