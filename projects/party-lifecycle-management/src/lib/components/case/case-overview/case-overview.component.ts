@@ -46,16 +46,6 @@ export class CaseOverviewComponent implements OnInit{
         this.initCase();
        }
     });
-    this.offerChangeSubscription = this.stompService.subscribe('party-lifecycle', 'username = \'ALL\' or username = \''
-      + this.userService.getUserData().userName + '\'')
-      .subscribe((message: any) => {
-        console.log(message);
-        // const applicationNumber = message.headers.get('caseId') || message.headers.get('case-number');
-        // if ((message.messageName === 'status-updated' || message.messageName === 'offer-canceled')
-        //   && applicationNumber === this.caseId) {
-        //   this.initCase();
-        // }
-      });
   }
   ngOnDestroy(): void{
     this.routeSubscription.unsubscribe();
