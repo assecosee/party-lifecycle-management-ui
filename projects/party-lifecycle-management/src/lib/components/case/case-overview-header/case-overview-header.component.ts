@@ -4,14 +4,15 @@
 import { Component, inject, Injector, Input, OnInit } from '@angular/core';
 import { Case } from '../../../model/case';
 import { L10N_LOCALE, L10nLocale } from 'angular-l10n';
-import { ConfigurationHttpClient, IdentityProviderService, MenuItem, User, UserService, Widget, WidgetMenuItem } from '@asseco/common-ui';
+import { ConfigurationHttpClient, EventBusMessage, EventBusService, IdentityProviderService,
+  User, UserService, WidgetMenuItem } from '@asseco/common-ui';
 import { MaterialConfirmDialogComponent, MaterialErrorDialogComponent } from '@asseco/components-ui';
 import { MatDialog } from '@angular/material/dialog';
-import { FilterCasesDialogComponent } from '../../dialogs/filter-cases-dialog/filter-cases-dialog.component';
 import { ChangeCaseStatusDialogComponent } from '../../change-case-status-dialog/change-case-status-dialog.component';
 import { AssigneWorkItemDialogComponent } from '../../assigne-work-item-dialog/assigne-work-item-dialog.component';
 import { PartyLifecycleManagementService } from '../../../services/party-lifecycle-management.service';
 import { DirectoryService } from '../../../services/directory.service';
+import { PartyLifecycleEvent } from '../../../model/partyLifecycleEvent';
 
 @Component({
   selector: 'case-overview-header',
@@ -41,7 +42,8 @@ export class CaseOverviewHeaderComponent implements OnInit{
     private userService: UserService,
     protected partyLCM: PartyLifecycleManagementService,
     protected identityProvider: IdentityProviderService,
-    protected directoryService: DirectoryService
+    protected directoryService: DirectoryService,
+    private eventBusService: EventBusService
   ){
     this.locale = injector.get(L10N_LOCALE);
     this.user = userService.getUserData();
@@ -135,6 +137,12 @@ export class CaseOverviewHeaderComponent implements OnInit{
           status: 'canceled'
         };
         this.partyLCM.patchCaseStatus(this._caseOverview.id,changeCaseStatusBody).subscribe(result => {
+          const data: PartyLifecycleEvent = {
+            caseId: this._caseOverview.id,
+            message: 'lifecycle-case-status-changed'
+          };
+          const message = new EventBusMessage('party-lifecycle', data);
+          this.eventBusService.publish(message);
         }, (error) => {
           // handle event
           this.dialog.open(MaterialErrorDialogComponent,{

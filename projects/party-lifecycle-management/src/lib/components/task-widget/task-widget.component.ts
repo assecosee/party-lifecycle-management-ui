@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Injector, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { BaseWidget } from '@asseco/components-ui';
 import { MaterialTaskListComponent } from '@asseco/task-inbox';
@@ -7,13 +7,14 @@ import { DashboardDataStoreService } from '../../services/dashboard-data-store.s
 import { Case } from '../../model/case';
 import { BpmTasksHttpClient, BrokerFacade, BrokerMessage } from '@asseco/common-ui';
 import { debounceTime, Subscription } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'lib-task-widget',
   templateUrl: './task-widget.component.html',
   styleUrl: './task-widget.component.scss'
 })
-export class TaskWidgetComponent extends BaseWidget implements OnInit{
+export class TaskWidgetComponent extends BaseWidget implements OnInit, OnDestroy{
   override title: string;
   override configuration?: any;
   public locale: L10nLocale;
@@ -37,11 +38,21 @@ export class TaskWidgetComponent extends BaseWidget implements OnInit{
     super();
     this.locale = injector.get(L10N_LOCALE);
   }
+  ngOnDestroy(): void {
+    if(this.processStateSubscription) {
+      this.processStateSubscription.unsubscribe();
+    }
+  }
   private processStateSubscription: Subscription;
   ngOnInit(): void {
     this.title = 'Tasks';
     this.dashboardDataService.subjects['case'].subscribe((dataCase: Case) => {
       this.caseNumber = dataCase.id;
+      if(this.activeTasksContainer) {
+        this.activeTasksContainer.tasks = [];
+        this.activeTasksContainer.tasksData = new MatTableDataSource();
+        this.activeTasksContainer.resetLoading(true);
+      }
     });
     this.processStateSubscription = this.brokerFacade.subscribe('bpm',
       'businessKey = \'' + this.caseNumber + '\' and kind = \'process-state-event\'')
