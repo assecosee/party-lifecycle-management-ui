@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ComponentRef, Injector, OnDestroy, OnInit } from '@angular/core';
 import { BpmTasksHttpClient, FormField, LoaderService, Task, UIService, ValidationConstraint } from '@asseco/common-ui';
 import { L10N_LOCALE, L10nLocale } from 'angular-l10n';
 import { SurveyService } from '../../services/survey.service';
@@ -39,6 +39,7 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription = new Subscription();
   private taskSubscription: Subscription  = new Subscription();
   private formData: any[];
+  private componentRefCaseShortDetailes: ComponentRef<CaseDetailsWidgetComponent>;
 
   constructor(
     protected surveyService: SurveyService,
@@ -597,7 +598,9 @@ export class SurveyGenericFormComponent implements OnInit, OnDestroy {
     return this.formGroup.controls[controlName].value;
   }
   private initCaseInfo(caseId: string) {
-    const component = this.uiService.addComponentToRightSideNav(CaseDetailsWidgetComponent, true);
-    component.instance.caseId = caseId;
+    if (!this.componentRefCaseShortDetailes) {
+      this.componentRefCaseShortDetailes = this.uiService.addComponentToRightSideNav(CaseDetailsWidgetComponent, true);
+    }
+    this.componentRefCaseShortDetailes.instance.caseId = caseId;
   }
 }
