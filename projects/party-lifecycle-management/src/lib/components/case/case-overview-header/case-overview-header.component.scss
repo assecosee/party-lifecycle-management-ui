@@ -1,9 +1,13 @@
 .case-overview-header{
-    align-items: left;
-    box-sizing: border-box;
-    min-height: 64px;
-    width: 97%;
-    margin: auto 20px;
+  width: calc(100% - 30px);
+  max-width: 1245px !important;
+  box-sizing: border-box;
+  display: block;
+  top: 16px;
+  margin: 0 auto 24px;
+  @media screen and (max-width: 600px) {
+    width: 100vw;
+  }
 }
 .case-overview-content{
 
